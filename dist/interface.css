@@ -494,7 +494,8 @@ aside nav button i svg { width: 30px; height: 30px; }
   font-family: Nunito, "Noto Sans Armenian", system-ui, sans-serif;
   font-weight: 800;
   color: #fff;
-  text-shadow: 0 1px 2px #0009, 0 0 1px #000c;
+  text-shadow: none;
+  -webkit-text-stroke: 0;
 }
 .path-unit-heading h3, .path-unit-heading small, .path-unit-heading > span {
   color: inherit;
