@@ -464,7 +464,7 @@ function drawLearningPath() {
           reviewing ? 'current' : done ? 'done' : 'locked',
           reviewing ? 'startCumulativeReview()' : done && !pending ? 'replayWordReview(' + index + ')' : '', reviewPathIcon);
     }).join('');
-    units.push('<section class="path-unit" data-color="' + (unit % 5) + '"><div class="path-unit-heading"><div><small>Բաժին ' +
+    units.push('<section class="path-unit" data-color="' + (unit % 7) + '"><div class="path-unit-heading"><div><small>Բաժին ' +
       (unit + 1) + '</small><h3>' + esc(title) + '</h3></div><span>' +
       unitCompleted + ' / ' + indexes.length + '</span></div><ol>' + nodes + '</ol></section>');
   }

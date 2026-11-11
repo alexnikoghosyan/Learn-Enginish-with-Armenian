@@ -74,11 +74,13 @@ input, select, .word-lesson-panel textarea { border: 2px solid var(--line); bord
 .path-intro { padding: 8px 0; }
 .path-unit { border: 0; background: #fff; }
 .path-unit-heading { border-radius: 17px; background: var(--unit-soft); color: var(--unit-ink); }
-.path-unit { --unit: #58cc02; --unit-shadow: #398e00; --unit-soft: #eafaD5; --unit-ink: #305b0a; }
-.path-unit[data-color="1"] { --unit: #25b4f4; --unit-shadow: #1387be; --unit-soft: #e0f5ff; --unit-ink: #075477; }
-.path-unit[data-color="2"] { --unit: #ac80ff; --unit-shadow: #7954c4; --unit-soft: #f0e6ff; --unit-ink: #58328f; }
-.path-unit[data-color="3"] { --unit: #ffbd43; --unit-shadow: #cf8512; --unit-soft: #fff1d4; --unit-ink: #78510c; }
-.path-unit[data-color="4"] { --unit: #ff91bb; --unit-shadow: #ca5888; --unit-soft: #ffe9f2; --unit-ink: #8d2859; }
+.path-unit { --unit: #58CC02; --unit-shadow: color-mix(in srgb, var(--unit) 75%, #000); --unit-soft: color-mix(in srgb, var(--unit) 19%, #fff); --unit-ink: color-mix(in srgb, var(--unit) 42%, #000); }
+.path-unit[data-color="1"] { --unit: #1CB0F6; --unit-shadow: color-mix(in srgb, var(--unit) 75%, #000); --unit-soft: color-mix(in srgb, var(--unit) 19%, #fff); --unit-ink: color-mix(in srgb, var(--unit) 42%, #000); }
+.path-unit[data-color="2"] { --unit: #FF86D0; --unit-shadow: color-mix(in srgb, var(--unit) 75%, #000); --unit-soft: color-mix(in srgb, var(--unit) 19%, #fff); --unit-ink: color-mix(in srgb, var(--unit) 42%, #000); }
+.path-unit[data-color="3"] { --unit: #FF9600; --unit-shadow: color-mix(in srgb, var(--unit) 75%, #000); --unit-soft: color-mix(in srgb, var(--unit) 19%, #fff); --unit-ink: color-mix(in srgb, var(--unit) 42%, #000); }
+.path-unit[data-color="4"] { --unit: #FF4B4B; --unit-shadow: color-mix(in srgb, var(--unit) 75%, #000); --unit-soft: color-mix(in srgb, var(--unit) 19%, #fff); --unit-ink: color-mix(in srgb, var(--unit) 42%, #000); }
+.path-unit[data-color="5"] { --unit: #00CD9C; --unit-shadow: color-mix(in srgb, var(--unit) 75%, #000); --unit-soft: color-mix(in srgb, var(--unit) 19%, #fff); --unit-ink: color-mix(in srgb, var(--unit) 42%, #000); }
+.path-unit[data-color="6"] { --unit: #CE82FF; --unit-shadow: color-mix(in srgb, var(--unit) 75%, #000); --unit-soft: color-mix(in srgb, var(--unit) 19%, #fff); --unit-ink: color-mix(in srgb, var(--unit) 42%, #000); }
 .path-unit ol { position: relative; padding: 22px 12px 27px; gap: 19px; }
 .path-stop { z-index: 0; margin-inline-start: calc(var(--bend) * clamp(17px, 7vw, 53px)); }
 .path-stop:not(:last-child)::after {
