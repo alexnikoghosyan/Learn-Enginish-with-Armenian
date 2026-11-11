@@ -666,15 +666,29 @@ body:has(#app .lesson-controls) main {
 @media (prefers-reduced-motion: no-preference) {
   .sound-play.is-speaking .sound-wave-inner,
   .sound-play.is-speaking .sound-wave-outer {
-    transform-box: fill-box;
-    transform-origin: center;
-    animation: sound-wave-spread .48s cubic-bezier(.22,.75,.3,1) both;
+    transform-box: view-box;
+    stroke-width: clamp(4px, 1vw, 6px);
+    vector-effect: non-scaling-stroke;
+    animation-duration: .48s;
+    animation-timing-function: cubic-bezier(.22,.75,.3,1);
+    animation-fill-mode: both;
   }
-  .sound-play.is-speaking .sound-wave-outer { animation-delay: .12s; }
+  .sound-play.is-speaking .sound-wave-inner {
+    transform-origin: 31px 24px;
+    animation-name: sound-wave-new;
+  }
+  .sound-play.is-speaking .sound-wave-outer {
+    transform-origin: 36px 24px;
+    animation-name: sound-wave-outward;
+  }
 }
-@keyframes sound-wave-spread {
-  from { transform: scale(.12); }
-  to { transform: scale(1); }
+@keyframes sound-wave-new {
+  from { transform: scale(0); stroke-width: 0; }
+  to { transform: scale(1); stroke-width: clamp(4px, 1vw, 6px); }
+}
+@keyframes sound-wave-outward {
+  from { transform: translateX(-5px) scale(.5); }
+  to { transform: translateX(0) scale(1); }
 }
 @media (max-width:600px) {
   .sound-controls { min-height: 78px; }
