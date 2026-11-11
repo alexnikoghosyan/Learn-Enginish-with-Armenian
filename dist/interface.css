@@ -310,3 +310,5 @@ body:has(#app .lesson-body, #app .word-lesson-panel) main {
 .path-locked .path-node-icon { filter: grayscale(1); }
 .path-locked .picture-emoji, .path-locked .drink-art { opacity: .56; }
 .path-node.path-done .path-node-icon { font-size: 34px; font-weight: 900; }
+
+.top { justify-content: flex-end; }
