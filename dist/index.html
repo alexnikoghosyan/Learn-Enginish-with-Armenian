@@ -63,4 +63,24 @@ button:disabled{cursor:default;opacity:.65}
 .path-node.path-done{background:#d3e8bd;color:#22573b;box-shadow:0 4px #abc997}
 .path-node.path-current{background:#377a4d;color:white;box-shadow:0 4px #245533,0 0 0 5px #def0d8}
 .path-node.path-locked{opacity:1}
-</style></head><body><aside><div class="brand">✳ English Garden<span>ԱՃԻՐ ԱՄԵՆ ՕՐ</span></div><nav id="nav"></nav><div class="side-note">🌱 <b>Փոքր քայլեր, մեծ արդյունք</b>Օրական 15 րոպե․ մեկ դաս, մի քանի բառ և մի փոքր փորձ։</div></aside><main><header class="top"><small>Քո անձնական ուսուցման անկյունը</small><div class="profile">Հայերեն → English &nbsp; 🌿</div></header><div id="app"></div><footer>English Garden · Սովորիր քո տեմպով։ Առաջընթացը պահվում է այս դիտարկիչում։</footer></main><script src="words.js"></script><script src="app.js"></script><script src="more-grammar.js"></script><script src="pictures.js"></script><script src="hints.js"></script><script src="word-lessons.js"></script><script>render();</script></body></html>
+
+.study-home{max-width:960px;margin-inline:auto}
+.study-welcome{background:#204d3d;color:white;border-radius:20px;padding:clamp(24px,5vw,46px);margin-bottom:22px}
+.study-welcome h1{font-size:clamp(26px,4vw,42px);margin-bottom:7px}
+.study-welcome p{margin:0;color:#e0ebdc}
+.study-cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.study-card h2,.study-card p,.journal-shortcut h2,.journal-shortcut p{margin:0}
+.study-card p,.journal-shortcut p{color:#52665a}
+.study-card progress{width:100%;height:10px;accent-color:#377a4d;margin:14px 0 8px}
+.study-card .study-next{font-weight:700;color:var(--ink);margin:7px 0 16px;overflow-wrap:anywhere}
+.journal-shortcut{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-top:16px}
+.journal-label{display:block;font-weight:700;margin:22px 0 7px}
+#journal-search{width:100%}
+.journal-entry{margin-top:14px;overflow-wrap:anywhere}
+.journal-entry header{display:flex;justify-content:space-between;gap:12px}
+.journal-entry h2{margin:0}
+.journal-entry p,.journal-entry blockquote{white-space:pre-wrap}
+.journal-entry blockquote{margin:10px 0;padding:10px 14px;background:#edf2e3;border-radius:8px}
+.journal-entry button{margin-top:8px}
+@media(max-width:560px){.study-cards{grid-template-columns:1fr}.journal-shortcut{align-items:flex-start;flex-direction:column}}
+</style></head><body><aside><div class="brand">✳ English Garden<span>ԱՃԻՐ ԱՄԵՆ ՕՐ</span></div><nav id="nav"></nav><div class="side-note">🌱 <b>Փոքր քայլեր, մեծ արդյունք</b>Օրական 15 րոպե․ մեկ դաս, մի քանի բառ և մի փոքր փորձ։</div></aside><main><header class="top"><small>Քո անձնական ուսուցման անկյունը</small><div class="profile">Հայերեն → English &nbsp; 🌿</div></header><div id="app"></div><footer>English Garden · Սովորիր քո տեմպով։ Առաջընթացը պահվում է այս դիտարկիչում։</footer></main><script src="words.js"></script><script src="app.js"></script><script src="more-grammar.js"></script><script src="pictures.js"></script><script src="hints.js"></script><script src="word-lessons.js"></script><script src="study-home.js"></script><script>render();</script></body></html>
