@@ -419,9 +419,16 @@ const unitsPerPage = 3;
 const pathUnitCount = Math.ceil(wordOrder.length / wordsPerUnit);
 const pathUnitNames = ['Առաջին բառերը', 'Մարդիկ ու առօրյա', 'Պարզ արտահայտություններ', 'Խոսք և ժամանակ', ...themedUnits.map(([name]) => name)];
 let pathPage = 0;
+try {
+  const savedPathPage = Number(localStorage.getItem('eg-word-path-page'));
+  if (Number.isInteger(savedPathPage) && savedPathPage >= 0 && savedPathPage < Math.ceil(pathUnitCount / unitsPerPage)) {
+    pathPage = savedPathPage;
+  }
+} catch {}
 
 function showLearningPath(page) {
   pathPage = Math.max(0, Math.min(page, Math.ceil(pathUnitCount / unitsPerPage) - 1));
+  try { localStorage.setItem('eg-word-path-page', String(pathPage)); } catch {}
   vocabulary('path');
   window.scrollTo(0, 0);
 }

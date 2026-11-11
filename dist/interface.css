@@ -667,16 +667,14 @@ body:has(#app .lesson-controls) main {
   .sound-play.is-speaking .sound-wave-inner,
   .sound-play.is-speaking .sound-wave-outer {
     transform-box: fill-box;
-    transform-origin: left center;
-    stroke-dasharray: 100;
+    transform-origin: center;
     animation: sound-wave-spread .48s cubic-bezier(.22,.75,.3,1) both;
   }
   .sound-play.is-speaking .sound-wave-outer { animation-delay: .12s; }
 }
 @keyframes sound-wave-spread {
-  0% { opacity: 0; transform: translateX(-4px) scale(.4); stroke-dashoffset: 90; }
-  25% { opacity: .65; }
-  100% { opacity: 1; transform: translateX(0) scale(1); stroke-dashoffset: 0; }
+  from { transform: scale(.12); }
+  to { transform: scale(1); }
 }
 @media (max-width:600px) {
   .sound-controls { min-height: 78px; }
