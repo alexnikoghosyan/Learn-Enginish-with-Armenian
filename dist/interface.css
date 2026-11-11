@@ -331,3 +331,51 @@ aside nav button i svg { width: 30px; height: 30px; }
   aside nav button { min-height: 56px; gap: 3px; }
   aside nav button i, aside nav button i svg { width: 26px; height: 26px; }
 }
+
+/* Lesson discs use a raised face and a separate callout above the active step. */
+.path-unit[data-color="0"] .path-node.path-current {
+  --unit: #ff86d2;
+  --unit-shadow: #c66aa5;
+}
+.path-node {
+  width: 70px;
+  height: 58px;
+  border-radius: 50%;
+}
+.path-node.path-current {
+  outline: none;
+  box-shadow: 0 8px var(--unit-shadow);
+}
+.path-node.path-locked {
+  background: #e5e5e5;
+  box-shadow: 0 8px #b5b5b5;
+}
+.path-node.path-done { box-shadow: 0 8px var(--unit-shadow); }
+.path-node:focus-visible { outline: 3px solid #1a61a8; outline-offset: 5px; }
+.path-node:not(:disabled):active { transform: translateY(5px); box-shadow: 0 3px var(--unit-shadow); }
+.path-stop { gap: 13px; }
+.path-stop:has(.path-current) { margin-top: 40px; }
+.path-current-label {
+  bottom: calc(100% - 4px);
+  min-width: 76px;
+  padding: 9px 13px;
+  border: 2px solid #e5e5e5;
+  border-radius: 11px;
+  color: var(--unit-ink);
+  box-shadow: none;
+  text-align: center;
+  font-size: 13px;
+  line-height: 1.2;
+}
+.path-unit[data-color="0"] .path-current-label { color: #af347e; }
+.path-current-label::after {
+  top: auto;
+  bottom: -6px;
+  left: calc(50% - 5px);
+  width: 8px;
+  height: 8px;
+  border: solid #e5e5e5;
+  border-width: 0 2px 2px 0;
+  background: #fff;
+  transform: rotate(45deg);
+}
