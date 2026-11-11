@@ -181,6 +181,189 @@ const themedUnits = [
   ]
 ];
 
+themedUnits.push(...[
+  [
+    "Գնումներ",
+    [
+      [
+        "price",
+        "🏷️",
+        "What is the price of this shirt?"
+      ],
+      [
+        "cash",
+        "💵",
+        "Can I pay in cash?"
+      ],
+      [
+        "receipt",
+        "🧾",
+        "Please keep your receipt."
+      ],
+      [
+        "discount",
+        "💸",
+        "This shop offers a discount."
+      ],
+      [
+        "size",
+        "📏",
+        "Do you have this in my size?"
+      ]
+    ]
+  ],
+  [
+    "Աշխատանք",
+    [
+      [
+        "office",
+        "🏢",
+        "I left my bag at the office."
+      ],
+      [
+        "meeting",
+        "🤝",
+        "The meeting starts at ten."
+      ],
+      [
+        "schedule",
+        "🗓️",
+        "Let me check my schedule."
+      ],
+      [
+        "task",
+        "📋",
+        "I finished the first task."
+      ],
+      [
+        "team",
+        "👥",
+        "Our team works together."
+      ]
+    ]
+  ],
+  [
+    "Առողջություն",
+    [
+      [
+        "doctor",
+        "🩺",
+        "I have an appointment with the doctor."
+      ],
+      [
+        "nurse",
+        "🧑‍⚕️",
+        "The nurse showed me where to wait."
+      ],
+      [
+        "medicine",
+        "💊",
+        "I picked up my medicine at the pharmacy."
+      ],
+      [
+        "headache",
+        "🤕",
+        "I have a headache today."
+      ],
+      [
+        "rest",
+        "🛌",
+        "I need some rest after work."
+      ]
+    ]
+  ],
+  [
+    "Հագուստ",
+    [
+      [
+        "shirt",
+        "👔",
+        "He is wearing a white shirt."
+      ],
+      [
+        "coat",
+        "🧥",
+        "Take your coat. It is cold outside."
+      ],
+      [
+        "shoe",
+        "👟",
+        "There is a stone in my shoe."
+      ],
+      [
+        "dress",
+        "👗",
+        "She wore a blue dress."
+      ],
+      [
+        "hat",
+        "👒",
+        "I wear a hat on sunny days."
+      ]
+    ]
+  ],
+  [
+    "Ազատ ժամանակ",
+    [
+      [
+        "music",
+        "🎵",
+        "I listen to music on the bus."
+      ],
+      [
+        "movie",
+        "🎬",
+        "We watched a movie last night."
+      ],
+      [
+        "game",
+        "🎲",
+        "Would you like to play a game?"
+      ],
+      [
+        "swim",
+        "🏊",
+        "We swim every Saturday."
+      ],
+      [
+        "dance",
+        "💃",
+        "They like to dance together."
+      ]
+    ]
+  ],
+  [
+    "Կապ և հաղորդագրություններ",
+    [
+      [
+        "phone",
+        "📱",
+        "I forgot my phone at home."
+      ],
+      [
+        "message",
+        "💬",
+        "Please send me a message."
+      ],
+      [
+        "email",
+        "📧",
+        "I will reply to your email tomorrow."
+      ],
+      [
+        "call",
+        "📞",
+        "Can I call you after lunch?"
+      ],
+      [
+        "address",
+        "📍",
+        "Can you send me your address?"
+      ]
+    ]
+  ]
+]);
+
 const starterWords = [
   'coffee', 'milk', 'water', 'tea', 'apple', 'book', 'friend', 'home', 'learn', 'work',
   'help', 'like', 'want', 'need', 'read', 'write', 'speak', 'go', 'come', 'today',
