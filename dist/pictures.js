@@ -52,13 +52,6 @@ function vocabulary(tab = 'path') {
   openWordLesson();
 }
 
-function vocabularyTabs() {
-  const tabs = [['path', 'Ուսուցման ճանապարհ'], ['dictionary', 'Ամբողջ բառացանկը'], ['cards', 'Կրկնություն']];
-  return '<div class="picture-tabs">' + tabs.map(([tab, name]) =>
-    '<button class="secondary" aria-pressed="' + (pictureTab === tab) + '" onclick="vocabulary(\'' + tab + '\')">' + name + '</button>'
-  ).join('') + '</div>';
-}
-
 function selectPictureTopic(topic) {
   pictureTopic = topic;
   pictureSelection = '';
@@ -78,7 +71,7 @@ function picturePage() {
   const prompt = exercise
     ? '<h2>Ընտրիր «' + esc(exercise.target[1]) + '» բառի պատկերը</h2>'
     : '<p class="muted">Սեղմիր քարտին՝ լսելու բառը և տեսնելու հայերեն իմաստը։</p>';
-  app.innerHTML = '<h1>Բառեր</h1>' + vocabularyTabs() +
+  app.innerHTML = '<h1>Բառեր</h1>' +
     '<div class="picture-topics">' + Object.keys(pictureTopics).map((topic, index) =>
       '<button class="secondary" aria-pressed="' + (topic === pictureTopic) +
       '" onclick="selectPictureTopic(Object.keys(pictureTopics)[' + index + '])">' + topic + '</button>'

@@ -468,7 +468,7 @@ function drawLearningPath() {
       (unit + 1) + '</small><h3>' + esc(title) + '</h3></div><span>' +
       unitCompleted + ' / ' + indexes.length + '</span></div><ol>' + nodes + '</ol>' + courseMilestone(unitCompleted === indexes.length && !indexes.includes(pendingWord)) + '</section>');
   }
-  app.innerHTML = courseLayout('<h1>Բառեր</h1>' + vocabularyTabs() +
+  app.innerHTML = courseLayout('<h1>Բառեր</h1>' +
     '<div class="learning-path"><div class="path-intro"><div><h2>Ուսուցման ճանապարհ</h2><p>' +
     completed + ' / ' + WORDS.length + ' դաս ավարտված</p></div>' +
     (!state.cumulativeReview && nextIndex === undefined ? '<strong>Ճանապարհն ավարտված է ✓</strong>' : '') +

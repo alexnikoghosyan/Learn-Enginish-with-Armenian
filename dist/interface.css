@@ -698,3 +698,10 @@ body:has(#app .lesson-controls) main {
   font-size: 13px;
   pointer-events: none;
 }
+
+@media (max-width:730px) {
+  html, body { overflow-x: clip; }
+  .path-stop { width: min(175px, 54%); margin-inline: auto; }
+  .path-page-controls { grid-template-columns: minmax(0,1fr) auto minmax(0,1fr); gap: 7px; }
+  .path-page-controls button { padding-inline: 9px; max-width: 100%; }
+}
