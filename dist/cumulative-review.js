@@ -120,7 +120,7 @@ function drawReviewQuestion() {
       '" onclick="selectReviewPicture(' + index + ')">' + pictureArt(picture.emoji, picture.shape) + '</button>'
     ).join('') + '</div>';
   }
-  app.innerHTML = focusLessonHeader(cursor, reviewQuestions.length, "go('vocabulary')") +
+  app.innerHTML = focusLessonHeader(cursor, reviewQuestions.length, 'vocabulary') +
     '<h1>Կրկնություն</h1><section class="panel word-lesson-panel review-panel">' +
     '<small>Հարց ' + (cursor + 1) + ' / ' + reviewQuestions.length + ' · ' + activeReview.words.length + ' բառ</small>' +
     '<h2>' + labels[question.type] + '</h2><div class="review-prompt' +

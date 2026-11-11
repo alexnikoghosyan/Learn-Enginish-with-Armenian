@@ -758,3 +758,44 @@ body:has(#app .lesson-controls) main {
 }
 #sound-skip:hover { background: #ededed; }
 #sound-skip:active { box-shadow: none; }
+
+.sound-controls.sound-is-correct { background: #d7ffb8; border-color: #d7ffb8; color: #365d09; }
+.sound-controls.sound-is-wrong { background: #ffdfdf; border-color: #ffdfdf; color: #a81919; }
+.sound-controls.sound-is-wrong .primary { background: #e62929; box-shadow: 0 4px #b91d1d; color: #fff; }
+#sound-feedback:empty { display: none; }
+#sound-feedback { display: flex; align-items: center; gap: 15px; line-height: 1.5; }
+#sound-feedback small { display: block; color: inherit; }
+#sound-feedback strong { font-size: clamp(16px, 2vw, 22px); }
+.sound-result-symbol {
+  display: grid; place-items: center; flex: none; width: 70px; height: 70px;
+  border-radius: 50%; background: #fff; font-size: 39px;
+}
+.lesson-exit-dialog {
+  width: min(382px, calc(100% - 32px)); box-sizing: border-box;
+  border: 0; border-radius: 20px; padding: 24px 22px 20px;
+  color: var(--ink); text-align: center;
+}
+.lesson-exit-dialog::backdrop { background: #20212b75; }
+.exit-owl { font-size: 72px; line-height: 1.2; margin: 6px 0 20px; }
+.lesson-exit-dialog h2 { margin: 0; }
+.lesson-exit-dialog p { margin: 8px 0 24px; }
+.lesson-exit-dialog form .primary { width: 100%; background: #0084bb; color: #fff; box-shadow: 0 4px #006e9d; }
+.lesson-exit-dialog .lesson-leave { color: #c52222; min-height: 44px; margin-top: 10px; }
+.path-stop:has(.path-preview:not([hidden])) { z-index: 3; }
+.path-stop:has(.path-preview:not([hidden])) .path-current-label { visibility: hidden; }
+.path-preview:not([hidden]) {
+  display: grid; gap: 13px; position: absolute; z-index: 2; top: 82px; left: 50%;
+  width: min(270px, calc(100vw - 145px)); transform: translateX(-50%);
+  padding: 16px; border-radius: 16px; background: var(--unit);
+  color: #fff; box-shadow: 0 4px var(--unit-shadow); text-align: start;
+}
+.path-preview::before {
+  content: ''; position: absolute; top: -6px; left: calc(50% - 7px);
+  width: 14px; height: 14px; transform: rotate(45deg); background: var(--unit);
+}
+.path-preview strong { font-size: 18px; overflow-wrap: anywhere; }
+.path-preview .secondary { color: var(--unit-ink); text-transform: uppercase; }
+@media (max-width:600px) {
+  #sound-feedback { gap: 8px; }
+  .sound-result-symbol { width: 36px; height: 36px; font-size: 22px; }
+}

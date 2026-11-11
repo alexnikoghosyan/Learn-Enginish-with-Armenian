@@ -555,7 +555,7 @@ function drawWordLesson(justCompleted = false) {
         '"><span class="reward-medal" aria-hidden="true">★</span><div><strong>Դասն ավարտված է։</strong>' +
         '<small>Գրածդ պահպանվել է «Իմ գրառումները» բաժնում։</small></div></div>' : '');
   }
-  app.innerHTML = focusLessonHeader(entry.step, wordLessonStepCount, "go('vocabulary')") + '<h1>Բառեր</h1>'  +
+  app.innerHTML = focusLessonHeader(entry.step, wordLessonStepCount, 'vocabulary') + '<h1>Բառեր</h1>'  +
     '<section class="panel word-lesson-panel">' + content +
     '<p id="word-lesson-error" role="alert" class="word-lesson-error"></p>' +
     '<div class="tools word-actions lesson-controls">' +

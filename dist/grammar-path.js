@@ -10,12 +10,43 @@ function renderPathStop(title, offset, status, action, icon, language = 'hy') {
   const bend = [0, 1, 2, 2, 1, 0, 0, 1, 2, 1][offset % 10];
   return '<li class="path-stop" style="--bend:' + bend + '">' +
     '<button class="path-node path-' + status + '" aria-label="' + esc(title + ' · ' + label) + '"' +
-    (current ? ' aria-current="step"' : '') +
-    (action ? ' onclick="' + action + '"' : ' disabled') + '>' +
+    (current ? ' aria-current="step" aria-expanded="false" onclick="togglePathPreview(this)"' :
+      action ? ' onclick="' + action + '"' : ' disabled') + '>' +
     '<span class="path-node-icon" aria-hidden="true">' + (done ? '✓' : icon) +
     '</span></button><span><strong lang="' + language + '">' + esc(title) + '</strong>' +
-    (current ? '<small class="path-current-label">' + label + '</small>' : '') + '</span></li>';
+    (current ? '<small class="path-current-label">' + label + '</small>' : '') + '</span>' +
+    (current ? '<div class="path-preview" hidden><strong lang="' + language + '">' + esc(title) +
+      '</strong><button class="secondary" onclick="' + action + '">Սկսել</button></div>' : '') + '</li>';
 }
+
+function closePathPreview(preview) {
+  preview.hidden = true;
+  preview.parentElement.querySelector('.path-node').setAttribute('aria-expanded', 'false');
+}
+
+function togglePathPreview(button) {
+  const preview = button.parentElement.querySelector('.path-preview');
+  if (!preview.hidden) { closePathPreview(preview); return; }
+  app.querySelectorAll('.path-preview:not([hidden])').forEach(closePathPreview);
+  preview.hidden = false;
+  button.setAttribute('aria-expanded', 'true');
+  preview.querySelector('button').focus({ preventScroll: true });
+}
+
+document.addEventListener('click', event => {
+  app.querySelectorAll('.path-preview:not([hidden])').forEach(preview => {
+    if (!preview.parentElement.contains(event.target)) closePathPreview(preview);
+  });
+});
+
+document.addEventListener('keydown', event => {
+  if (event.key !== 'Escape') return;
+  const preview = app.querySelector('.path-preview:not([hidden])');
+  if (preview) {
+    closePathPreview(preview);
+    preview.parentElement.querySelector('.path-node').focus();
+  }
+});
 
 function nextGrammarTopic() {
   return LESSONS.findIndex((_, index) => !state.lessons.includes(index));
@@ -52,7 +83,7 @@ function lesson(index, resume = true) {
   view = 'grammar';
   renderNavigation();
   const topic = LESSONS[index];
-  app.innerHTML = '<section class="lesson-body">' + focusLessonHeader(0, 1 + grammarPracticeKinds(grammarExercises[index]).length, "go('grammar')") +
+  app.innerHTML = '<section class="lesson-body">' + focusLessonHeader(0, 1 + grammarPracticeKinds(grammarExercises[index]).length, 'grammar') +
     '<p class="muted">Դաս ' + (index + 1) + ' / ' + LESSONS.length + '</p><h1>' + esc(topic.title) +
     '</h1><h2 lang="en">' + esc(topic.en) + '</h2><div class="rule">' + esc(topic.rule) +
     '</div><h2 style="margin-top:24px">Օրինակներ</h2>' + topic.examples.map(([english, armenian]) =>
@@ -119,7 +150,7 @@ function drawGrammarPractice() {
       '<div id="arranged-words" class="grammar-tiles grammar-output" aria-label="Քո նախադասությունը"></div>' +
       '<div id="available-words" class="grammar-tiles" aria-label="Խառնված բառերը"></div>';
   }
-  app.innerHTML = '<section class="lesson-body">' + focusLessonHeader(step + 1, steps.length + 1, "go('grammar')") +
+  app.innerHTML = '<section class="lesson-body">' + focusLessonHeader(step + 1, steps.length + 1, 'grammar') +
     '<div class="panel grammar-practice"><small>Վարժություն ' + (step + 1) + ' / ' + steps.length +
     '</small>' +
     '<form onsubmit="event.preventDefault();checkGrammarPractice()">' + body +

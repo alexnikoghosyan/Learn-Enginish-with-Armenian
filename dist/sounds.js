@@ -87,7 +87,7 @@ function drawSoundQuestion() {
   soundChecked = false;
   const question = soundRound[soundCursor];
   const pair = question.audio.length === 2;
-  app.innerHTML = focusLessonHeader(soundCursor, soundRound.length, "go('sounds')", { showCount: false, lead: .6 }) +
+  app.innerHTML = focusLessonHeader(soundCursor, soundRound.length, 'sounds', { showCount: false }) +
     '<section class="lesson-body sound-question"><h1>' + (pair ? 'Նո՞ւյնն են հնչում, թե՞ տարբեր' : 'Ո՞ր բառը լսեցիր') +
     '</h1><div class="sound-audio">' + question.audio.map((word, index) =>
       '<button class="secondary sound-play" data-speak="' + esc(word) + '" aria-label="Լսել ձայն ' + (index + 1) +
@@ -98,8 +98,9 @@ function drawSoundQuestion() {
     ).join('') + '</div><div class="options sound-options">' + question.options.map((option, index) =>
       '<button class="option" aria-pressed="false" onclick="chooseSoundAnswer(' + index + ')"><span class="sound-option-number" aria-hidden="true">' +
       (index + 1) + '</span>' + esc(option) + '</button>'
-    ).join('') + '</div><p id="sound-feedback" role="status"></p></section>' +
-    '<div class="tools lesson-controls sound-controls"><button class="secondary" id="sound-skip" onclick="advanceSoundRound()">Բաց թողնել</button>' +
+    ).join('') + '</div></section>' +
+    '<div class="tools lesson-controls sound-controls"><div id="sound-feedback" role="status"></div>' +
+    '<button class="secondary" id="sound-skip" onclick="advanceSoundRound()">Բաց թողնել</button>' +
     '<button class="primary" id="sound-check" onclick="checkSoundAnswer()" disabled>Ստուգել</button></div>';
   window.scrollTo(0, 0);
 }
@@ -133,13 +134,17 @@ function checkSoundAnswer() {
     state.soundProgress[question.ipa] = Math.min(3, (state.soundProgress[question.ipa] || 0) + 1);
     save();
   }
+  const correct = soundAnswer === question.answer;
   app.querySelectorAll('.sound-options button').forEach((button, index) => {
-    if (index === question.answer) button.classList.add('correct');
-    else if (index === soundAnswer) button.classList.add('wrong');
+    if (correct && index === soundAnswer) button.classList.add('correct');
     button.disabled = true;
   });
-  document.getElementById('sound-feedback').textContent = soundAnswer === question.answer ? 'Ճիշտ է։ ✓' :
-    'Ճիշտ պատասխանը՝ ' + question.options[question.answer];
+  const feedback = document.getElementById('sound-feedback');
+  feedback.parentElement.classList.add(correct ? 'sound-is-correct' : 'sound-is-wrong');
+  feedback.innerHTML = '<span class="sound-result-symbol" aria-hidden="true">' + (correct ? '✓' : '✕') +
+    '</span><div><strong>' + (correct ? 'Ճիշտ է։' : 'Այս անգամ չստացվեց։') + '</strong>' +
+    (correct ? '' : '<small>Ճիշտ պատասխանը՝ ' + esc(question.options[question.answer]) + '</small>') + '</div>';
+  app.querySelector('.focus-lesson-header progress').value = soundCursor + 1;
   document.getElementById('sound-check').textContent = 'Շարունակել →';
 }
 
