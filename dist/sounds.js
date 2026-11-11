@@ -93,7 +93,7 @@ function drawSoundQuestion() {
       '<button class="secondary sound-play" data-speak="' + esc(word) + '" aria-label="Լսել ձայն ' + (index + 1) +
       '" onclick="animateSoundSpeaker(this)"><svg viewBox="0 0 48 48" aria-hidden="true">' +
       '<path fill="currentColor" d="M7 17h5L22 9a2 2 0 0 1 3 2v26a2 2 0 0 1-3 2l-10-8H7a4 4 0 0 1-4-4v-6a4 4 0 0 1 4-4z"/>' +
-      '<path class="sound-wave-inner" d="M31 17a8 8 0 0 1 0 14"/><path class="sound-wave-outer" d="M36 10a16 16 0 0 1 0 28"/></svg>' +
+      '<path class="sound-wave-inner" pathLength="100" d="M31 17a8 8 0 0 1 0 14"/><path class="sound-wave-outer" pathLength="100" d="M36 10a16 16 0 0 1 0 28"/></svg>' +
       (pair ? '<span>' + (index + 1) + '</span>' : '') + '</button>'
     ).join('') + '</div><div class="options sound-options">' + question.options.map((option, index) =>
       '<button class="option" aria-pressed="false" onclick="chooseSoundAnswer(' + index + ')"><span class="sound-option-number" aria-hidden="true">' +

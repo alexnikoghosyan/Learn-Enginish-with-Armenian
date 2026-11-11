@@ -647,9 +647,9 @@ body:has(#app .lesson-controls) main {
 .sound-audio .sound-play {
   width: clamp(96px, 16vw, 140px); height: clamp(96px, 16vw, 136px);
   padding: 0; border: 0; border-radius: 29px; background: #1cb0f6; color: #fff;
-  box-shadow: 0 5px #168fc6; justify-content: center;
+  box-shadow: 0 5px #168fc6; justify-content: center; transition: background-color .12s ease;
 }
-.sound-audio .sound-play:hover { background: #17b8ef; }
+.sound-audio .sound-play:hover { background: #39bdf7; }
 .sound-audio .sound-play:active { box-shadow: 0 1px #168fc6; transform: translateY(4px); }
 .sound-play svg { width: 58%; height: 58%; }
 .sound-play svg path:not([fill]) { fill: none; stroke: currentColor; stroke-width: 3.6; stroke-linecap: round; }
@@ -664,11 +664,20 @@ body:has(#app .lesson-controls) main {
 .sound-controls { min-height: 126px; }
 .sound-controls button { min-width: 150px; }
 @media (prefers-reduced-motion: no-preference) {
-  .sound-play.is-speaking .sound-wave-inner { animation: sound-wave-inner .65s ease-in-out; }
-  .sound-play.is-speaking .sound-wave-outer { animation: sound-wave-outer .65s ease-in-out; }
+  .sound-play.is-speaking .sound-wave-inner,
+  .sound-play.is-speaking .sound-wave-outer {
+    transform-box: fill-box;
+    transform-origin: left center;
+    stroke-dasharray: 100;
+    animation: sound-wave-spread .48s cubic-bezier(.22,.75,.3,1) both;
+  }
+  .sound-play.is-speaking .sound-wave-outer { animation-delay: .12s; }
 }
-@keyframes sound-wave-inner { 0%, 18% { opacity: 0; } 34%, 100% { opacity: 1; } }
-@keyframes sound-wave-outer { 0%, 40% { opacity: 0; } 58%, 100% { opacity: 1; } }
+@keyframes sound-wave-spread {
+  0% { opacity: 0; transform: translateX(-4px) scale(.4); stroke-dashoffset: 90; }
+  25% { opacity: .65; }
+  100% { opacity: 1; transform: translateX(0) scale(1); stroke-dashoffset: 0; }
+}
 @media (max-width:600px) {
   .sound-controls { min-height: 78px; }
   .sound-controls button { min-width: 115px; }
