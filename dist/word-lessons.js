@@ -444,12 +444,12 @@ function drawLearningPath() {
       const current = index === nextIndex;
       const locked = !done && !current;
       const label = done ? 'Ավարտված' : current ? 'Հաջորդ դասը' : 'Բացվում է հերթով';
-      const symbol = done ? '✓' : current ? '▶' : '🔒';
+      const symbol = done ? '✓' : current ? '★' : '🔒';
       return '<li class="path-stop" style="--bend:' + [0, 1, 2, 1, 0][offset] + ';--direction:' + [1, 1, -1, -1, 0][offset] + '">' +
         '<button class="path-node ' + (done ? 'path-done' : current ? 'path-current' : 'path-locked') +
         '" onclick="openWordLesson(' + index + ')" ' + (locked ? 'disabled' : '') +
         ' aria-label="' + esc(word.en + ' · ' + label) + '"' + (current ? ' aria-current="step"' : '') + '>' + symbol + '</button>' +
-        '<span><strong lang="en">' + esc(word.en) + '</strong><small>' + label + '</small></span></li>';
+        '<span><strong lang="en">' + esc(word.en) + '</strong><small' + (current ? ' class="path-current-label"' : '') + '>' + (current ? 'Սկսել' : label) + '</small></span></li>';
     }).join('');
     units.push('<section class="path-unit" data-color="' + (unit % 5) + '"><div class="path-unit-heading"><div><small>Բաժին ' +
       (unit + 1) + '</small><h3>' + esc(title) + '</h3></div><span>' +
@@ -490,7 +490,7 @@ function wordArtwork(word, hint) {
     (caption ? '<figcaption>' + caption + '</figcaption>' : '') + '</figure>';
 }
 
-function drawWordLesson() {
+function drawWordLesson(justCompleted = false) {
   const word = WORDS[currentWordIndex];
   const entry = lessonEntry(currentWordIndex);
   const hint = WORD_HINTS[word.en];
@@ -527,7 +527,9 @@ function drawWordLesson() {
       '<h3>Իմ նախադասությունները</h3><div class="written-answer" lang="en">' +
       esc([entry.sentence, entry.second].filter(Boolean).join('\n')) + '</div>' +
       (exampleBlock ? '<h3>Համեմատիր օրինակի հետ</h3>' + exampleBlock : '') +
-      (entry.done ? '<p role="status">Դասն ավարտված է։ Գրածդ պահպանված է։ ✓</p>' : '');
+      (entry.done ? '<div role="status" class="lesson-reward' + (justCompleted ? ' is-new' : '') +
+        '"><span class="reward-medal" aria-hidden="true">★</span><div><strong>Դասն ավարտված է։</strong>' +
+        '<small>Գրածդ պահպանվել է «Իմ գրառումները» բաժնում։</small></div></div>' : '');
   }
   app.innerHTML = '<h1>Բառեր</h1>' + vocabularyTabs() +
     '<div class="word-lesson-meta"><small>Ավարտված է ' + count + ' / ' + WORDS.length + '</small>' +
@@ -571,7 +573,7 @@ function moveWordLesson(direction) {
       }
       entry.done = true;
       save();
-      drawWordLesson();
+      drawWordLesson(true);
       return;
     }
   }
