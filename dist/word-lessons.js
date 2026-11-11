@@ -41,6 +41,62 @@ function firstUnfinishedWord() {
   return wordOrder.find(index => !state.wordLessons[index]?.done) ?? wordOrder[0];
 }
 
+const wordsPerUnit = 5;
+const unitsPerPage = 3;
+const pathUnitCount = Math.ceil(wordOrder.length / wordsPerUnit);
+const pathUnitNames = ['Առաջին բառերը', 'Մարդիկ ու առօրյա', 'Պարզ արտահայտություններ', 'Խոսք և ժամանակ'];
+let pathPage = 0;
+
+function showLearningPath(page) {
+  pathPage = Math.max(0, Math.min(page, Math.ceil(pathUnitCount / unitsPerPage) - 1));
+  vocabulary('path');
+  window.scrollTo(0, 0);
+}
+
+function drawLearningPath() {
+  const completed = wordOrder.filter(index => state.wordLessons[index]?.done).length;
+  const nextIndex = wordOrder.find(index => !state.wordLessons[index]?.done);
+  const nextPosition = wordOrder.indexOf(nextIndex);
+  const nextPage = nextPosition < 0 ? 0 : Math.floor(nextPosition / (wordsPerUnit * unitsPerPage));
+  const firstUnit = pathPage * unitsPerPage;
+  const lastUnit = Math.min(firstUnit + unitsPerPage, pathUnitCount);
+  const units = [];
+  for (let unit = firstUnit; unit < lastUnit; unit++) {
+    const indexes = wordOrder.slice(unit * wordsPerUnit, (unit + 1) * wordsPerUnit);
+    const unitCompleted = indexes.filter(index => state.wordLessons[index]?.done).length;
+    const title = pathUnitNames[unit] ?? (WORDS[indexes[0]].en + ' – ' + WORDS[indexes.at(-1)].en);
+    const nodes = indexes.map((index, offset) => {
+      const word = WORDS[index];
+      const done = state.wordLessons[index]?.done;
+      const current = index === nextIndex;
+      const locked = !done && !current;
+      const label = done ? 'Ավարտված' : current ? 'Հաջորդ դասը' : 'Բացվում է հերթով';
+      const symbol = done ? '✓' : current ? '▶' : '·';
+      return '<li class="path-stop" style="--bend:' + [0, 1, 2, 1, 0][offset] + '">' +
+        '<button class="path-node ' + (done ? 'path-done' : current ? 'path-current' : 'path-locked') +
+        '" onclick="openWordLesson(' + index + ')" ' + (locked ? 'disabled' : '') +
+        ' aria-label="' + esc(word.en + ' · ' + label) + '"' + (current ? ' aria-current="step"' : '') + '>' + symbol + '</button>' +
+        '<span><strong lang="en">' + esc(word.en) + '</strong><small>' + label + '</small></span></li>';
+    }).join('');
+    units.push('<section class="path-unit"><div class="path-unit-heading"><div><small>Բաժին ' +
+      (unit + 1) + '</small><h3>' + esc(title) + '</h3></div><span>' +
+      unitCompleted + ' / ' + indexes.length + '</span></div><ol>' + nodes + '</ol></section>');
+  }
+  app.innerHTML = '<h1>Բառեր</h1>' + vocabularyTabs() +
+    '<div class="learning-path"><div class="path-intro"><div><h2>Ուսուցման ճանապարհ</h2><p>' +
+    completed + ' / ' + WORDS.length + ' դաս ավարտված</p></div>' +
+    (nextIndex === undefined ? '<strong>Ճանապարհն ավարտված է ✓</strong>' :
+      '<button class="primary" onclick="openWordLesson(' + nextIndex + ')">Շարունակել →</button>') +
+    '</div><div class="progress" role="progressbar" aria-label="Ուսուցման առաջընթաց" aria-valuemin="0" aria-valuemax="' +
+    WORDS.length + '" aria-valuenow="' + completed + '"><span style="width:' + completed / WORDS.length * 100 +
+    '%"></span></div><div class="path-page-controls"><button class="secondary" onclick="showLearningPath(' +
+    (pathPage - 1) + ')" ' + (pathPage === 0 ? 'disabled' : '') + '>← Նախորդ</button><small>Բաժիններ ' +
+    (firstUnit + 1) + '–' + lastUnit + '</small><button class="secondary" onclick="showLearningPath(' + (pathPage + 1) +
+    ')" ' + (lastUnit === pathUnitCount ? 'disabled' : '') + '>Հաջորդ →</button></div>' +
+    (pathPage !== nextPage ? '<button class="text-button path-return" onclick="showLearningPath(' + nextPage +
+      ')">Գտնել իմ հաջորդ դասը</button>' : '') + units.join('') + '</div>';
+}
+
 function openWordLesson(index = firstUnfinishedWord()) {
   currentWordIndex = index;
   view = 'vocabulary';

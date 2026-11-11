@@ -40,15 +40,16 @@ let pictureSelection = '';
 let pictureExercise = null;
 let pictureTab = 'pictures';
 
-function vocabulary(tab = 'pictures') {
+function vocabulary(tab = 'path') {
   pictureTab = tab;
   if (tab === 'dictionary') { words(); return; }
   if (tab === 'cards') { cards(); return; }
+  if (tab === 'path') { drawLearningPath(); return; }
   openWordLesson();
 }
 
 function vocabularyTabs() {
-  const tabs = [['pictures', 'Բառի դաս'], ['dictionary', 'Ամբողջ բառացանկը'], ['cards', 'Կրկնություն']];
+  const tabs = [['path', 'Ուսուցման ճանապարհ'], ['pictures', 'Բառի դաս'], ['dictionary', 'Ամբողջ բառացանկը'], ['cards', 'Կրկնություն']];
   return '<div class="picture-tabs">' + tabs.map(([tab, name]) =>
     '<button class="secondary" aria-pressed="' + (pictureTab === tab) + '" onclick="vocabulary(\'' + tab + '\')">' + name + '</button>'
   ).join('') + '</div>';
