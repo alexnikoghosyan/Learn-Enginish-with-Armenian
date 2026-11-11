@@ -92,9 +92,6 @@ input, select, .word-lesson-panel textarea { border: 2px solid var(--line); bord
 .path-node.path-locked { background: #f0f0f4; box-shadow: 0 5px #d8d9e1; color: #666977; }
 .path-node:focus-visible { outline: 3px solid #1a61a8; outline-offset: 5px; }
 .path-stop small { font-size: 11px; }
-.path-node.path-current {
-  animation: next-lesson 2.4s ease-in-out 2;
-}
 .path-node:not(:disabled) { transition: transform .16s ease, box-shadow .16s ease; }
 .path-node:not(:disabled):hover { transform: translateY(-3px); }
 .path-node:not(:disabled):active { transform: translateY(4px); box-shadow: 0 1px var(--unit-shadow); }
@@ -124,7 +121,6 @@ input, select, .word-lesson-panel textarea { border: 2px solid var(--line); bord
   animation: reward-spark .75s ease-out both; pointer-events: none;
 }
 @keyframes enter-lesson { from { opacity: 0; transform: translateY(7px); } to { opacity: 1; transform: translateY(0); } }
-@keyframes next-lesson { 0%, 100% { transform: translateY(0); } 45% { transform: translateY(-5px); } }
 @keyframes answer-pop { 50% { transform: scale(1.025); } }
 @keyframes answer-shake { 25%, 75% { transform: translateX(-3px); } 50% { transform: translateX(3px); } }
 @keyframes reward-pop { from { transform: scale(.55) rotate(-15deg); } to { transform: scale(1) rotate(0); } }
@@ -268,8 +264,7 @@ body:has(#app .lesson-body, #app .word-lesson-panel) main {
   .word-lesson-panel, .lesson-body, .study-welcome {
     animation: enter-lesson .32s cubic-bezier(.22, .75, .3, 1) both;
   }
-  .path-node.path-current { animation: next-lesson 2.8s cubic-bezier(.42, 0, .58, 1) 2; }
-  .path-current-label { animation: hint-arrive .36s cubic-bezier(.22, .75, .3, 1) both; }
+    .path-current-label { animation: start-label-float 2.2s ease-in-out infinite; }
   .grammar-tiles button, .review-grid .picture-tile {
     transition: transform .18s ease-out, background .18s ease-out, border-color .18s ease-out;
   }
@@ -279,9 +274,9 @@ body:has(#app .lesson-body, #app .word-lesson-panel) main {
   .lesson-reward.is-new { animation: enter-lesson .38s ease-out both; }
   .lesson-reward.is-new .reward-medal { animation: reward-pop .52s cubic-bezier(.22, .8, .3, 1.18) both; }
 }
-@keyframes hint-arrive {
-  from { opacity: 0; transform: translate(-50%, 4px); }
-  to { opacity: 1; transform: translate(-50%, 0); }
+@keyframes start-label-float {
+  0%, 100% { transform: translate(-50%, 0); }
+  50% { transform: translate(-50%, -5px); }
 }
 
 .path-node {
@@ -333,10 +328,6 @@ aside nav button i svg { width: 30px; height: 30px; }
 }
 
 /* Lesson discs use a raised face and a separate callout above the active step. */
-.path-unit[data-color="0"] .path-node.path-current {
-  --unit: #ff86d2;
-  --unit-shadow: #c66aa5;
-}
 .path-node {
   width: 70px;
   height: 58px;
@@ -367,7 +358,6 @@ aside nav button i svg { width: 30px; height: 30px; }
   font-size: 13px;
   line-height: 1.2;
 }
-.path-unit[data-color="0"] .path-current-label { color: #af347e; }
 .path-current-label::after {
   top: auto;
   bottom: -6px;
@@ -379,3 +369,5 @@ aside nav button i svg { width: 30px; height: 30px; }
   background: #fff;
   transform: rotate(45deg);
 }
+
+.path-node.path-current:not(:disabled):hover { transform: none; }
