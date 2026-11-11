@@ -283,3 +283,30 @@ body:has(#app .lesson-body, #app .word-lesson-panel) main {
   from { opacity: 0; transform: translate(-50%, 4px); }
   to { opacity: 1; transform: translate(-50%, 0); }
 }
+
+.path-node {
+  display: grid;
+  place-items: center;
+  padding: 0;
+}
+.path-node-icon {
+  width: 42px;
+  height: 42px;
+  display: grid;
+  place-items: center;
+  position: relative;
+  line-height: 1;
+}
+.path-node-icon .picture-emoji { font-size: 30px; line-height: 1; }
+.path-node-icon .drink-art {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(.63);
+}
+.path-dumbbell { width: 35px; height: 35px; }
+.path-letter { font: 800 21px Nunito, sans-serif; }
+.path-node.path-locked { background: #e5e5e5; box-shadow: 0 6px #b9b9b9; color: #969696; }
+.path-locked .path-node-icon { filter: grayscale(1); }
+.path-locked .picture-emoji, .path-locked .drink-art { opacity: .56; }
+.path-node.path-done .path-node-icon { font-size: 34px; font-weight: 900; }

@@ -6,14 +6,15 @@ let arrangedWords = [];
 function renderPathStop(title, offset, status, action, icon, language = 'hy') {
   const current = status === 'current';
   const done = status === 'done';
-  const label = current ? 'Սկսել' : done ? 'Ավարտված' : 'Փակ է';
+  const label = current ? 'Սկսել' : done ? 'Ավարտված' : 'Դեռ հասանելի չէ';
   const bend = [0, 1, 2, 2, 1, 0, 0, 1, 2, 1][offset % 10];
   return '<li class="path-stop" style="--bend:' + bend + '">' +
     '<button class="path-node path-' + status + '" aria-label="' + esc(title + ' · ' + label) + '"' +
     (current ? ' aria-current="step"' : '') +
     (action ? ' onclick="' + action + '"' : ' disabled') + '>' +
-    (done ? '✓' : current ? icon : '🔒') + '</button><span><strong lang="' + language + '">' +
-    esc(title) + '</strong><small' + (current ? ' class="path-current-label"' : '') + '>' + label + '</small></span></li>';
+    '<span class="path-node-icon" aria-hidden="true">' + (done ? '✓' : icon) +
+    '</span></button><span><strong lang="' + language + '">' + esc(title) + '</strong>' +
+    (current ? '<small class="path-current-label">' + label + '</small>' : '') + '</span></li>';
 }
 
 function nextGrammarTopic() {

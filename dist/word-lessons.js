@@ -426,6 +426,20 @@ function showLearningPath(page) {
   window.scrollTo(0, 0);
 }
 
+function wordPathIcon(word) {
+  const illustration = illustrations.get(word.en.toLowerCase());
+  if (illustration) return pictureArt(illustration[2], illustration[3]);
+  const icon = WORD_HINTS[word.en]?.[2];
+  if (icon) return '<span class="picture-emoji">' + esc(icon) + '</span>';
+  return '<span class="path-letter">' + esc(Array.from(word.en).slice(0, 2).join('').toUpperCase()) + '</span>';
+}
+
+const reviewPathIcon = '<svg class="path-dumbbell" viewBox="0 0 36 36" fill="none" aria-hidden="true">' +
+  '<g transform="rotate(-32 18 18)" fill="currentColor">' +
+  '<rect x="5" y="15.5" width="26" height="5" rx="2.5"/><rect x="6" y="10" width="5" height="16" rx="2.5"/>' +
+  '<rect x="11" y="7" width="5" height="22" rx="2.5"/><rect x="20" y="7" width="5" height="22" rx="2.5"/>' +
+  '<rect x="25" y="10" width="5" height="16" rx="2.5"/></g></svg>';
+
 function drawLearningPath() {
   const completed = wordOrder.filter(index => state.wordLessons[index]?.done).length;
   const nextIndex = wordOrder.find(index => !state.wordLessons[index]?.done);
@@ -445,10 +459,10 @@ function drawLearningPath() {
       const current = index === nextIndex && !pending;
       const reviewing = index === pendingWord;
       return renderPathStop(WORDS[index].en, offset * 2, done ? 'done' : current ? 'current' : 'locked',
-        done || current ? 'openWordLesson(' + index + ')' : '', '★', 'en') +
+        done || current ? 'openWordLesson(' + index + ')' : '', wordPathIcon(WORDS[index]), 'en') +
         renderPathStop('Կրկնություն · ' + WORDS[index].en, offset * 2 + 1,
           reviewing ? 'current' : done ? 'done' : 'locked',
-          reviewing ? 'startCumulativeReview()' : done && !pending ? 'replayWordReview(' + index + ')' : '', '↻');
+          reviewing ? 'startCumulativeReview()' : done && !pending ? 'replayWordReview(' + index + ')' : '', reviewPathIcon);
     }).join('');
     units.push('<section class="path-unit" data-color="' + (unit % 5) + '"><div class="path-unit-heading"><div><small>Բաժին ' +
       (unit + 1) + '</small><h3>' + esc(title) + '</h3></div><span>' +
