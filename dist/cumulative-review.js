@@ -101,7 +101,7 @@ function drawReviewQuestion() {
     'to-hy': 'Գրիր հայերեն տարբերակը', picture: 'Ընտրիր բառին համապատասխան պատկերը'
   };
   let exercise = '<label for="review-answer">Քո պատասխանը</label>' +
-    '<input id="review-answer" autocomplete="off" spellcheck="false" maxlength="300" ' +
+    '<input id="review-answer" oninput="updateReviewCheck()" autocomplete="off" spellcheck="false" maxlength="300" ' +
     'lang="' + (question.type === 'to-hy' ? 'hy' : 'en') + '">';
   if (question.type === 'picture') {
     const size = activeReview.words.length >= 8 ? 8 : 6;
@@ -123,10 +123,14 @@ function drawReviewQuestion() {
   app.innerHTML = focusLessonHeader(cursor, reviewQuestions.length, "go('vocabulary')") +
     '<h1>Կրկնություն</h1><section class="panel word-lesson-panel review-panel">' +
     '<small>Հարց ' + (cursor + 1) + ' / ' + reviewQuestions.length + ' · ' + activeReview.words.length + ' բառ</small>' +
-    '<h2>' + labels[question.type] + '</h2><div class="review-prompt" lang="' + (question.type === 'to-en' ? 'hy' : 'en') + '">' +
-    esc(question.prompt) + '</div><form onsubmit="event.preventDefault();checkReviewAnswer()">' + exercise +
-    '<p id="review-feedback" role="status"></p><div class="tools">' +
-    '<button class="primary" id="review-check">Ստուգել</button>' +
+    '<h2>' + labels[question.type] + '</h2><div class="review-prompt' +
+    (question.type === 'to-hy' ? ' with-bear' : '') + '" lang="' + (question.type === 'to-en' ? 'hy' : 'en') + '">' +
+    (question.type === 'to-hy' || question.type === 'picture' ?
+      (question.type === 'to-hy' ? lessonBear() : '') +
+      '<button type="button" class="secondary lesson-speech" data-speak="' + esc(question.prompt) + '">' +
+      actionIcon('speaker') + '<span>' + esc(question.prompt) + '</span></button>' : esc(question.prompt)) + '</div><form onsubmit="event.preventDefault();checkReviewAnswer()">' + exercise +
+    '<p id="review-feedback" role="status"></p><div class="tools lesson-controls">' +
+    '<button class="primary" id="review-check" disabled>Ստուգել</button>' +
     '<button type="button" class="secondary hidden" id="review-reveal" onclick="revealReviewAnswer()">Տեսնել պատասխանը</button>' +
     '<button type="button" class="secondary" onclick="go(\'vocabulary\')">Շարունակել ավելի ուշ</button>' +
     '</div></form></section>';
@@ -135,8 +139,15 @@ function drawReviewQuestion() {
 function selectReviewPicture(index) {
   if (reviewChecked) return;
   pictureSelectionIndex = index;
+  updateReviewCheck();
   app.querySelectorAll('.review-grid button').forEach((button, position) =>
     button.setAttribute('aria-pressed', String(index === position)));
+}
+
+function updateReviewCheck() {
+  const answer = document.getElementById('review-answer');
+  const check = document.getElementById('review-check');
+  if (check) check.disabled = !reviewChecked && (answer ? !answer.value.trim() : pictureSelectionIndex === null);
 }
 
 function checkReviewAnswer() {

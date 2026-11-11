@@ -58,7 +58,7 @@ function lesson(index, resume = true) {
     '</div><h2 style="margin-top:24px">Օրինակներ</h2>' + topic.examples.map(([english, armenian]) =>
     '<div class="example"><b lang="en">' + esc(english) + ' <button class="icon-btn" data-speak="' +
     esc(english) + '" aria-label="Լսել օրինակը">' + actionIcon('speaker') + '</button></b><small>' + esc(armenian) + '</small></div>'
-  ).join('') + '<div class="tools"><button class="primary" onclick="beginGrammarPractice(' + index +
+  ).join('') + '<div class="tools lesson-controls"><button class="primary" onclick="beginGrammarPractice(' + index +
     ')">Անցնել վարժությանը →</button></div></section>';
   window.scrollTo(0, 0);
 }
@@ -123,7 +123,7 @@ function drawGrammarPractice() {
     '<div class="panel grammar-practice"><small>Վարժություն ' + (step + 1) + ' / ' + steps.length +
     '</small>' +
     '<form onsubmit="event.preventDefault();checkGrammarPractice()">' + body +
-    '<p id="grammar-feedback" role="status"></p><div class="tools"><button class="primary">Ստուգել</button>' +
+    '<p id="grammar-feedback" role="status"></p><div class="tools lesson-controls"><button class="primary">Ստուգել</button>' +
     '<button class="secondary" type="button" onclick="lesson(grammarTopic, false)">Տեսնել կանոնը</button>' +
     '</div></form></div></section>';
   if (kind === 'arrange') drawGrammarTiles();

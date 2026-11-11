@@ -402,7 +402,7 @@ const wordOrder = [
   ...starterWords.map(english => WORDS.findIndex(word => word.en === english)).filter(index => index >= 0),
   ...WORDS.flatMap((word, index) => starterWords.includes(word.en) ? [] : [index])
 ];
-const stepLabels = ['Սովորիր', 'Բացատրիր', 'Գրիր', 'Վերանայիր'];
+const wordLessonStepCount = 4;
 state.wordLessons ??= {};
 let currentWordIndex = wordOrder[0];
 
@@ -518,10 +518,9 @@ function drawWordLesson(justCompleted = false) {
   const lookup = 'https://translate.google.com/?sl=en&tl=hy&text=' + encodeURIComponent(word.en) + '&op=translate';
   const exampleBlock = example ? '<blockquote><span lang="en">' + esc(example[0]) + '</span>' +
     (example[1] ? '<small>' + esc(example[1]) + '</small>' : '') + '</blockquote>' : '';
-  const count = Object.values(state.wordLessons).filter(item => item.done).length;
   let content = '';
   if (entry.step === 0) {
-    content = wordArtwork(word, hint) + '<div class="word-content">' +
+    content = '<div class="new-word-caption">✦ ՆՈՐ ԲԱՌ</div>' + wordArtwork(word, hint) + '<div class="word-content">' +
       '<button class="secondary" data-speak="' + esc(word.en) + '">' + actionIcon('speaker') + ' Լսել արտասանությունը</button>' +
       (meaning ? '<h2>' + esc(meaning) + '</h2>' : '') +
       (machine ? '<small>Ավտոմատ թարգմանություն · ստուգիր իմաստը համատեքստում</small>' : '') +
@@ -549,14 +548,10 @@ function drawWordLesson(justCompleted = false) {
         '"><span class="reward-medal" aria-hidden="true">★</span><div><strong>Դասն ավարտված է։</strong>' +
         '<small>Գրածդ պահպանվել է «Իմ գրառումները» բաժնում։</small></div></div>' : '');
   }
-  app.innerHTML = focusLessonHeader(entry.step, stepLabels.length, "go('vocabulary')") + '<h1>Բառեր</h1>'  +
-    '<div class="word-lesson-meta"><small>Ավարտված է ' + count + ' / ' + WORDS.length + '</small>' +
-    '<button class="text-button" onclick="vocabulary(\'dictionary\')">Ընտրել բառ →</button></div>' +
-    '<ol class="lesson-steps">' + stepLabels.map((label, index) =>
-      '<li ' + (entry.step === index ? 'aria-current="step"' : '') + '>' + esc(label) + '</li>').join('') + '</ol>' +
+  app.innerHTML = focusLessonHeader(entry.step, wordLessonStepCount, "go('vocabulary')") + '<h1>Բառեր</h1>'  +
     '<section class="panel word-lesson-panel">' + content +
     '<p id="word-lesson-error" role="alert" class="word-lesson-error"></p>' +
-    '<div class="tools word-actions">' +
+    '<div class="tools word-actions lesson-controls">' +
     (entry.step ? '<button class="secondary" onclick="moveWordLesson(-1)">← Հետ</button>' : '') +
     '<button class="primary" onclick="moveWordLesson(1)">' +
     (entry.step < 3 ? 'Շարունակել →' : entry.done ? (state.cumulativeReview ? 'Սկսել կրկնությունը →' : 'Հաջորդ բառը →') : 'Ավարտել դասը ✓') +

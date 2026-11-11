@@ -504,16 +504,6 @@ aside nav button i svg { width: 30px; height: 30px; }
 
 .reference-icon { display: inline-block; width: 30px; height: 30px; object-fit: contain; flex: none; }
 aside nav i .reference-icon { width: 30px; height: 30px; }
-.course-switch { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 13px; }
-.course-switch button { display: flex; align-items: center; justify-content: center; gap: 8px; padding: 8px; }
-.course-switch button[aria-pressed="true"] { background: #ddf4ff; border-color: #84d8ff; box-shadow: 0 3px #aee5ff; }
-.course-guide { margin: 0 0 24px; border: 2px solid #e5e5e5; border-radius: 16px; }
-.course-guide summary { display: flex; align-items: center; gap: 10px; padding: 11px 15px; cursor: pointer; color: #08729e; font-weight: 800; list-style: none; }
-.course-guide summary::-webkit-details-marker { display: none; }
-.course-guide summary::after { content: '⌄'; margin-left: auto; }
-.course-guide[open] summary::after { content: '⌃'; }
-.course-guide-copy { padding: 10px 16px 15px; border-top: 2px solid #f0f0f0; }
-.course-guide-copy p { margin: 4px 0 0; }
 .course-progress h2, .course-link { display: flex; align-items: center; gap: 9px; }
 .course-link { justify-content: flex-start; }
 .course-link strong { margin-left: auto; }
@@ -525,5 +515,76 @@ aside nav i .reference-icon { width: 30px; height: 30px; }
 .course-milestone small { font-weight: 700; }
 @media(max-width:730px) {
   aside nav i .reference-icon { width: 26px; height: 26px; }
-  .course-guide { margin-bottom: 19px; }
+}
+
+body:has(#app .lesson-controls) main {
+  max-width: 1070px;
+  padding-bottom: calc(120px + env(safe-area-inset-bottom, 0px));
+}
+#app:has(.lesson-controls) .word-lesson-panel,
+#app:has(.lesson-controls) .lesson-body { animation: none; }
+#app:has(.lesson-controls) > h1,
+#app:has(.lesson-controls) > .word-lesson-meta,
+#app:has(.lesson-controls) > .lesson-steps,
+#app:has(.lesson-controls) .lesson-body,
+#app:has(.lesson-controls) .word-lesson-panel {
+  max-width: 620px;
+  margin-inline: auto;
+}
+#app:has(.lesson-controls) .word-lesson-panel,
+#app:has(.lesson-controls) .grammar-practice {
+  border: 0;
+  padding: 12px 0 0;
+  box-shadow: none;
+}
+#app:has(.lesson-controls) .focus-lesson-header { margin-bottom: clamp(24px, 6vw, 62px); }
+.focus-lesson-header progress { height: 16px; }
+.lesson-controls {
+  position: fixed;
+  inset: auto 0 0;
+  z-index: 7;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+  min-height: 94px;
+  padding: 14px max(24px, calc((100vw - 970px) / 2)) calc(18px + env(safe-area-inset-bottom, 0px));
+  border-top: 2px solid #e5e5e5;
+  background: #fff;
+}
+.lesson-controls .primary {
+  order: 2;
+  margin-left: auto;
+  min-width: 135px;
+  color: #173700;
+}
+.lesson-controls .primary:disabled { background: #e5e5e5; color: #6c6c6c; box-shadow: none; opacity: 1; }
+.new-word-caption { color: #9046bd; font-size: 13px; font-weight: 800; letter-spacing: .045em; margin-bottom: 12px; }
+.lesson-speech {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: #843cb1;
+  font-size: clamp(19px, 3vw, 26px);
+  text-align: start;
+}
+.lesson-speech .action-icon { color: #008ac8; width: 24px; height: 24px; }
+.grammar-output { border-top: 2px solid #e5e5e5; border-bottom: 2px solid #e5e5e5; }
+#available-words { justify-content: center; padding-top: 12px; }
+#available-words button:disabled { color: transparent; background: #e5e5e5; box-shadow: none; opacity: 1; }
+@media(max-width:600px) {
+  body:has(#app .lesson-controls) main { padding-bottom: calc(170px + env(safe-area-inset-bottom, 0px)); }
+  .lesson-controls { min-height: 76px; padding-inline: 14px; }
+  .lesson-controls button { font-size: 12px; padding-inline: 11px; }
+  .lesson-controls .primary { min-width: 105px; }
+}
+
+.review-prompt.with-bear { display: flex; align-items: center; gap: clamp(16px, 4vw, 24px); }
+.lesson-bear { display: block; width: clamp(83px, 17vw, 112px); flex: none; }
+.lesson-bear img { display: block; width: 100%; height: auto; }
+.with-bear .lesson-speech::before {
+  content: ''; position: absolute; left: -7px; top: calc(50% - 6px);
+  width: 10px; height: 10px; transform: rotate(45deg);
+  background: inherit; border: solid var(--line); border-width: 0 0 2px 2px;
 }
