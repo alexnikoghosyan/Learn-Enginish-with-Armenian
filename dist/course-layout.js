@@ -26,9 +26,10 @@ function courseMilestone(complete) {
     '<small>' + (complete ? 'Բաժինն ավարտված է' : 'Բաժնի ավարտ') + '</small></div>';
 }
 
-function focusLessonHeader(step, total, destination, { showCount = true } = {}) {
+function focusLessonHeader(step, total, destination, { showCount = true, showInitialFill = false } = {}) {
+  const fill = showInitialFill ? Math.max(step, total * .1) : step;
   return '<div class="focus-lesson-header"><button class="focus-lesson-close" onclick="this.parentElement.querySelector(\'dialog\').showModal()"' +
-    ' aria-label="Փակել դասը">×</button><progress value="' + step +
+    ' aria-label="Փակել դասը">×</button><progress value="' + fill +
     '" max="' + total + '" aria-label="Դասի առաջընթաց"></progress>' +
     (showCount ? '<small>' + Math.min(step + 1, total) + ' / ' + total + '</small>' : '') +
     '<dialog class="lesson-exit-dialog" aria-labelledby="lesson-exit-title">' +

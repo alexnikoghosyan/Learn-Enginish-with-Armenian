@@ -83,7 +83,7 @@ function lesson(index, resume = true) {
   view = 'grammar';
   renderNavigation();
   const topic = LESSONS[index];
-  app.innerHTML = '<section class="lesson-body">' + focusLessonHeader(0, 1 + grammarPracticeKinds(grammarExercises[index]).length, 'grammar') +
+  app.innerHTML = '<section class="lesson-body">' + focusLessonHeader(0, 1 + grammarPracticeKinds(grammarExercises[index]).length, 'grammar', { showInitialFill: true }) +
     '<p class="muted">Դաս ' + (index + 1) + ' / ' + LESSONS.length + '</p><h1>' + esc(topic.title) +
     '</h1><h2 lang="en">' + esc(topic.en) + '</h2><div class="rule">' + esc(topic.rule) +
     '</div><h2 style="margin-top:24px">Օրինակներ</h2>' + topic.examples.map(([english, armenian]) =>
