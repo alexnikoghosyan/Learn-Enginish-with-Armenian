@@ -471,9 +471,7 @@ function drawLearningPath() {
   app.innerHTML = courseLayout('<h1>Բառեր</h1>' + vocabularyTabs() +
     '<div class="learning-path"><div class="path-intro"><div><h2>Ուսուցման ճանապարհ</h2><p>' +
     completed + ' / ' + WORDS.length + ' դաս ավարտված</p></div>' +
-    (state.cumulativeReview ? '<button class="primary" onclick="startCumulativeReview()">Շարունակել կրկնությունը →</button>' :
-      nextIndex === undefined ? '<strong>Ճանապարհն ավարտված է ✓</strong>' :
-      '<button class="primary" onclick="openWordLesson(' + nextIndex + ')">Շարունակել →</button>') +
+    (!state.cumulativeReview && nextIndex === undefined ? '<strong>Ճանապարհն ավարտված է ✓</strong>' : '') +
     '</div><div class="progress" role="progressbar" aria-label="Ուսուցման առաջընթաց" aria-valuemin="0" aria-valuemax="' +
     WORDS.length + '" aria-valuenow="' + completed + '"><span style="width:' + completed / WORDS.length * 100 +
     '%"></span></div><div class="path-page-controls">' +
