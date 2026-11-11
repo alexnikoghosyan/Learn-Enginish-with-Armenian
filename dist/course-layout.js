@@ -26,9 +26,9 @@ function courseMilestone(complete) {
     '<small>' + (complete ? 'Բաժինն ավարտված է' : 'Բաժնի ավարտ') + '</small></div>';
 }
 
-function focusLessonHeader(step, total, exitAction) {
+function focusLessonHeader(step, total, exitAction, { showCount = true, lead = 0 } = {}) {
   return '<div class="focus-lesson-header"><button class="focus-lesson-close" onclick="' + exitAction +
-    '" aria-label="Վերադառնալ ուսուցման ճանապարհին">×</button><progress value="' + step +
-    '" max="' + total + '" aria-label="Դասի առաջընթաց"></progress><small>' +
-    Math.min(step + 1, total) + ' / ' + total + '</small></div>';
+    '" aria-label="Վերադառնալ ուսուցման ճանապարհին">×</button><progress value="' + (step + lead) +
+    '" max="' + total + '" aria-label="Դասի առաջընթաց"></progress>' +
+    (showCount ? '<small>' + Math.min(step + 1, total) + ' / ' + total + '</small>' : '') + '</div>';
 }

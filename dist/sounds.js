@@ -21,6 +21,7 @@ let selectedSound = null;
 let soundRound = [];
 let soundCursor = 0;
 let soundCorrect = 0;
+let soundAttempted = 0;
 let soundAnswer = null;
 let soundChecked = false;
 
@@ -77,6 +78,7 @@ function startSoundRound(index = null) {
   });
   soundCursor = 0;
   soundCorrect = 0;
+  soundAttempted = 0;
   drawSoundQuestion();
 }
 
@@ -85,16 +87,27 @@ function drawSoundQuestion() {
   soundChecked = false;
   const question = soundRound[soundCursor];
   const pair = question.audio.length === 2;
-  app.innerHTML = focusLessonHeader(soundCursor, soundRound.length, "go('sounds')") +
+  app.innerHTML = focusLessonHeader(soundCursor, soundRound.length, "go('sounds')", { showCount: false, lead: .6 }) +
     '<section class="lesson-body sound-question"><h1>' + (pair ? 'Նո՞ւյնն են հնչում, թե՞ տարբեր' : 'Ո՞ր բառը լսեցիր') +
     '</h1><div class="sound-audio">' + question.audio.map((word, index) =>
       '<button class="secondary sound-play" data-speak="' + esc(word) + '" aria-label="Լսել ձայն ' + (index + 1) +
-      '">' + actionIcon('speaker') + (pair ? '<span>' + (index + 1) + '</span>' : '') + '</button>'
+      '" onclick="animateSoundSpeaker(this)"><svg viewBox="0 0 48 48" aria-hidden="true">' +
+      '<path fill="currentColor" d="M7 17h5L22 9a2 2 0 0 1 3 2v26a2 2 0 0 1-3 2l-10-8H7a4 4 0 0 1-4-4v-6a4 4 0 0 1 4-4z"/>' +
+      '<path class="sound-wave-inner" d="M31 17a8 8 0 0 1 0 14"/><path class="sound-wave-outer" d="M36 10a16 16 0 0 1 0 28"/></svg>' +
+      (pair ? '<span>' + (index + 1) + '</span>' : '') + '</button>'
     ).join('') + '</div><div class="options sound-options">' + question.options.map((option, index) =>
-      '<button class="option" aria-pressed="false" onclick="chooseSoundAnswer(' + index + ')">' + esc(option) + '</button>'
+      '<button class="option" aria-pressed="false" onclick="chooseSoundAnswer(' + index + ')"><span class="sound-option-number" aria-hidden="true">' +
+      (index + 1) + '</span>' + esc(option) + '</button>'
     ).join('') + '</div><p id="sound-feedback" role="status"></p></section>' +
-    '<div class="tools lesson-controls"><button class="primary" id="sound-check" onclick="checkSoundAnswer()" disabled>Ստուգել</button></div>';
+    '<div class="tools lesson-controls sound-controls"><button class="secondary" id="sound-skip" onclick="advanceSoundRound()">Բաց թողնել</button>' +
+    '<button class="primary" id="sound-check" onclick="checkSoundAnswer()" disabled>Ստուգել</button></div>';
   window.scrollTo(0, 0);
+}
+
+function animateSoundSpeaker(button) {
+  button.classList.remove('is-speaking');
+  void button.offsetWidth;
+  button.classList.add('is-speaking');
 }
 
 function chooseSoundAnswer(index) {
@@ -108,18 +121,13 @@ function chooseSoundAnswer(index) {
 function checkSoundAnswer() {
   if (soundAnswer === null) return;
   if (soundChecked) {
-    soundCursor++;
-    if (soundCursor < soundRound.length) { drawSoundQuestion(); return; }
-    state.soundXp += 10;
-    save();
-    app.innerHTML = '<section class="lesson-body panel"><div class="lesson-reward is-new" role="status">' +
-      '<span class="reward-medal" aria-hidden="true">★</span><div><strong>Վարժությունն ավարտված է։</strong><small>' +
-      soundCorrect + ' / ' + soundRound.length + ' ճիշտ պատասխան · +10 միավոր</small></div></div><div class="tools">' +
-      '<button class="primary" onclick="go(\'sounds\')">Վերադառնալ հնչյուններին</button></div></section>';
+    advanceSoundRound();
     return;
   }
   const question = soundRound[soundCursor];
   soundChecked = true;
+  soundAttempted++;
+  document.getElementById('sound-skip').hidden = true;
   if (soundAnswer === question.answer) {
     soundCorrect++;
     state.soundProgress[question.ipa] = Math.min(3, (state.soundProgress[question.ipa] || 0) + 1);
@@ -133,4 +141,18 @@ function checkSoundAnswer() {
   document.getElementById('sound-feedback').textContent = soundAnswer === question.answer ? 'Ճիշտ է։ ✓' :
     'Ճիշտ պատասխանը՝ ' + question.options[question.answer];
   document.getElementById('sound-check').textContent = 'Շարունակել →';
+}
+
+function advanceSoundRound() {
+  if (soundCursor >= soundRound.length) return;
+  soundCursor++;
+  if (soundCursor < soundRound.length) { drawSoundQuestion(); return; }
+  const points = soundAttempted ? 10 : 0;
+  state.soundXp += points;
+  save();
+  app.innerHTML = '<section class="lesson-body panel"><div class="lesson-reward is-new" role="status">' +
+    '<span class="reward-medal" aria-hidden="true">★</span><div><strong>Վարժությունն ավարտված է։</strong><small>' +
+    soundCorrect + ' / ' + soundRound.length + ' ճիշտ պատասխան' + (points ? ' · +10 միավոր' : '') +
+    '</small></div></div><div class="tools"><button class="primary" onclick="go(\'sounds\')">' +
+    'Վերադառնալ հնչյուններին</button></div></section>';
 }
