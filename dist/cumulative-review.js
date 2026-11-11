@@ -120,9 +120,9 @@ function drawReviewQuestion() {
       '" onclick="selectReviewPicture(' + index + ')">' + pictureArt(picture.emoji, picture.shape) + '</button>'
     ).join('') + '</div>';
   }
-  app.innerHTML = '<h1>Կրկնություն</h1><section class="panel word-lesson-panel review-panel">' +
+  app.innerHTML = focusLessonHeader(cursor, reviewQuestions.length, "go('vocabulary')") +
+    '<h1>Կրկնություն</h1><section class="panel word-lesson-panel review-panel">' +
     '<small>Հարց ' + (cursor + 1) + ' / ' + reviewQuestions.length + ' · ' + activeReview.words.length + ' բառ</small>' +
-    '<progress value="' + cursor + '" max="' + reviewQuestions.length + '" aria-label="Կրկնության առաջընթաց"></progress>' +
     '<h2>' + labels[question.type] + '</h2><div class="review-prompt" lang="' + (question.type === 'to-en' ? 'hy' : 'en') + '">' +
     esc(question.prompt) + '</div><form onsubmit="event.preventDefault();checkReviewAnswer()">' + exercise +
     '<p id="review-feedback" role="status"></p><div class="tools">' +

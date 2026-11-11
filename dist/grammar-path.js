@@ -38,9 +38,9 @@ function grammar() {
     units.push('<section class="path-unit" data-color="' + Math.floor(start / 5) % 5 +
       '"><div class="path-unit-heading"><h3>Բաժին ' + (Math.floor(start / 5) + 1) + '</h3></div><ol>' + stops + '</ol></section>');
   }
-  app.innerHTML = '<div class="learning-path"><h1>Քերականության ճանապարհ</h1><div class="path-intro"><p>' +
+  app.innerHTML = courseLayout('<div class="learning-path"><h1>Քերականության ճանապարհ</h1><div class="path-intro"><p>' +
     state.lessons.length + ' / ' + LESSONS.length + ' թեմա ավարտված</p>' +
-    '</div>' + units.join('') + '</div>';
+    '</div>' + units.join('') + '</div>', 'grammar');
 }
 
 function lesson(index, resume = true) {
@@ -52,7 +52,7 @@ function lesson(index, resume = true) {
   view = 'grammar';
   renderNavigation();
   const topic = LESSONS[index];
-  app.innerHTML = '<section class="lesson-body"><button class="text-button" onclick="go(\'grammar\')">← Ճանապարհ</button>' +
+  app.innerHTML = '<section class="lesson-body">' + focusLessonHeader(0, 1 + grammarPracticeKinds(grammarExercises[index]).length, "go('grammar')") +
     '<p class="muted">Դաս ' + (index + 1) + ' / ' + LESSONS.length + '</p><h1>' + esc(topic.title) +
     '</h1><h2 lang="en">' + esc(topic.en) + '</h2><div class="rule">' + esc(topic.rule) +
     '</div><h2 style="margin-top:24px">Օրինակներ</h2>' + topic.examples.map(([english, armenian]) =>
@@ -119,9 +119,9 @@ function drawGrammarPractice() {
       '<div id="arranged-words" class="grammar-tiles grammar-output" aria-label="Քո նախադասությունը"></div>' +
       '<div id="available-words" class="grammar-tiles" aria-label="Խառնված բառերը"></div>';
   }
-  app.innerHTML = '<section class="lesson-body"><button class="text-button" onclick="go(\'grammar\')">← Ճանապարհ</button>' +
+  app.innerHTML = '<section class="lesson-body">' + focusLessonHeader(step + 1, steps.length + 1, "go('grammar')") +
     '<div class="panel grammar-practice"><small>Վարժություն ' + (step + 1) + ' / ' + steps.length +
-    '</small><progress max="' + steps.length + '" value="' + step + '" aria-label="Վարժության առաջընթաց"></progress>' +
+    '</small>' +
     '<form onsubmit="event.preventDefault();checkGrammarPractice()">' + body +
     '<p id="grammar-feedback" role="status"></p><div class="tools"><button class="primary">Ստուգել</button>' +
     '<button class="secondary" type="button" onclick="lesson(grammarTopic, false)">Տեսնել կանոնը</button>' +

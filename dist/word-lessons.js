@@ -468,7 +468,7 @@ function drawLearningPath() {
       (unit + 1) + '</small><h3>' + esc(title) + '</h3></div><span>' +
       unitCompleted + ' / ' + indexes.length + '</span></div><ol>' + nodes + '</ol></section>');
   }
-  app.innerHTML = '<h1>Բառեր</h1>' + vocabularyTabs() +
+  app.innerHTML = courseLayout('<h1>Բառեր</h1>' + vocabularyTabs() +
     '<div class="learning-path"><div class="path-intro"><div><h2>Ուսուցման ճանապարհ</h2><p>' +
     completed + ' / ' + WORDS.length + ' դաս ավարտված</p></div>' +
     (state.cumulativeReview ? '<button class="primary" onclick="startCumulativeReview()">Շարունակել կրկնությունը →</button>' :
@@ -482,7 +482,7 @@ function drawLearningPath() {
     (firstUnit + 1) + '–' + lastUnit + '</small><button class="secondary" onclick="showLearningPath(' + (pathPage + 1) +
     ')" ' + (lastUnit === pathUnitCount ? 'disabled' : '') + '>Հաջորդ →</button></div>' +
     (pathPage !== nextPage ? '<button class="text-button path-return" onclick="showLearningPath(' + nextPage +
-      ')">Գտնել իմ հաջորդ դասը</button>' : '') + units.join('') + '</div>';
+      ')">Գտնել իմ հաջորդ դասը</button>' : '') + units.join('') + '</div>', 'words');
 }
 
 function openWordLesson(index = firstUnfinishedWord()) {
@@ -551,7 +551,7 @@ function drawWordLesson(justCompleted = false) {
         '"><span class="reward-medal" aria-hidden="true">★</span><div><strong>Դասն ավարտված է։</strong>' +
         '<small>Գրածդ պահպանվել է «Իմ գրառումները» բաժնում։</small></div></div>' : '');
   }
-  app.innerHTML = '<button class="text-button lesson-exit" onclick="go(\'vocabulary\')">← Ուսուցման ճանապարհ</button><h1>Բառեր</h1>' +
+  app.innerHTML = focusLessonHeader(entry.step, stepLabels.length, "go('vocabulary')") + '<h1>Բառեր</h1>'  +
     '<div class="word-lesson-meta"><small>Ավարտված է ' + count + ' / ' + WORDS.length + '</small>' +
     '<button class="text-button" onclick="vocabulary(\'dictionary\')">Ընտրել բառ →</button></div>' +
     '<ol class="lesson-steps">' + stepLabels.map((label, index) =>

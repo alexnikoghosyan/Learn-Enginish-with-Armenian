@@ -371,3 +371,113 @@ aside nav button i svg { width: 30px; height: 30px; }
 }
 
 .path-node.path-current:not(:disabled):hover { transform: none; }
+
+.course-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 650px) minmax(240px, 320px);
+  align-items: start;
+  justify-content: center;
+  gap: clamp(22px, 3vw, 42px);
+}
+.course-track { min-width: 0; }
+.course-track .learning-path { margin-inline: 0; }
+.course-rail {
+  position: sticky;
+  top: 24px;
+  display: grid;
+  gap: 17px;
+  padding-top: 5px;
+}
+.course-progress { padding: 20px; border-color: #e5e5e5; }
+.course-progress h2 { margin-bottom: 17px; font-size: 18px; }
+.course-stat { display: flex; gap: 12px; align-items: center; }
+.course-stat-icon {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  flex: none;
+  border-radius: 12px;
+  background: #fff2c7;
+  color: #8a5500;
+  font-size: 25px;
+}
+.course-stat p { margin: 3px 0 0; color: var(--muted); }
+.course-progress progress, .focus-lesson-header progress {
+  appearance: none;
+  width: 100%;
+  height: 13px;
+  border: 0;
+  border-radius: 999px;
+  overflow: hidden;
+  background: #e5e5e5;
+  color: #58cc02;
+}
+.course-progress progress { margin-top: 14px; }
+.course-progress progress::-webkit-progress-bar, .focus-lesson-header progress::-webkit-progress-bar {
+  background: #e5e5e5;
+}
+.course-progress progress::-webkit-progress-value, .focus-lesson-header progress::-webkit-progress-value {
+  border-radius: 999px;
+  background: #58cc02;
+}
+.course-progress progress::-moz-progress-bar, .focus-lesson-header progress::-moz-progress-bar { background: #58cc02; }
+.course-link {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  width: 100%;
+  margin-top: 9px;
+  padding: 9px 12px;
+  text-align: start;
+}
+.course-link strong { color: #43791e; }
+.course-track .path-unit-heading {
+  position: sticky;
+  top: 8px;
+  z-index: 2;
+  min-height: 72px;
+  border-radius: 14px;
+}
+.course-track .path-unit-heading h3 { margin-top: 3px; }
+.course-track .path-unit ol { padding-block: 24px 9px; }
+.course-track .path-stop { min-height: 103px; }
+.course-track .path-stop > span { font-size: 14px; }
+.focus-lesson-header {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  min-height: 48px;
+  margin: 0 0 24px;
+}
+.focus-lesson-header small { font-weight: 800; white-space: nowrap; }
+.focus-lesson-close {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  padding: 0;
+  background: #fff;
+  border: 0;
+  border-radius: 12px;
+  color: #626676;
+  font-size: 29px;
+  line-height: 1;
+}
+.focus-lesson-close:hover { background: #f1f2f5; color: #20212b; }
+.grammar-practice, .word-lesson-panel { padding: clamp(18px, 4vw, 32px); }
+.review-grid .picture-tile { border-width: 2px 2px 4px; border-radius: 16px; }
+.review-grid .picture-tile[aria-pressed="true"] {
+  background: #ddf4ff;
+  border-color: #89d7ff;
+}
+@media (max-width: 1170px) {
+  .course-layout { grid-template-columns: minmax(0, 650px); }
+  .course-rail { display: none; }
+}
+@media (max-width: 730px) {
+  .course-track .path-unit-heading { top: 4px; min-height: 60px; padding: 12px 16px; }
+  .course-track .path-unit-heading h3 { font-size: 17px; }
+  .focus-lesson-header { gap: 9px; margin-bottom: 17px; }
+}
