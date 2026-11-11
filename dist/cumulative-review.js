@@ -8,9 +8,9 @@ const reviewPictureBank = [...illustrations].map(([word, entry]) => ({
   word, emoji: entry[2], shape: entry[3]
 }));
 
-function queueCumulativeReview(afterWord, words = wordOrder.filter(index => state.wordLessons[index]?.done)) {
+function queueCumulativeReview(afterWord) {
   state.cumulativeReview = {
-    words,
+    words: wordOrder.filter(index => state.wordLessons[index]?.done),
     afterWord,
     cursor: 0
   };
@@ -18,8 +18,7 @@ function queueCumulativeReview(afterWord, words = wordOrder.filter(index => stat
 
 function replayWordReview(index) {
   if (!state.cumulativeReview) {
-    const words = wordOrder.slice(0, wordOrder.indexOf(index) + 1).filter(position => state.wordLessons[position]?.done);
-    queueCumulativeReview(index, words);
+    queueCumulativeReview(index);
     save();
   }
   startCumulativeReview();

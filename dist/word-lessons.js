@@ -460,7 +460,7 @@ function drawLearningPath() {
       const reviewing = index === pendingWord;
       return renderPathStop(WORDS[index].en, offset * 2, done ? 'done' : current ? 'current' : 'locked',
         done || current ? 'openWordLesson(' + index + ')' : '', wordPathIcon(WORDS[index]), 'en') +
-        renderPathStop('Կրկնություն · ' + WORDS[index].en, offset * 2 + 1,
+        renderPathStop('Կրկնություն', offset * 2 + 1,
           reviewing ? 'current' : done ? 'done' : 'locked',
           reviewing ? 'startCumulativeReview()' : done && !pending ? 'replayWordReview(' + index + ')' : '', reviewPathIcon);
     }).join('');
