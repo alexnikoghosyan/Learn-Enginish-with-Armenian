@@ -53,7 +53,7 @@ function vocabulary(tab = 'path') {
 }
 
 function vocabularyTabs() {
-  const tabs = [['path', 'Ուսուցման ճանապարհ'], ['pictures', 'Բառի դաս'], ['dictionary', 'Ամբողջ բառացանկը'], ['cards', 'Կրկնություն']];
+  const tabs = [['path', 'Ուսուցման ճանապարհ'], ['dictionary', 'Ամբողջ բառացանկը'], ['cards', 'Կրկնություն']];
   return '<div class="picture-tabs">' + tabs.map(([tab, name]) =>
     '<button class="secondary" aria-pressed="' + (pictureTab === tab) + '" onclick="vocabulary(\'' + tab + '\')">' + name + '</button>'
   ).join('') + '</div>';

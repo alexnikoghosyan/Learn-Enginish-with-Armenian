@@ -27,10 +27,6 @@ function studyHome() {
           <button class="primary" onclick="${wordButton}">${state.cumulativeReview ? 'Շարունակել կրկնությունը →' : nextWord === undefined ? 'Բացել ճանապարհը' : 'Շարունակել →'}</button>
         </section>
       </div>
-      <section class="panel journal-shortcut">
-        <div><h2>Իմ գրառումները</h2><p>Վերանայիր բառերի մասին գրածդ բացատրություններն ու նախադասությունները։</p></div>
-        <button class="secondary" onclick="go('journal')">Բացել գրառումները →</button>
-      </section>
     </div>`;
 }
 
