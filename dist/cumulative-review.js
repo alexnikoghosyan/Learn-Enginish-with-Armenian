@@ -8,11 +8,21 @@ const reviewPictureBank = [...illustrations].map(([word, entry]) => ({
   word, emoji: entry[2], shape: entry[3]
 }));
 
-function queueCumulativeReview() {
+function queueCumulativeReview(afterWord, words = wordOrder.filter(index => state.wordLessons[index]?.done)) {
   state.cumulativeReview = {
-    words: wordOrder.filter(index => state.wordLessons[index]?.done),
+    words,
+    afterWord,
     cursor: 0
   };
+}
+
+function replayWordReview(index) {
+  if (!state.cumulativeReview) {
+    const words = wordOrder.slice(0, wordOrder.indexOf(index) + 1).filter(position => state.wordLessons[position]?.done);
+    queueCumulativeReview(index, words);
+    save();
+  }
+  startCumulativeReview();
 }
 
 function normalizeReviewAnswer(value) {

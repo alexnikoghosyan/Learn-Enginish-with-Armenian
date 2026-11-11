@@ -229,3 +229,13 @@ aside nav button:active i { transform: translateY(2px) scale(.93); }
 .review-grid .picture-emoji { font-size: 40px; }
 #review-feedback { min-height: 24px; font-weight: 800; }
 @media(max-width:520px) { .review-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } .review-grid .picture-tile { min-height: 79px; } }
+
+.grammar-practice { margin: 16px 0; padding: clamp(16px, 4vw, 30px); }
+.grammar-practice progress { width: 100%; accent-color: #58cc02; margin: 10px 0 24px; }
+.grammar-practice label { display: block; margin: 16px 0 7px; font-weight: 700; }
+.grammar-practice input { width: 100%; }
+.grammar-cues { border-radius: 13px; background: #eef5ff; padding: 16px; line-height: 1.7; font-weight: 800; }
+.grammar-tiles { display: flex; flex-wrap: wrap; gap: 10px; margin: 14px 0; }
+.grammar-output { min-height: 68px; align-items: center; border-bottom: 2px dashed #cbd1df; padding: 8px 0; }
+.grammar-tiles button { padding: 7px 12px; min-height: 41px; }
+#grammar-feedback { min-height: 23px; color: #98354a; font-weight: 700; }

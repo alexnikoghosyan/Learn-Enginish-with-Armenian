@@ -429,7 +429,7 @@ function showLearningPath(page) {
 function drawLearningPath() {
   const completed = wordOrder.filter(index => state.wordLessons[index]?.done).length;
   const nextIndex = wordOrder.find(index => !state.wordLessons[index]?.done);
-  const nextPosition = wordOrder.indexOf(nextIndex);
+  const nextPosition = wordOrder.indexOf(state.cumulativeReview?.afterWord ?? state.cumulativeReview?.words.at(-1) ?? nextIndex);
   const nextPage = nextPosition < 0 ? 0 : Math.floor(nextPosition / (wordsPerUnit * unitsPerPage));
   const firstUnit = pathPage * unitsPerPage;
   const lastUnit = Math.min(firstUnit + unitsPerPage, pathUnitCount);
@@ -438,18 +438,17 @@ function drawLearningPath() {
     const indexes = wordOrder.slice(unit * wordsPerUnit, (unit + 1) * wordsPerUnit);
     const unitCompleted = indexes.filter(index => state.wordLessons[index]?.done).length;
     const title = pathUnitNames[unit] ?? (WORDS[indexes[0]].en + ' – ' + WORDS[indexes.at(-1)].en);
+    const pending = state.cumulativeReview;
+    const pendingWord = pending?.afterWord ?? pending?.words.at(-1);
     const nodes = indexes.map((index, offset) => {
-      const word = WORDS[index];
       const done = state.wordLessons[index]?.done;
-      const current = index === nextIndex;
-      const locked = !done && !current;
-      const label = done ? 'Ավարտված' : current ? 'Հաջորդ դասը' : 'Բացվում է հերթով';
-      const symbol = done ? '✓' : current ? '★' : '🔒';
-      return '<li class="path-stop" style="--bend:' + [0, 1, 2, 1, 0][offset] + ';--direction:' + [1, 1, -1, -1, 0][offset] + '">' +
-        '<button class="path-node ' + (done ? 'path-done' : current ? 'path-current' : 'path-locked') +
-        '" onclick="openWordLesson(' + index + ')" ' + (locked ? 'disabled' : '') +
-        ' aria-label="' + esc(word.en + ' · ' + label) + '"' + (current ? ' aria-current="step"' : '') + '>' + symbol + '</button>' +
-        '<span><strong lang="en">' + esc(word.en) + '</strong><small' + (current ? ' class="path-current-label"' : '') + '>' + (current ? 'Սկսել' : label) + '</small></span></li>';
+      const current = index === nextIndex && !pending;
+      const reviewing = index === pendingWord;
+      return renderPathStop(WORDS[index].en, offset * 2, done ? 'done' : current ? 'current' : 'locked',
+        done || current ? 'openWordLesson(' + index + ')' : '', '★', 'en') +
+        renderPathStop('Կրկնություն · ' + WORDS[index].en, offset * 2 + 1,
+          reviewing ? 'current' : done ? 'done' : 'locked',
+          reviewing ? 'startCumulativeReview()' : done && !pending ? 'replayWordReview(' + index + ')' : '', '↻');
     }).join('');
     units.push('<section class="path-unit" data-color="' + (unit % 5) + '"><div class="path-unit-heading"><div><small>Բաժին ' +
       (unit + 1) + '</small><h3>' + esc(title) + '</h3></div><span>' +
@@ -476,6 +475,7 @@ function openWordLesson(index = firstUnfinishedWord()) {
     startCumulativeReview();
     return;
   }
+  if (!state.wordLessons[index]?.done) index = firstUnfinishedWord();
   currentWordIndex = index;
   view = 'vocabulary';
   pictureTab = 'pictures';
@@ -578,7 +578,7 @@ function moveWordLesson(direction) {
         return;
       }
       entry.done = true;
-      queueCumulativeReview();
+      queueCumulativeReview(currentWordIndex);
       save();
       drawWordLesson(true);
       return;
