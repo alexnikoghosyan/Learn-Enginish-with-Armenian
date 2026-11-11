@@ -444,14 +444,14 @@ function drawLearningPath() {
       const current = index === nextIndex;
       const locked = !done && !current;
       const label = done ? 'Ավարտված' : current ? 'Հաջորդ դասը' : 'Բացվում է հերթով';
-      const symbol = done ? '✓' : current ? '▶' : '·';
-      return '<li class="path-stop" style="--bend:' + [0, 1, 2, 1, 0][offset] + '">' +
+      const symbol = done ? '✓' : current ? '▶' : '🔒';
+      return '<li class="path-stop" style="--bend:' + [0, 1, 2, 1, 0][offset] + ';--direction:' + [1, 1, -1, -1, 0][offset] + '">' +
         '<button class="path-node ' + (done ? 'path-done' : current ? 'path-current' : 'path-locked') +
         '" onclick="openWordLesson(' + index + ')" ' + (locked ? 'disabled' : '') +
         ' aria-label="' + esc(word.en + ' · ' + label) + '"' + (current ? ' aria-current="step"' : '') + '>' + symbol + '</button>' +
         '<span><strong lang="en">' + esc(word.en) + '</strong><small>' + label + '</small></span></li>';
     }).join('');
-    units.push('<section class="path-unit"><div class="path-unit-heading"><div><small>Բաժին ' +
+    units.push('<section class="path-unit" data-color="' + (unit % 5) + '"><div class="path-unit-heading"><div><small>Բաժին ' +
       (unit + 1) + '</small><h3>' + esc(title) + '</h3></div><span>' +
       unitCompleted + ' / ' + indexes.length + '</span></div><ol>' + nodes + '</ol></section>');
   }
