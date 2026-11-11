@@ -354,10 +354,13 @@ aside nav button i svg { width: 30px; height: 30px; }
   padding: 9px 13px;
   border: 2px solid #e5e5e5;
   border-radius: 11px;
-  color: var(--unit-ink);
+  color: var(--unit);
+  font-family: Nunito, "Noto Sans Armenian", system-ui, sans-serif;
+  font-weight: 800;
+  text-transform: uppercase;
   box-shadow: none;
   text-align: center;
-  font-size: 13px;
+  font-size: 15px;
   line-height: 1.2;
 }
 .path-current-label::after {
