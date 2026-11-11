@@ -1,6 +1,190 @@
+const themedUnits = [
+  [
+    "Տանը",
+    [
+      [
+        "door",
+        "🚪",
+        "Please close the door."
+      ],
+      [
+        "window",
+        "🪟",
+        "Open the window, please."
+      ],
+      [
+        "chair",
+        "🪑",
+        "I sat on a chair."
+      ],
+      [
+        "table",
+        "🍽️",
+        "The keys are on the table."
+      ],
+      [
+        "bed",
+        "🛏️",
+        "I go to bed at ten."
+      ]
+    ]
+  ],
+  [
+    "Ընտանիք",
+    [
+      [
+        "mother",
+        "👩",
+        "My mother likes tea."
+      ],
+      [
+        "father",
+        "👨",
+        "My father works here."
+      ],
+      [
+        "brother",
+        "👦",
+        "My brother plays football."
+      ],
+      [
+        "sister",
+        "👧",
+        "My sister lives in Yerevan."
+      ],
+      [
+        "child",
+        "🧒",
+        "The child is drawing a picture."
+      ]
+    ]
+  ],
+  [
+    "Քաղաքում",
+    [
+      [
+        "street",
+        "🛣️",
+        "They live on this street."
+      ],
+      [
+        "shop",
+        "🏪",
+        "There is a shop near my house."
+      ],
+      [
+        "school",
+        "🏫",
+        "I walk to school every day."
+      ],
+      [
+        "library",
+        "📚",
+        "We study at the library."
+      ],
+      [
+        "hospital",
+        "🏥",
+        "She works at a hospital."
+      ]
+    ]
+  ],
+  [
+    "Ճանապարհորդություն",
+    [
+      [
+        "car",
+        "🚗",
+        "We went there by car."
+      ],
+      [
+        "bus",
+        "🚌",
+        "I take the bus to work."
+      ],
+      [
+        "train",
+        "🚆",
+        "The train leaves at six."
+      ],
+      [
+        "airport",
+        "🛫",
+        "We arrived at the airport early."
+      ],
+      [
+        "ticket",
+        "🎫",
+        "I bought a ticket online."
+      ]
+    ]
+  ],
+  [
+    "Սնունդ",
+    [
+      [
+        "bread",
+        "🍞",
+        "I bought fresh bread."
+      ],
+      [
+        "egg",
+        "🥚",
+        "I ate an egg for breakfast."
+      ],
+      [
+        "cheese",
+        "🧀",
+        "Would you like some cheese?"
+      ],
+      [
+        "rice",
+        "🍚",
+        "We had rice for dinner."
+      ],
+      [
+        "lemon",
+        "🍋",
+        "I added lemon to my tea."
+      ]
+    ]
+  ],
+  [
+    "Եղանակ",
+    [
+      [
+        "sun",
+        "☀️",
+        "The sun is shining."
+      ],
+      [
+        "rain",
+        "🌧️",
+        "The rain stopped at noon."
+      ],
+      [
+        "snow",
+        "❄️",
+        "The children played in the snow."
+      ],
+      [
+        "wind",
+        "🌬️",
+        "The wind is very strong today."
+      ],
+      [
+        "cloud",
+        "☁️",
+        "There is a dark cloud in the sky."
+      ]
+    ]
+  ]
+];
+
 const starterWords = [
   'coffee', 'milk', 'water', 'tea', 'apple', 'book', 'friend', 'home', 'learn', 'work',
-  'help', 'like', 'want', 'need', 'read', 'write', 'speak', 'go', 'come', 'today'
+  'help', 'like', 'want', 'need', 'read', 'write', 'speak', 'go', 'come', 'today',
+  ...themedUnits.flatMap(([, items]) => items.map(([english]) => english))
 ];
 const curatedExamples = {
   coffee: ['I drink coffee in the morning.', 'Ես առավոտյան սուրճ եմ խմում։'],
@@ -25,6 +209,12 @@ const curatedExamples = {
   today: ['I have a lesson today.', 'Այսօր դաս ունեմ։']
 };
 const illustrations = new Map(Object.values(pictureTopics).flat().map(entry => [entry[0], entry]));
+for (const [, items] of themedUnits) {
+  for (const [english, icon, example] of items) {
+    curatedExamples[english] = [example, ''];
+    if (!illustrations.has(english)) illustrations.set(english, [english, '', icon]);
+  }
+}
 const wordOrder = [
   ...starterWords.map(english => WORDS.findIndex(word => word.en === english)).filter(index => index >= 0),
   ...WORDS.flatMap((word, index) => starterWords.includes(word.en) ? [] : [index])
@@ -44,7 +234,7 @@ function firstUnfinishedWord() {
 const wordsPerUnit = 5;
 const unitsPerPage = 3;
 const pathUnitCount = Math.ceil(wordOrder.length / wordsPerUnit);
-const pathUnitNames = ['Առաջին բառերը', 'Մարդիկ ու առօրյա', 'Պարզ արտահայտություններ', 'Խոսք և ժամանակ'];
+const pathUnitNames = ['Առաջին բառերը', 'Մարդիկ ու առօրյա', 'Պարզ արտահայտություններ', 'Խոսք և ժամանակ', ...themedUnits.map(([name]) => name)];
 let pathPage = 0;
 
 function showLearningPath(page) {
