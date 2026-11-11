@@ -56,7 +56,7 @@ function lesson(index, resume = true) {
     '</h1><h2 lang="en">' + esc(topic.en) + '</h2><div class="rule">' + esc(topic.rule) +
     '</div><h2 style="margin-top:24px">Օրինակներ</h2>' + topic.examples.map(([english, armenian]) =>
     '<div class="example"><b lang="en">' + esc(english) + ' <button class="icon-btn" data-speak="' +
-    esc(english) + '" aria-label="Լսել օրինակը">◖))</button></b><small>' + esc(armenian) + '</small></div>'
+    esc(english) + '" aria-label="Լսել օրինակը">' + actionIcon('speaker') + '</button></b><small>' + esc(armenian) + '</small></div>'
   ).join('') + '<div class="tools"><button class="primary" onclick="beginGrammarPractice(' + index +
     ')">Անցնել վարժությանը →</button></div></section>';
   window.scrollTo(0, 0);

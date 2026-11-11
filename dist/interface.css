@@ -251,3 +251,11 @@ body:has(#app .lesson-body, #app .word-lesson-panel) main {
   padding: clamp(16px, 4vw, 36px);
 }
 .lesson-exit { margin-bottom: 14px; padding-inline: 0; }
+
+.action-icon { width: 19px; height: 19px; vertical-align: -.25em; flex: none; }
+.icon-btn:has(.action-icon) { display: inline-grid; place-items: center; width: 42px; min-height: 42px; padding: 8px; text-decoration: none; }
+.word-row .icon-btn { flex: none; }
+@media(max-width:440px) {
+  .word-row .icon-btn:has(.action-icon) { width: 35px; min-height: 38px; padding: 6px; }
+  .word-row .action-icon { width: 17px; height: 17px; }
+}

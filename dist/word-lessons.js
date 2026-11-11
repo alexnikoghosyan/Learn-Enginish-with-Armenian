@@ -509,12 +509,12 @@ function drawWordLesson(justCompleted = false) {
   let content = '';
   if (entry.step === 0) {
     content = wordArtwork(word, hint) + '<div class="word-content">' +
-      '<button class="secondary" data-speak="' + esc(word.en) + '">◖)) Լսել արտասանությունը</button>' +
+      '<button class="secondary" data-speak="' + esc(word.en) + '">' + actionIcon('speaker') + ' Լսել արտասանությունը</button>' +
       (meaning ? '<h2>' + esc(meaning) + '</h2>' : '') +
       (machine ? '<small>Ավտոմատ թարգմանություն · ստուգիր իմաստը համատեքստում</small>' : '') +
       (hint?.[0] ? '<p lang="en">' + esc(hint[0]) + '</p>' : '') +
       (exampleBlock ? '<h3>Օրինակ</h3>' + exampleBlock : '') +
-      '<p><a href="' + lookup + '" target="_blank" rel="noopener">Դիտել թարգմանության տարբերակները ↗</a></p></div>';
+      '<p><a href="' + lookup + '" target="_blank" rel="noopener">Դիտել թարգմանության տարբերակները ' + actionIcon('external') + '</a></p></div>';
   } else if (entry.step === 1) {
     content = '<h2>Ի՞նչ է նշանակում <span lang="en">' + esc(word.en) + '</span>։</h2>' +
       '<p>Գրիր հայերենով, ինչպես կբացատրեիր ընկերոջդ։ Կարող ես նշել նաև, թե երբ է այն օգտագործվում։</p>' +
