@@ -705,3 +705,24 @@ body:has(#app .lesson-controls) main {
   .path-page-controls { grid-template-columns: minmax(0,1fr) auto minmax(0,1fr); gap: 7px; }
   .path-page-controls button { padding-inline: 9px; max-width: 100%; }
 }
+
+.focus-lesson-header progress::-webkit-progress-value {
+  background: linear-gradient(#83dd30, #83dd30) center 4px / calc(100% - 10px) 4px no-repeat, #58cc02;
+}
+.focus-lesson-header progress::-moz-progress-bar {
+  border-radius: 999px;
+  background: linear-gradient(#83dd30, #83dd30) center 4px / calc(100% - 10px) 4px no-repeat, #58cc02;
+}
+.focus-lesson-close { position: relative; font-size: 0; color: #a7a7a7; }
+.focus-lesson-close::before, .focus-lesson-close::after {
+  content: '';
+  position: absolute;
+  top: calc(50% - 1px);
+  left: calc(50% - 10px);
+  width: 20px;
+  height: 2px;
+  border-radius: 2px;
+  background: currentColor;
+  transform: rotate(45deg);
+}
+.focus-lesson-close::after { transform: rotate(-45deg); }
