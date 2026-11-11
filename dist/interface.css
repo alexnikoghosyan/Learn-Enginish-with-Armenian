@@ -735,3 +735,14 @@ body:has(#app .lesson-controls) main {
   transform: rotate(45deg);
 }
 .focus-lesson-close::after { transform: rotate(-45deg); }
+
+#sound-skip {
+  background: #e5e5e5;
+  border-color: #d1d1d1;
+  box-shadow: 0 3px #ccc;
+  color: #666;
+  text-transform: uppercase;
+  letter-spacing: .035em;
+}
+#sound-skip:hover { background: #ededed; }
+#sound-skip:active { box-shadow: none; }
