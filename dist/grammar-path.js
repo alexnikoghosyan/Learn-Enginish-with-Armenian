@@ -36,7 +36,7 @@ function grammar() {
           done || available && read ? 'openGrammarPractice(' + index + ')' : '', '✎');
     }).join('');
     units.push('<section class="path-unit" data-color="' + Math.floor(start / 5) % 7 +
-      '"><div class="path-unit-heading"><h3>Բաժին ' + (Math.floor(start / 5) + 1) + '</h3></div><ol>' + stops + '</ol></section>');
+      '"><div class="path-unit-heading"><h3>Բաժին ' + (Math.floor(start / 5) + 1) + '</h3></div><ol>' + stops + '</ol>' + courseMilestone(LESSONS.slice(start, start + 5).every((_, offset) => state.lessons.includes(start + offset))) + '</section>');
   }
   app.innerHTML = courseLayout('<div class="learning-path"><h1>Քերականության ճանապարհ</h1><div class="path-intro"><p>' +
     state.lessons.length + ' / ' + LESSONS.length + ' թեմա ավարտված</p>' +

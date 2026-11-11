@@ -501,3 +501,29 @@ aside nav button i svg { width: 30px; height: 30px; }
   color: inherit;
   font-weight: 800;
 }
+
+.reference-icon { display: inline-block; width: 30px; height: 30px; object-fit: contain; flex: none; }
+aside nav i .reference-icon { width: 30px; height: 30px; }
+.course-switch { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 13px; }
+.course-switch button { display: flex; align-items: center; justify-content: center; gap: 8px; padding: 8px; }
+.course-switch button[aria-pressed="true"] { background: #ddf4ff; border-color: #84d8ff; box-shadow: 0 3px #aee5ff; }
+.course-guide { margin: 0 0 24px; border: 2px solid #e5e5e5; border-radius: 16px; }
+.course-guide summary { display: flex; align-items: center; gap: 10px; padding: 11px 15px; cursor: pointer; color: #08729e; font-weight: 800; list-style: none; }
+.course-guide summary::-webkit-details-marker { display: none; }
+.course-guide summary::after { content: '⌄'; margin-left: auto; }
+.course-guide[open] summary::after { content: '⌃'; }
+.course-guide-copy { padding: 10px 16px 15px; border-top: 2px solid #f0f0f0; }
+.course-guide-copy p { margin: 4px 0 0; }
+.course-progress h2, .course-link { display: flex; align-items: center; gap: 9px; }
+.course-link { justify-content: flex-start; }
+.course-link strong { margin-left: auto; }
+.course-link .reference-icon { width: 25px; height: 25px; }
+.course-stat .reference-icon { width: 44px; height: 44px; background: transparent; }
+.course-milestone { display: grid; place-items: center; gap: 5px; padding: 8px 0 20px; }
+.course-milestone .reference-icon { width: 57px; height: 64px; filter: grayscale(1); opacity: .65; }
+.course-milestone.is-complete .reference-icon { filter: none; opacity: 1; }
+.course-milestone small { font-weight: 700; }
+@media(max-width:730px) {
+  aside nav i .reference-icon { width: 26px; height: 26px; }
+  .course-guide { margin-bottom: 19px; }
+}

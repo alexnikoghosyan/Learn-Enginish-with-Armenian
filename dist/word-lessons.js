@@ -466,7 +466,7 @@ function drawLearningPath() {
     }).join('');
     units.push('<section class="path-unit" data-color="' + (unit % 7) + '"><div class="path-unit-heading"><div><small>Բաժին ' +
       (unit + 1) + '</small><h3>' + esc(title) + '</h3></div><span>' +
-      unitCompleted + ' / ' + indexes.length + '</span></div><ol>' + nodes + '</ol></section>');
+      unitCompleted + ' / ' + indexes.length + '</span></div><ol>' + nodes + '</ol>' + courseMilestone(unitCompleted === indexes.length && !indexes.includes(pendingWord)) + '</section>');
   }
   app.innerHTML = courseLayout('<h1>Բառեր</h1>' + vocabularyTabs() +
     '<div class="learning-path"><div class="path-intro"><div><h2>Ուսուցման ճանապարհ</h2><p>' +
