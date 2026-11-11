@@ -17,10 +17,10 @@ const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'
 function renderNavigation() {
   const activeView = view === 'quiz' ? 'grammar' : view;
   const links = [
-    ['home', '⌂', 'Գլխավոր'],
-    ['grammar', '▤', 'Քերականություն'],
-    ['vocabulary', 'Aa', 'Բառեր'],
-    ['journal', '✎', 'Իմ գրառումները']
+    ['home', '🏠', 'Գլխավոր'],
+    ['grammar', '📘', 'Քերականություն'],
+    ['vocabulary', '🔤', 'Բառեր'],
+    ['journal', '✏️', 'Իմ գրառումները']
   ];
   document.getElementById('nav').innerHTML = links.map(([id, icon, name]) =>
     '<button ' + (activeView === id ? 'class="active" aria-current="page" ' : '') +

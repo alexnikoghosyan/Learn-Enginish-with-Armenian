@@ -170,3 +170,52 @@ input, select, .word-lesson-panel textarea { border: 2px solid var(--line); bord
   border: 4px solid transparent; border-top-color: var(--unit-soft);
 }
 .path-stop:has(.path-current) { margin-top: 20px; }
+
+/* Give each main destination its own color, including its selected state. */
+aside nav button {
+  --nav-tint: #e5f7ff;
+  --nav-outline: #a4dfff;
+  --nav-ink: #075d87;
+  border: 2px solid transparent;
+  border-radius: 16px;
+  min-height: 53px;
+  color: #565967;
+  transition: background .15s ease, border-color .15s ease;
+}
+aside nav button:nth-child(2) { --nav-tint: #f3ebff; --nav-outline: #d7bfff; --nav-ink: #6338a0; }
+aside nav button:nth-child(3) { --nav-tint: #ecf9da; --nav-outline: #b9e78b; --nav-ink: #356b0a; }
+aside nav button:nth-child(4) { --nav-tint: #fff4dc; --nav-outline: #f4d38e; --nav-ink: #795000; }
+aside nav button:hover { background: var(--nav-tint); color: var(--nav-ink); }
+aside nav button.active {
+  background: var(--nav-tint);
+  border-color: var(--nav-outline);
+  color: var(--nav-ink);
+}
+aside nav button i {
+  background: var(--nav-tint);
+  color: var(--nav-ink);
+  border-radius: 12px;
+  width: 36px;
+  height: 36px;
+  font-size: 21px;
+  transition: transform .17s ease;
+}
+aside nav button.active i { background: #fff; box-shadow: 0 2px var(--nav-outline); }
+aside nav button:active i { transform: translateY(2px) scale(.93); }
+@media(max-width:730px) {
+  aside { position: static; border-bottom: 1px solid var(--line); }
+  aside .brand { padding-bottom: 0; }
+  aside nav {
+    position: fixed; inset: auto 0 0; z-index: 8; background: #fff;
+    padding: 7px 8px calc(7px + env(safe-area-inset-bottom, 0px));
+    border-top: 2px solid var(--line);
+    box-shadow: 0 -4px 18px #20212b09;
+  }
+  aside nav button { min-width: 0; min-height: 58px; padding: 4px 2px; gap: 4px; line-height: 1.15; }
+  aside nav button i { width: 31px; height: 31px; font-size: 18px; border-radius: 10px; }
+  main { padding-bottom: calc(98px + env(safe-area-inset-bottom, 0px)); }
+}
+@media(prefers-reduced-motion:reduce) {
+  aside nav button, aside nav button i { transition: none; }
+  aside nav button:active i { transform: none; }
+}
