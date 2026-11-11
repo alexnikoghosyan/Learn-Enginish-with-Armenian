@@ -1,3 +1,9 @@
+function switchCourse(destination) {
+  if (view === destination) return;
+  go(destination);
+  app.querySelector('.course-track')?.classList.add('course-enter');
+}
+
 function courseLayout(track, course) {
   const grammarDone = state.lessons.length;
   const wordsDone = Object.values(state.wordLessons).filter(item => item.done).length;
@@ -10,8 +16,8 @@ function courseLayout(track, course) {
     esc(label) + '</strong><p>' + complete + ' / ' + total + '</p></div></div>' +
     '<progress value="' + complete + '" max="' + total + '" aria-label="' + esc(label) + '"></progress></section>' +
     '<section class="panel course-progress"><h2>' + referenceIcon('goal') + 'Քո դասերը</h2>' +
-    '<button class="secondary course-link" onclick="go(\'grammar\')">' + referenceIcon('grammar') + 'Քերականություն <strong>' + grammarDone +
-    '</strong></button><button class="secondary course-link" onclick="go(\'vocabulary\')">' + referenceIcon('words') + 'Բառեր <strong>' + wordsDone +
+    '<button class="secondary course-link" onclick="switchCourse(\'grammar\')">' + referenceIcon('grammar') + 'Քերականություն <strong>' + grammarDone +
+    '</strong></button><button class="secondary course-link" onclick="switchCourse(\'vocabulary\')">' + referenceIcon('words') + 'Բառեր <strong>' + wordsDone +
     '</strong></button></section></div></div>';
 }
 

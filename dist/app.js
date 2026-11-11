@@ -29,21 +29,22 @@ const navigationIcons = {
 };
 
 function renderNavigation() {
-  const activeView = view === 'journal' ? 'journal' : 'home';
+  const activeView = ['journal', 'sounds'].includes(view) ? view : 'home';
   const links = [
     ['home', 'Սովորել'],
+    ['sounds', 'Հնչյուններ'],
     ['journal', 'Իմ գրառումները']
   ];
   document.getElementById('nav').innerHTML = links.map(([id, name]) =>
     '<button ' + (activeView === id ? 'class="active" aria-current="page" ' : '') +
     'onclick="go(\'' + id + '\')"><i aria-hidden="true">' +
-    (id === 'home' ? referenceIcon('home') : '<svg viewBox="0 0 32 32" focusable="false">' + navigationIcons[id] + '</svg>') +
+    (id === 'home' || id === 'sounds' ? referenceIcon(id) : '<svg viewBox="0 0 32 32" focusable="false">' + navigationIcons[id] + '</svg>') +
     '</i>' + name + '</button>'
   ).join('');
 }
 function render() {
   renderNavigation();
-  const pages = { home: studyHome, grammar, vocabulary, quiz, journal };
+  const pages = { home: studyHome, grammar, vocabulary, quiz, journal, sounds };
   (pages[view] ?? studyHome)();
 }
 function filtered(){return WORDS.filter(w=>(!query||w.en.toLowerCase().includes(query.toLowerCase())||hy(w).toLowerCase().includes(query.toLowerCase()))&&(!letter||w.en[0].toUpperCase()===letter)&&(filter==='all'||filter==='translated'&&hy(w)||filter==='known'&&known(w.en)||filter==='new'&&!known(w.en)))}
