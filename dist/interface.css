@@ -481,3 +481,6 @@ aside nav button i svg { width: 30px; height: 30px; }
   .course-track .path-unit-heading h3 { font-size: 17px; }
   .focus-lesson-header { gap: 9px; margin-bottom: 17px; }
 }
+
+.study-card .secondary { margin: 8px 0 0 6px; }
+@media(max-width:730px) { aside nav { grid-template-columns: repeat(2,minmax(0,1fr)); } }

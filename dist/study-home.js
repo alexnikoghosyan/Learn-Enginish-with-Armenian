@@ -8,7 +8,7 @@ function studyHome() {
   app.innerHTML = `
     <div class="study-home">
       <header class="study-welcome">
-        <h1>Շարունակիր սովորել</h1>
+        <h1>Սովորել</h1>
         <p>Ընտրիր քերականության կամ բառերի հաջորդ դասը։</p>
       </header>
       <div class="study-cards">
@@ -18,6 +18,7 @@ function studyHome() {
           <progress max="${LESSONS.length}" value="${grammarDone}" aria-label="Քերականության առաջընթաց"></progress>
           <p class="study-next">${nextGrammar < 0 ? 'Բոլոր դասերն ավարտված են։' : esc(LESSONS[nextGrammar].en)}</p>
           <button class="primary" onclick="${grammarButton}">${nextGrammar < 0 ? 'Վերանայել դասերը' : 'Շարունակել →'}</button>
+          <button class="secondary" onclick="go('grammar')">Ուսուցման ճանապարհ</button>
         </section>
         <section class="panel study-card">
           <h2>Բառեր</h2>
@@ -25,6 +26,7 @@ function studyHome() {
           <progress max="${WORDS.length}" value="${wordsDone}" aria-label="Բառերի առաջընթաց"></progress>
           <p class="study-next" lang="en">${nextWord === undefined ? '<span lang="hy">Բոլոր դասերն ավարտված են։</span>' : esc(WORDS[nextWord].en)}</p>
           <button class="primary" onclick="${wordButton}">${state.cumulativeReview ? 'Շարունակել կրկնությունը →' : nextWord === undefined ? 'Բացել ճանապարհը' : 'Շարունակել →'}</button>
+          <button class="secondary" onclick="go('vocabulary')">Ուսուցման ճանապարհ</button>
         </section>
       </div>
     </div>`;
