@@ -312,3 +312,22 @@ body:has(#app .lesson-body, #app .word-lesson-panel) main {
 .path-node.path-done .path-node-icon { font-size: 34px; font-weight: 900; }
 
 .top { justify-content: flex-end; }
+
+aside nav { gap: 7px; }
+aside nav button {
+  min-height: 52px;
+  gap: 16px;
+  border-radius: 14px;
+  color: #626676;
+  font-weight: 800;
+}
+aside nav button:hover { color: #0079ad; background: #f3fbff; }
+aside nav button.active { background: #ddf4ff; border-color: #8ad8ff; color: #006f9f; }
+aside nav button i, aside nav button.active i { background: transparent; box-shadow: none; }
+aside nav button i { width: 32px; height: 32px; }
+aside nav button i svg { width: 30px; height: 30px; }
+@media (max-width: 730px) {
+  aside nav { gap: 4px; }
+  aside nav button { min-height: 56px; gap: 3px; }
+  aside nav button i, aside nav button i svg { width: 26px; height: 26px; }
+}

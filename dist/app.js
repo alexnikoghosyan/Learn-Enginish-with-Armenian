@@ -24,17 +24,25 @@ const LESSONS=[
 ];
 let state;try{state=JSON.parse(localStorage.getItem('eg-v1'))||{}}catch{state={}}state.known??=[];state.lessons??=[];state.notes??={};state.review??={};let view='home',page=0,query='',filter='all',letter='',flashIndex=0,flipped=false,quizIndex=0,answered=false,score=0;const app=document.getElementById('app');
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));const save=()=>{try{localStorage.setItem('eg-v1',JSON.stringify(state))}catch{alert('Առաջընթացը հնարավոր չեղավ պահպանել։ Դիտարկիչի պահոցը հասանելի չէ։')}};const hy=w=>state.notes[w.en]||w.hy||w.mt||'';const translated=()=>WORDS.filter(w=>hy(w));const known=w=>state.known.includes(w);const go=v=>{view=v;render();window.scrollTo(0,0)};
+const navigationIcons = {
+  home: '<path fill="#ffc800" d="M6 14 16 7l10 7-2 12a2 2 0 0 1-2 2H10a2 2 0 0 1-2-2z"/><path d="m3 15 13-10 13 10" fill="none" stroke="#ff4b4b" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="16" cy="17" r="4" fill="#a76715"/><path fill="#ed9e00" d="M13 24h6v4h-6z"/>',
+  grammar: '<path fill="#8457df" d="M6 5h18a2 2 0 0 1 2 2v20H9a4 4 0 0 1-4-4V7z"/><path fill="#bda0ff" d="M9 5h15a2 2 0 0 1 2 2v15H9z"/><path fill="#f6edff" d="M9 23h17v3H9a1.5 1.5 0 0 1 0-3z"/><path d="M13 11h9m-9 5h7" stroke="#fff" stroke-width="2.4" stroke-linecap="round"/>',
+  vocabulary: '<rect x="3" y="5" width="26" height="22" rx="6" fill="#58cc02"/><path fill="#39a900" d="M3 22h26v1a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4z"/><path d="m8 21 4-11 4 11m-6-4h4m10-2v6m0-5c-2-3-6-1-6 2s4 4 6 1" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>',
+  journal: '<rect x="5" y="6" width="22" height="23" rx="4" fill="#ffca3a"/><path fill="#fff0b5" d="M10 10h14v15H10z"/><path d="M10 4v6m11-6v6" stroke="#af7314" stroke-width="3" stroke-linecap="round"/><path fill="#f39318" d="m12 20 10-9 3 3-10 9-4 1z"/>'
+};
+
 function renderNavigation() {
   const activeView = view === 'quiz' ? 'grammar' : view;
   const links = [
-    ['home', '🏠', 'Գլխավոր'],
-    ['grammar', '📘', 'Քերականություն'],
-    ['vocabulary', '🔤', 'Բառեր'],
-    ['journal', '✏️', 'Իմ գրառումները']
+    ['home', 'Գլխավոր'],
+    ['grammar', 'Քերականություն'],
+    ['vocabulary', 'Բառեր'],
+    ['journal', 'Իմ գրառումները']
   ];
-  document.getElementById('nav').innerHTML = links.map(([id, icon, name]) =>
+  document.getElementById('nav').innerHTML = links.map(([id, name]) =>
     '<button ' + (activeView === id ? 'class="active" aria-current="page" ' : '') +
-    'onclick="go(\'' + id + '\')"><i aria-hidden="true">' + icon + '</i>' + name + '</button>'
+    'onclick="go(\'' + id + '\')"><i aria-hidden="true"><svg viewBox="0 0 32 32" focusable="false">' +
+    navigationIcons[id] + '</svg></i>' + name + '</button>'
   ).join('');
 }
 function render() {
