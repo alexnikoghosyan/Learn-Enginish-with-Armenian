@@ -29,4 +29,23 @@ button:disabled{cursor:default;opacity:.65}
 .tea b{width:16px;height:18px;right:9px;bottom:23px;border:4px solid #e9ae28;border-radius:7px}
 .tea::after{width:57px;height:5px;left:6px;bottom:10px;background:#e9ae28;border-radius:6px}
 @media(max-width:650px){.picture-grid{grid-template-columns:repeat(2,minmax(0,1fr));max-width:440px}.picture-tile{min-height:130px}}
-</style></head><body><aside><div class="brand">✳ English Garden<span>ԱՃԻՐ ԱՄԵՆ ՕՐ</span></div><nav id="nav"></nav><div class="side-note">🌱 <b>Փոքր քայլեր, մեծ արդյունք</b>Օրական 15 րոպե․ մեկ դաս, մի քանի բառ և մի փոքր փորձ։</div></aside><main><header class="top"><small>Քո անձնական ուսուցման անկյունը</small><div class="profile">Հայերեն → English &nbsp; 🌿</div></header><div id="app"></div><footer>English Garden · Սովորիր քո տեմպով։ Առաջընթացը պահվում է այս դիտարկիչում։</footer></main><script src="words.js"></script><script src="app.js"></script><script src="pictures.js"></script><script>render();</script></body></html>
+
+.word-lesson-meta{display:flex;align-items:center;justify-content:space-between;max-width:790px}
+.lesson-steps{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;list-style:none;padding:0;max-width:790px;margin:18px 0;color:var(--muted)}
+.lesson-steps li{border-top:4px solid var(--line);padding-top:8px;text-align:center;font-size:12px}
+.lesson-steps li[aria-current=step]{border-color:#359fc9;color:#12678a;font-weight:800}
+.word-lesson-panel{max-width:790px;padding:clamp(18px,4vw,36px)}
+.word-artwork{margin:0 0 24px;display:grid;place-items:center;align-content:center;gap:11px;min-height:190px;text-align:center;border-radius:16px;border:2px solid hsl(var(--word-hue) 40% 86%);background:hsl(var(--word-hue) 55% 96%);padding:20px;overflow-wrap:anywhere}
+.word-artwork strong{font-size:clamp(27px,5vw,43px);line-height:1.12}
+.word-artwork figcaption{font-size:12px;color:#4c5e57}
+.word-artwork .drink-art{scale:1.2;margin:7px}
+.word-monogram{font-size:33px;font-weight:800;display:grid;place-items:center;width:72px;height:72px;background:hsl(var(--word-hue) 55% 85%);border-radius:19px;transform:rotate(-5deg)}
+.word-content h2{margin-top:18px}.word-content a{color:#186c87}
+.word-lesson-panel label{display:block;font-weight:700;margin:18px 0 8px}
+.word-lesson-panel textarea{width:100%;min-height:108px;resize:vertical;border:1px solid var(--line);border-radius:9px;padding:12px;font:inherit;color:var(--ink);background:#fcfdfb}
+.word-lesson-panel textarea:focus-visible{outline:2px solid #359fc9}
+.word-lesson-panel blockquote,.written-answer{margin:12px 0;padding:14px 17px;border-radius:9px;background:#edf5ef;line-height:1.8;white-space:pre-wrap;overflow-wrap:anywhere}
+.word-lesson-panel blockquote small{display:block}
+.word-lesson-error{color:#a3392c;font-weight:700;margin:0}.word-actions{margin-bottom:0}.word-link{text-align:left;padding:0;font:inherit}
+@media(max-width:500px){.lesson-steps li{font-size:10px}.word-lesson-panel textarea{min-height:95px}}
+</style></head><body><aside><div class="brand">✳ English Garden<span>ԱՃԻՐ ԱՄԵՆ ՕՐ</span></div><nav id="nav"></nav><div class="side-note">🌱 <b>Փոքր քայլեր, մեծ արդյունք</b>Օրական 15 րոպե․ մեկ դաս, մի քանի բառ և մի փոքր փորձ։</div></aside><main><header class="top"><small>Քո անձնական ուսուցման անկյունը</small><div class="profile">Հայերեն → English &nbsp; 🌿</div></header><div id="app"></div><footer>English Garden · Սովորիր քո տեմպով։ Առաջընթացը պահվում է այս դիտարկիչում։</footer></main><script src="words.js"></script><script src="app.js"></script><script src="pictures.js"></script><script src="hints.js"></script><script src="word-lessons.js"></script><script>render();</script></body></html>

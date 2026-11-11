@@ -44,11 +44,11 @@ function vocabulary(tab = 'pictures') {
   pictureTab = tab;
   if (tab === 'dictionary') { words(); return; }
   if (tab === 'cards') { cards(); return; }
-  picturePage();
+  openWordLesson();
 }
 
 function vocabularyTabs() {
-  const tabs = [['pictures', 'Պատկերային բառեր'], ['dictionary', 'Ամբողջ բառացանկը'], ['cards', 'Կրկնություն']];
+  const tabs = [['pictures', 'Բառի դաս'], ['dictionary', 'Ամբողջ բառացանկը'], ['cards', 'Կրկնություն']];
   return '<div class="picture-tabs">' + tabs.map(([tab, name]) =>
     '<button class="secondary" aria-pressed="' + (pictureTab === tab) + '" onclick="vocabulary(\'' + tab + '\')">' + name + '</button>'
   ).join('') + '</div>';
