@@ -458,7 +458,8 @@ function drawLearningPath() {
   app.innerHTML = '<h1>Բառեր</h1>' + vocabularyTabs() +
     '<div class="learning-path"><div class="path-intro"><div><h2>Ուսուցման ճանապարհ</h2><p>' +
     completed + ' / ' + WORDS.length + ' դաս ավարտված</p></div>' +
-    (nextIndex === undefined ? '<strong>Ճանապարհն ավարտված է ✓</strong>' :
+    (state.cumulativeReview ? '<button class="primary" onclick="startCumulativeReview()">Շարունակել կրկնությունը →</button>' :
+      nextIndex === undefined ? '<strong>Ճանապարհն ավարտված է ✓</strong>' :
       '<button class="primary" onclick="openWordLesson(' + nextIndex + ')">Շարունակել →</button>') +
     '</div><div class="progress" role="progressbar" aria-label="Ուսուցման առաջընթաց" aria-valuemin="0" aria-valuemax="' +
     WORDS.length + '" aria-valuenow="' + completed + '"><span style="width:' + completed / WORDS.length * 100 +
@@ -471,6 +472,10 @@ function drawLearningPath() {
 }
 
 function openWordLesson(index = firstUnfinishedWord()) {
+  if (state.cumulativeReview && !state.wordLessons[index]?.done) {
+    startCumulativeReview();
+    return;
+  }
   currentWordIndex = index;
   view = 'vocabulary';
   pictureTab = 'pictures';
@@ -541,7 +546,7 @@ function drawWordLesson(justCompleted = false) {
     '<div class="tools word-actions">' +
     (entry.step ? '<button class="secondary" onclick="moveWordLesson(-1)">← Հետ</button>' : '') +
     '<button class="primary" onclick="moveWordLesson(1)">' +
-    (entry.step < 3 ? 'Շարունակել →' : entry.done ? 'Հաջորդ բառը →' : 'Ավարտել դասը ✓') +
+    (entry.step < 3 ? 'Շարունակել →' : entry.done ? (state.cumulativeReview ? 'Սկսել կրկնությունը →' : 'Հաջորդ բառը →') : 'Ավարտել դասը ✓') +
     '</button></div></section>';
 }
 
@@ -568,10 +573,12 @@ function moveWordLesson(direction) {
     }
     if (entry.step === 3) {
       if (entry.done) {
-        openWordLesson(firstUnfinishedWord());
+        if (state.cumulativeReview) startCumulativeReview();
+        else continueAfterReview();
         return;
       }
       entry.done = true;
+      queueCumulativeReview();
       save();
       drawWordLesson(true);
       return;

@@ -219,3 +219,13 @@ aside nav button:active i { transform: translateY(2px) scale(.93); }
   aside nav button, aside nav button i { transition: none; }
   aside nav button:active i { transform: none; }
 }
+
+.review-panel { margin: 18px auto; }
+.review-panel progress { width: 100%; accent-color: #58cc02; margin: 12px 0 24px; }
+.review-prompt { font-size: clamp(21px, 4vw, 32px); font-weight: 800; margin: 12px 0 22px; overflow-wrap: anywhere; }
+.review-panel input { width: 100%; margin-top: 8px; }
+.review-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.review-grid .picture-tile { min-height: 102px; }
+.review-grid .picture-emoji { font-size: 40px; }
+#review-feedback { min-height: 24px; font-weight: 800; }
+@media(max-width:520px) { .review-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } .review-grid .picture-tile { min-height: 79px; } }

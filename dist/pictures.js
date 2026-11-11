@@ -43,7 +43,11 @@ let pictureTab = 'pictures';
 function vocabulary(tab = 'path') {
   pictureTab = tab;
   if (tab === 'dictionary') { words(); return; }
-  if (tab === 'cards') { cards(); return; }
+  if (tab === 'cards') {
+    if (state.cumulativeReview) startCumulativeReview();
+    else cards();
+    return;
+  }
   if (tab === 'path') { drawLearningPath(); return; }
   openWordLesson();
 }

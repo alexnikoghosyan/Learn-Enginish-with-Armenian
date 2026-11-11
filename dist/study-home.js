@@ -4,7 +4,7 @@ function studyHome() {
   const nextGrammar = LESSONS.findIndex((_, index) => !state.lessons.includes(index));
   const nextWord = wordOrder.find(index => !state.wordLessons[index]?.done);
   const grammarButton = nextGrammar < 0 ? "go('grammar')" : 'lesson(' + nextGrammar + ')';
-  const wordButton = nextWord === undefined ? "go('vocabulary')" : 'resumeWordFromHome(' + nextWord + ')';
+  const wordButton = state.cumulativeReview ? 'startCumulativeReview()' : nextWord === undefined ? "go('vocabulary')" : 'resumeWordFromHome(' + nextWord + ')';
   app.innerHTML = `
     <div class="study-home">
       <header class="study-welcome">
@@ -24,7 +24,7 @@ function studyHome() {
           <p>${wordsDone} / ${WORDS.length} դաս ավարտված</p>
           <progress max="${WORDS.length}" value="${wordsDone}" aria-label="Բառերի առաջընթաց"></progress>
           <p class="study-next" lang="en">${nextWord === undefined ? '<span lang="hy">Բոլոր դասերն ավարտված են։</span>' : esc(WORDS[nextWord].en)}</p>
-          <button class="primary" onclick="${wordButton}">${nextWord === undefined ? 'Բացել ճանապարհը' : 'Շարունակել →'}</button>
+          <button class="primary" onclick="${wordButton}">${state.cumulativeReview ? 'Շարունակել կրկնությունը →' : nextWord === undefined ? 'Բացել ճանապարհը' : 'Շարունակել →'}</button>
         </section>
       </div>
       <section class="panel journal-shortcut">
