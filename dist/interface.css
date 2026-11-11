@@ -16,7 +16,7 @@ aside { background: #fff; padding: 28px 16px; }
 nav { gap: 7px; }
 nav button { display: flex; align-items: center; gap: 10px; font-weight: 800; border: 2px solid transparent; padding: 10px; }
 nav button i { display: grid; place-items: center; width: 32px; height: 32px; flex: none; border-radius: 9px; font-size: 17px; background: #e9f7ff; color: #006490; }
-nav button:nth-child(2) i { background: #f0e8ff; color: #6436a5; }
+aside nav button i:has(.reference-icon) { background: transparent; }
 nav button:nth-child(3) i { background: #ecf9d8; color: #407513; }
 nav button:nth-child(4) i { background: #fff2d7; color: #855a06; }
 nav button:hover, nav button.active { background: #edf8ff; border-color: #bde9ff; color: #00618f; }
