@@ -681,3 +681,20 @@ body:has(#app .lesson-controls) main {
   text-transform: uppercase;
   letter-spacing: .045em;
 }
+
+#speech-status:empty { display: none; }
+#speech-status {
+  position: fixed;
+  z-index: 9;
+  top: 12px;
+  right: 12px;
+  max-width: calc(100vw - 24px);
+  margin: 0;
+  padding: 9px 14px;
+  border: 1px solid #e5e5e5;
+  border-radius: 12px;
+  color: #52525e;
+  background: #fff;
+  font-size: 13px;
+  pointer-events: none;
+}

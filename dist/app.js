@@ -60,4 +60,22 @@ function rate(ok){let w=deck[flashIndex];state.review[w.en]=Date.now();if(ok&&!k
 let quizSet=[];function quiz(){quizSet=[...LESSONS].sort(()=>Math.random()-.5).slice(0,6);quizIndex=0;score=0;drawQuiz()}
 function drawQuiz(){answered=false;const l=quizSet[quizIndex];if(!l){app.innerHTML=`<div class="flash-wrap panel"><div class="eyebrow">ՊԱՐԱՊՄՈՒՆՔՆ ԱՎԱՐՏՎԱԾ Է</div><h1>${score} / ${quizSet.length}</h1><p>${score===quizSet.length?'Հիանալի է․ բոլոր պատասխանները ճիշտ էին։':'Դիտիր բացատրությունները և կրկնիր համապատասխան դասերը։'}</p><button class="primary" onclick="quiz()">Փորձել նորից</button><button class="secondary" onclick="go('grammar')">Կրկնել դասերը</button></div>`;return}app.innerHTML=`<div class="eyebrow">PRACTICE MAKES PROGRESS</div><h1>Փորձիր քեզ</h1><p class="muted">Վեց հարց՝ սովորածդ ամրապնդելու համար։</p><div class="lesson-body"><div class="progress"><span style="width:${quizIndex/quizSet.length*100}%"></span></div><div class="quiz"><small>Հարց ${quizIndex+1} / ${quizSet.length} · ${l.en}</small><h2 style="margin-top:25px">${l.q}</h2><div class="options">${l.options.map((o,j)=>`<button class="option" onclick="answerQuiz(this,${j})">${o}</button>`).join('')}</div><div class="feedback" id="feedback" aria-live="polite"></div><button id="nextQ" class="primary hidden" style="margin-top:20px" onclick="quizIndex++;drawQuiz()">Շարունակել →</button></div></div>`}
 function answerQuiz(btn,j){if(answered)return;answered=true;let l=quizSet[quizIndex];if(j===l.a)score++;app.querySelectorAll('.option').forEach((x,k)=>{x.disabled=true;if(k===l.a)x.classList.add('correct')});if(j!==l.a)btn.classList.add('wrong');document.getElementById('feedback').textContent=(j===l.a?'Ճիշտ է։ ':'Ճիշտ պատասխանը՝ '+l.options[l.a]+'. ')+l.why;document.getElementById('nextQ').classList.remove('hidden')}
-document.addEventListener('click',e=>{const b=e.target.closest('[data-speak]');if(!b)return;if(!('speechSynthesis' in window)){alert('Այս դիտարկիչում արտասանությունը հասանելի չէ։');return}speechSynthesis.cancel();let u=new SpeechSynthesisUtterance(b.dataset.speak);u.lang='en-US';u.rate=.82;u.onerror=()=>{b.textContent='Կրկին փորձիր';};speechSynthesis.speak(u)});
+document.addEventListener('click', event => {
+  const button = event.target.closest('[data-speak]');
+  if (!button) return;
+  const status = document.getElementById('speech-status');
+  const report = message => { if (status) status.textContent = message; };
+  report('');
+  if (!('speechSynthesis' in window)) {
+    report('Այս դիտարկիչում արտասանությունը հասանելի չէ։');
+    return;
+  }
+  speechSynthesis.cancel();
+  const utterance = new SpeechSynthesisUtterance(button.dataset.speak);
+  utterance.lang = 'en-US';
+  utterance.rate = .82;
+  utterance.onerror = ({ error }) => {
+    if (error !== 'canceled' && error !== 'interrupted') report('Ձայնը չհնչեց։ Կրկին սեղմիր բարձրախոսին։');
+  };
+  speechSynthesis.speak(utterance);
+});
