@@ -536,7 +536,7 @@ function drawWordLesson(justCompleted = false) {
         '"><span class="reward-medal" aria-hidden="true">★</span><div><strong>Դասն ավարտված է։</strong>' +
         '<small>Գրածդ պահպանվել է «Իմ գրառումները» բաժնում։</small></div></div>' : '');
   }
-  app.innerHTML = '<h1>Բառեր</h1>' + vocabularyTabs() +
+  app.innerHTML = '<button class="text-button lesson-exit" onclick="go(\'vocabulary\')">← Ուսուցման ճանապարհ</button><h1>Բառեր</h1>' +
     '<div class="word-lesson-meta"><small>Ավարտված է ' + count + ' / ' + WORDS.length + '</small>' +
     '<button class="text-button" onclick="vocabulary(\'dictionary\')">Ընտրել բառ →</button></div>' +
     '<ol class="lesson-steps">' + stepLabels.map((label, index) =>

@@ -239,3 +239,15 @@ aside nav button:active i { transform: translateY(2px) scale(.93); }
 .grammar-output { min-height: 68px; align-items: center; border-bottom: 2px dashed #cbd1df; padding: 8px 0; }
 .grammar-tiles button { padding: 7px 12px; min-height: 41px; }
 #grammar-feedback { min-height: 23px; color: #98354a; font-weight: 700; }
+
+body:has(#app .lesson-body, #app .word-lesson-panel) aside,
+body:has(#app .lesson-body, #app .word-lesson-panel) .top {
+  display: none;
+}
+body:has(#app .lesson-body, #app .word-lesson-panel) main {
+  width: 100%;
+  max-width: 900px;
+  margin-inline: auto;
+  padding: clamp(16px, 4vw, 36px);
+}
+.lesson-exit { margin-bottom: 14px; padding-inline: 0; }

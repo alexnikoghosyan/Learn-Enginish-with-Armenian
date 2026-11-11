@@ -39,7 +39,6 @@ function grammar() {
   }
   app.innerHTML = '<div class="learning-path"><h1>Քերականության ճանապարհ</h1><div class="path-intro"><p>' +
     state.lessons.length + ' / ' + LESSONS.length + ' թեմա ավարտված</p>' +
-    (next >= 0 ? '<button class="primary" onclick="lesson(' + next + ')">Շարունակել →</button>' : '') +
     '</div>' + units.join('') + '</div>';
 }
 
