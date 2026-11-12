@@ -95,8 +95,6 @@ input, select, .word-lesson-panel textarea { border: 2px solid var(--line); bord
 .path-node:focus-visible { outline: 3px solid #1a61a8; outline-offset: 5px; }
 .path-stop small { font-size: 11px; }
 .path-node:not(:disabled) { transition: transform .16s ease, box-shadow .16s ease; }
-.path-node:not(:disabled):hover { transform: translateY(-3px); }
-.path-node:not(:disabled):active { transform: translateY(4px); box-shadow: 0 1px var(--unit-shadow); }
 .path-current-label {
   display: inline-block; background: var(--unit-soft); color: var(--unit-ink);
   border-radius: 8px; padding: 4px 8px; font-weight: 800;
@@ -345,7 +343,6 @@ aside nav button i svg { width: 30px; height: 30px; }
 }
 .path-node.path-done { box-shadow: 0 8px var(--unit-shadow); }
 .path-node:focus-visible { outline: 3px solid #1a61a8; outline-offset: 5px; }
-.path-node:not(:disabled):active { transform: translateY(5px); box-shadow: 0 3px var(--unit-shadow); }
 .path-stop { gap: 13px; }
 .path-stop:has(.path-current) { margin-top: 40px; }
 .path-current-label {
@@ -375,7 +372,6 @@ aside nav button i svg { width: 30px; height: 30px; }
   transform: rotate(45deg);
 }
 
-.path-node.path-current:not(:disabled):hover { transform: none; }
 
 .course-layout {
   display: grid;
@@ -814,12 +810,6 @@ body:has(#app .lesson-controls) main {
   .path-jump { right: 15px; bottom: calc(91px + env(safe-area-inset-bottom, 0px)); }
 }
 
-.path-node.path-current:not(:disabled):active,
-.path-node.path-done:not(:disabled):active {
-  transform: translateY(6px);
-  box-shadow: 0 2px var(--unit-shadow);
-  transition: none;
-}
 @media (prefers-reduced-motion: no-preference) {
   .path-preview:not([hidden]) {
     transform-origin: top center;
@@ -858,3 +848,15 @@ body:has(#app .lesson-controls) main {
   pointer-events: none;
 }
 .path-check { display: block; width: 33px; height: 33px; color: #fff; transform: translateY(-1px); }
+
+@media (hover: hover) and (pointer: fine) {
+  .path-node:is(.path-current, .path-done):not(:disabled):hover {
+    transform: translateY(2px);
+    box-shadow: 0 6px var(--unit-shadow);
+  }
+}
+.path-node:is(.path-current, .path-done):not(:disabled):active {
+  transform: translateY(8px);
+  box-shadow: 0 0 var(--unit-shadow);
+  transition: none;
+}
