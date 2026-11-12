@@ -1,5 +1,5 @@
 const avatars = ['bear', 'fox', 'frog', 'cat', 'rabbit', 'owl'];
-const sources = ['Instagram', 'Facebook', 'X (Twitter)', 'TikTok', 'Play Market', 'Ընկերներից', 'Նորություններից կամ բլոգից', 'YouTube', 'Հեռուստատեսությունից', 'Google-ի որոնումից', 'Ուրիշ'];
+const sources = ['Facebook / Instagram', 'YouTube / Google', 'Instagram', 'Facebook', 'X (Twitter)', 'TikTok', 'Play Market', 'Ընկերներից', 'Նորություններից կամ բլոգից', 'YouTube', 'Հեռուստատեսությունից', 'Google-ի որոնումից', 'Ուրիշ'];
 const reasons = ['people', 'fun', 'education', 'time', 'career', 'travel', 'other'];
 const ages = ['13–17', '18–24', '25–34', '35–44', '45–54', '55+'];
 
@@ -11,7 +11,7 @@ function parseRegistration(data) {
   if (!data || typeof data !== 'object') return null;
   const name = typeof data.name === 'string' ? data.name.trim() : '';
   const username = typeof data.username === 'string' ? data.username.trim().toLowerCase() : '';
-  if (name.length < 1 || name.length > 50 || !/^[a-z][a-z0-9_]{2,19}$/.test(username) ||
+  if (name.length < 1 || name.length > 50 || !/^[a-z][a-z0-9_]{2,14}$/.test(username) ||
       !Number.isInteger(data.level) || data.level < 0 || data.level > 4 ||
       !sources.includes(data.source) || !ages.includes(data.age) || !Array.isArray(data.reasons) ||
       !data.reasons.length || data.reasons.length > reasons.length || !data.reasons.every(reason => reasons.includes(reason))) return null;
@@ -23,12 +23,12 @@ function parseRegistration(data) {
 
 async function usernameAvailability(request, env) {
   const name = new URL(request.url).searchParams.get('name')?.trim().toLowerCase();
-  if (!name || !/^[a-z][a-z0-9_]{2,19}$/.test(name)) return json({ error: 'invalid' }, 400);
+  if (!name || !/^[a-z][a-z0-9_]{2,14}$/.test(name)) return json({ error: 'invalid' }, 400);
   const taken = await env.DB.prepare('SELECT 1 FROM profiles WHERE username = ?').bind(name).first();
   if (!taken) return json({ available: true, suggestions: [] });
   const suffixes = new Set();
   while (suffixes.size < 12) suffixes.add(1000 + Math.floor(Math.random() * 9000));
-  const candidates = [...suffixes].map(suffix => name.slice(0, 15) + '_' + suffix);
+  const candidates = [...suffixes].map(suffix => name.slice(0, 10) + '_' + suffix);
   const placeholders = candidates.map(() => '?').join(', ');
   const { results } = await env.DB.prepare(
     'SELECT username FROM profiles WHERE username IN (' + placeholders + ')'

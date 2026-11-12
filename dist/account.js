@@ -208,10 +208,10 @@ function drawSignup(message = '') {
   } else {
     body = '<form onsubmit="event.preventDefault();nextSignupStep()"><label for="signup-input">' +
       (key === 'name' ? 'Անուն' : 'Օգտանուն') + '</label><div class="signup-field"><input id="signup-input" value="' + esc(registration[key] || '') +
-      '" maxlength="' + (key === 'name' ? '50' : '20') + '" autocomplete="' + key +
+      '" maxlength="' + (key === 'name' ? '50' : '100') + '" autocomplete="' + key +
       '"' + (key === 'username' ? ' autocapitalize="none" spellcheck="false" oninput="scheduleUsernameCheck(this)" aria-describedby="username-status"' : '') +
       '>' + (key === 'username' ? '<span id="username-mark" aria-hidden="true" hidden></span>' : '') + '</div>' +
-      (key === 'username' ? '<small>3–20 նիշ։ Սկսիր անգլերեն տառով։ Կարող ես օգտագործել թվեր և _ նշանը։</small>' +
+      (key === 'username' ? '' +
         '<small id="username-status" role="status"></small><div id="username-suggestions"></div>' : '') + '</form>';
   }
   app.innerHTML = '<section class="account-flow"><div class="account-step"><button type="button" class="signup-back" onclick="previousSignupStep()" aria-label="Հետ"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 12H4m7-7-7 7 7 7" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>' +
@@ -255,21 +255,31 @@ function answerPlacement(answer) {
   drawSignup();
 }
 
+function usernameWarning(value) {
+  if (!value) return '';
+  if (!/^[a-z][a-z0-9_]*$/i.test(value)) return 'Սկսիր անգլերեն տառով։ Օգտագործիր միայն անգլերեն տառեր, թվեր կամ _ նշանը։';
+  if (value.length < 3) return 'Օգտանունը պետք է ունենա առնվազն 3 նիշ։';
+  if (value.length > 15) return 'Օգտանունը կարող է ունենալ առավելագույնը 15 նիշ։';
+  return '';
+}
+
 function scheduleUsernameCheck(input) {
   clearTimeout(usernameTimer);
   const mark = document.getElementById('username-mark');
   mark.hidden = true;
-  input.removeAttribute('aria-invalid');
-  document.getElementById('username-status').textContent = '';
+  const value = input.value.trim();
+  const warning = usernameWarning(value);
+  input.setAttribute('aria-invalid', String(Boolean(warning)));
+  document.getElementById('username-status').textContent = warning;
   document.getElementById('username-suggestions').replaceChildren();
-  if (/^[a-z][a-z0-9_]{2,19}$/i.test(input.value.trim())) {
+  if (value && !warning) {
     usernameTimer = setTimeout(() => checkSignupUsername(input), 300);
   }
 }
 
 async function checkSignupUsername(input) {
   const value = input.value.trim().toLowerCase();
-  if (!/^[a-z][a-z0-9_]{2,19}$/.test(value)) return false;
+  if (!value || usernameWarning(value)) return false;
   try {
     const response = await fetch('/api/username?name=' + encodeURIComponent(value), { cache: 'no-store' });
     if (!response.ok) throw new Error('username');
@@ -277,10 +287,12 @@ async function checkSignupUsername(input) {
     if (!input.isConnected || input.value.trim().toLowerCase() !== value) return false;
     const mark = document.getElementById('username-mark');
     mark.className = result.available ? 'username-free' : 'username-taken';
-    mark.textContent = result.available ? '✓' : '×';
+    mark.innerHTML = result.available
+      ? '<svg viewBox="0 0 24 24"><path d="m6 12 4 4 8-8" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>'
+      : '×';
     mark.hidden = false;
     input.setAttribute('aria-invalid', String(!result.available));
-    document.getElementById('username-status').textContent = result.available ? 'Օգտանունն ազատ է։' : 'Օգտանունը զբաղված է։';
+    document.getElementById('username-status').textContent = result.available ? '' : 'Օգտանունը զբաղված է։';
     const suggestions = document.getElementById('username-suggestions');
     suggestions.replaceChildren();
     for (const name of (result.suggestions || []).slice(0, 3)) {
@@ -331,8 +343,8 @@ async function nextSignupStep() {
     drawSignup('Նախ լրացրու այս քայլը։');
     return;
   }
-  if (key === 'username' && !/^[a-z][a-z0-9_]{2,19}$/i.test(value)) {
-    drawSignup('Մուտքագրիր նշված ձևաչափով օգտանուն։');
+  if (key === 'username' && usernameWarning(value)) {
+    scheduleUsernameCheck(input);
     return;
   }
   if (key === 'username') {
