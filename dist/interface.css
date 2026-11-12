@@ -404,7 +404,7 @@ aside nav button i svg { width: 30px; height: 30px; }
   font-size: 25px;
 }
 .course-stat p { margin: 3px 0 0; color: var(--muted); }
-.course-progress progress, .focus-lesson-header progress {
+.course-progress progress, .focus-lesson-header progress, .account-step progress {
   appearance: none;
   width: 100%;
   height: 13px;
@@ -415,7 +415,7 @@ aside nav button i svg { width: 30px; height: 30px; }
   color: #58cc02;
 }
 .course-progress progress { margin-top: 14px; }
-.course-progress progress::-webkit-progress-bar, .focus-lesson-header progress::-webkit-progress-bar {
+.course-progress progress::-webkit-progress-bar, .focus-lesson-header progress::-webkit-progress-bar, .account-step progress::-webkit-progress-bar {
   background: #e5e5e5;
 }
 .course-progress progress::-webkit-progress-value, .focus-lesson-header progress::-webkit-progress-value {
@@ -534,7 +534,7 @@ body:has(#app .lesson-controls) main {
   box-shadow: none;
 }
 #app:has(.lesson-controls) .focus-lesson-header { margin-bottom: clamp(24px, 6vw, 62px); }
-.focus-lesson-header progress { height: 16px; }
+.focus-lesson-header progress, .account-step progress { height: 16px; }
 .lesson-controls {
   position: fixed;
   inset: auto 0 0;
@@ -723,10 +723,10 @@ body:has(#app .lesson-controls) main {
   .path-page-controls button { padding-inline: 9px; max-width: 100%; }
 }
 
-.focus-lesson-header progress::-webkit-progress-value {
+.focus-lesson-header progress::-webkit-progress-value, .account-step progress::-webkit-progress-value {
   background: linear-gradient(#83dd30, #83dd30) center 4px / calc(100% - 10px) 4px no-repeat, #58cc02;
 }
-.focus-lesson-header progress::-moz-progress-bar {
+.focus-lesson-header progress::-moz-progress-bar, .account-step progress::-moz-progress-bar {
   border-radius: 999px;
   background: linear-gradient(#83dd30, #83dd30) center 4px / calc(100% - 10px) 4px no-repeat, #58cc02;
 }
@@ -874,7 +874,7 @@ body:has(.account-flow):not(:has(nav button)) main { margin: auto; padding: 26px
 .account-options .secondary { text-align: start; padding: 12px 16px; color: var(--ink); }
 .account-options [aria-pressed="true"], .avatar-options [aria-pressed="true"] { background: #ddf4ff; border-color: #8ad8ff; color: #006c9c; }
 .account-step { display: flex; gap: 14px; align-items: center; margin-bottom: 25px; }
-.account-step progress { width: 100%; accent-color: #58cc02; height: 14px; }
+
 .account-flow label, .account-flow form small { display: block; margin: 8px 0; }
 .account-flow input { width: 100%; }
 .account-error { color: #ad253b; font-weight: 700; min-height: 18px; }
