@@ -76,6 +76,7 @@ function startSoundRound(index = null) {
       ? { ipa, audio: [first, second], options: ['Նույնն են', 'Տարբեր են'], answer: first === second ? 0 : 1 }
       : { ipa, audio: [first], options: [word, alternative], answer: first === word ? 0 : 1 };
   });
+  lessonAnswerStreak = 0;
   soundCursor = 0;
   soundCorrect = 0;
   soundAttempted = 0;
@@ -102,6 +103,7 @@ function drawSoundQuestion() {
     '<div class="tools lesson-controls sound-controls"><div id="sound-feedback" role="status"></div>' +
     '<button class="secondary" id="sound-skip" onclick="advanceSoundRound()">Բաց թողնել</button>' +
     '<button class="primary" id="sound-check" onclick="checkSoundAnswer()" disabled>Ստուգել</button></div>';
+  paintLessonAnswerStreak();
   window.scrollTo(0, 0);
 }
 
@@ -135,6 +137,7 @@ function checkSoundAnswer() {
     save();
   }
   const correct = soundAnswer === question.answer;
+  recordLessonAnswer(correct);
   app.querySelectorAll('.sound-options button').forEach((button, index) => {
     if (correct && index === soundAnswer) button.classList.add('correct');
     button.disabled = true;
@@ -150,6 +153,7 @@ function checkSoundAnswer() {
 
 function advanceSoundRound() {
   if (soundCursor >= soundRound.length) return;
+  if (!soundChecked) recordLessonAnswer(false);
   soundCursor++;
   if (soundCursor < soundRound.length) { drawSoundQuestion(); return; }
   const points = soundAttempted ? 10 : 0;

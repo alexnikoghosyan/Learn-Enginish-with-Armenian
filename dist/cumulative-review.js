@@ -67,6 +67,7 @@ function makeReviewQuestions(indices) {
 }
 
 function startCumulativeReview() {
+  lessonAnswerStreak = 0;
   const saved = state.cumulativeReview;
   if (!saved) {
     showLearningPath(pathPage);
@@ -167,6 +168,7 @@ function drawReviewQuestion(mode = 'typing') {
       (mode === 'sentence' ? 'Պարզեցնել առաջադրանքը' : mode === 'bank' ? 'Գրել ինքնուրույն' :
         question.sentence ? 'Դժվարացնել առաջադրանքը' : 'Օգտագործել բառերի բանկը') + '</button>') +
     '</div></form></section>';
+  paintLessonAnswerStreak();
 }
 
 function pickReviewWord(index) {
@@ -209,14 +211,17 @@ function checkReviewAnswer() {
   const accepted = reviewInputMode === 'sentence' ? [question.sentence[0]] : question.type === 'to-hy' ?
     [question.answer, ...question.answer.replace(/\([^)]*\)/g, '').split(/[,;،/՝]/)] : [question.answer];
   if (accepted.some(answer => normalizeReviewAnswer(answer) === normalizeReviewAnswer(value))) {
+    recordLessonAnswer(true);
     finishReviewQuestion('Ճիշտ է։ ✓');
   } else {
+    recordLessonAnswer(false);
     feedback.textContent = 'Փորձիր ևս մեկ անգամ։';
     document.getElementById('review-reveal').classList.remove('hidden');
   }
 }
 
 function revealReviewAnswer() {
+  recordLessonAnswer(false);
   const question = reviewQuestions[activeReview.cursor];
   finishReviewQuestion('Ճիշտ պատասխանը՝ ' + (reviewInputMode === 'sentence' ? question.sentence[0] : question.answer));
 }

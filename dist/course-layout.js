@@ -27,11 +27,23 @@ function courseMilestone(complete) {
     '<small>' + (complete ? 'Բաժինն ավարտված է' : 'Բաժնի ավարտ') + '</small></div>';
 }
 
+let lessonAnswerStreak = 0;
+
+function paintLessonAnswerStreak() {
+  const label = app.querySelector('.lesson-answer-streak');
+  if (label) label.textContent = lessonAnswerStreak >= 3 ? lessonAnswerStreak + ' անընդմեջ ճիշտ պատասխան' : '';
+}
+
+function recordLessonAnswer(correct) {
+  lessonAnswerStreak = correct ? lessonAnswerStreak + 1 : 0;
+  paintLessonAnswerStreak();
+}
+
 function focusLessonHeader(step, total, destination, { showCount = true, showInitialFill = false } = {}) {
   const fill = showInitialFill ? Math.max(step, total * .1) : step;
   return '<div class="focus-lesson-header"><button class="focus-lesson-close" onclick="this.parentElement.querySelector(\'dialog\').showModal()"' +
-    ' aria-label="Փակել դասը">×</button><progress value="' + fill +
-    '" max="' + total + '" aria-label="Դասի առաջընթաց"></progress>' +
+    ' aria-label="Փակել դասը">×</button><div class="lesson-progress-track"><span class="lesson-answer-streak" role="status"></span><progress value="' + fill +
+    '" max="' + total + '" aria-label="Դասի առաջընթաց"></progress></div>' +
     (showCount ? '<small>' + Math.min(step + 1, total) + ' / ' + total + '</small>' : '') +
     '<dialog class="lesson-exit-dialog" aria-labelledby="lesson-exit-title">' +
     '<div class="exit-owl" aria-hidden="true">🦉</div><h2 id="lesson-exit-title">Դո՞ւրս գալ դասից</h2>' +
