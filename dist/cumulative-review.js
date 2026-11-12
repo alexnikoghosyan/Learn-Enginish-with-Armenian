@@ -86,6 +86,7 @@ function drawReviewQuestion() {
   const question = reviewQuestions[cursor];
   if (!question) {
     delete state.cumulativeReview;
+    recordStudyDay();
     save();
     activeReview = null;
     app.innerHTML = '<h1>Կրկնություն</h1><section class="panel word-lesson-panel"><div class="lesson-reward is-new">' +

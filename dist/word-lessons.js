@@ -595,6 +595,7 @@ function moveWordLesson(direction) {
         return;
       }
       entry.done = true;
+      recordStudyDay();
       queueCumulativeReview(currentWordIndex);
       save();
       drawWordLesson(true);

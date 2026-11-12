@@ -266,6 +266,42 @@ async function createStudyProfile() {
   }
 }
 
+function studyDayKey(date) {
+  return [date.getFullYear(), String(date.getMonth() + 1).padStart(2, '0'),
+    String(date.getDate()).padStart(2, '0')].join('-');
+}
+
+function recordStudyDay() {
+  const day = studyDayKey(new Date());
+  state.studyDays ??= [];
+  if (!state.studyDays.includes(day)) state.studyDays.push(day);
+}
+
+function currentStudyStreak(now = new Date()) {
+  const days = new Set(state.studyDays || []);
+  const day = new Date(now);
+  if (!days.has(studyDayKey(day))) day.setDate(day.getDate() - 1);
+  let streak = 0;
+  while (days.has(studyDayKey(day))) {
+    streak++;
+    day.setDate(day.getDate() - 1);
+  }
+  return streak;
+}
+
+function profileStatistics() {
+  const words = Object.values(state.wordLessons).filter(item => item.done).length;
+  const streak = currentStudyStreak();
+  const xp = 10 * (words + state.lessons.length) + state.soundXp;
+  const flame = '<svg viewBox="0 0 28 28" aria-hidden="true"><path fill="currentColor" d="M15 2c1 6 8 8 8 15a9 9 0 1 1-18 0c0-4 2-7 5-9 0 3 2 4 2 4 2-3 3-6 3-10z"/><path fill="#fff" d="M14 15c-2 3-3 4-3 6a3 3 0 0 0 6 0c0-2-2-4-3-6z"/></svg>';
+  const lightning = '<svg viewBox="0 0 28 28" aria-hidden="true"><path fill="currentColor" d="M16 2 5 15c-1 1 0 3 1 3h6l-1 7c0 1 1 2 2 1l10-13c1-1 0-3-1-3h-6l2-7c0-1-1-2-2-1z"/></svg>';
+  return '<section class="profile-statistics"><h2>Վիճակագրություն</h2><div class="profile-stat-grid">' +
+    '<div class="profile-stat-box ' + (streak ? 'has-streak' : '') + '">' + flame +
+    '<div><strong>' + streak + '</strong><small>Օրերի շարք</small></div></div>' +
+    '<div class="profile-stat-box profile-xp">' + lightning +
+    '<div><strong>' + xp.toLocaleString('hy-AM') + '</strong><small>Փորձի միավորներ</small></div></div></div></section>';
+}
+
 function profile() {
   const user = account.profile;
   if (!user) {
@@ -277,7 +313,7 @@ function profile() {
     '</div><h1>' + esc(user.name) + '</h1><p>@' + esc(user.username) + '</p>' +
     '<p>' + esc(levelOptions[user.level]) + '</p><div class="profile-stats"><span><strong>' +
     Object.values(state.wordLessons).filter(item => item.done).length + '</strong> բառ</span><span><strong>' +
-    state.lessons.length + '</strong> քերականական դաս</span><span><strong>' + state.soundXp + '</strong> միավոր</span></div>' +
+    state.lessons.length + '</strong> քերականական դաս</span></div>' + profileStatistics() +
     '<h2>Ընտրիր ավատար</h2><div class="avatar-options">' + Object.entries(profileAvatars).map(([key, icon]) =>
       '<button class="secondary" aria-label="' + key + '" aria-pressed="' + (key === user.avatar) +
       '" onclick="saveAvatar(\'' + key + '\')">' + icon + '</button>').join('') + '</div>' +

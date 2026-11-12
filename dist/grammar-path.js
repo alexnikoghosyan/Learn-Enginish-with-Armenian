@@ -226,6 +226,7 @@ function checkGrammarPractice() {
     return;
   }
   if (!state.lessons.includes(grammarTopic)) state.lessons.push(grammarTopic);
+  recordStudyDay();
   delete state.grammarPractice[grammarTopic];
   save();
   const next = nextGrammarTopic();

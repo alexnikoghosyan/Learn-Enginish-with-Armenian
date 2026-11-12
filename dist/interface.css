@@ -880,7 +880,7 @@ body:has(.account-flow):not(:has(nav button)) main { margin: auto; padding: 26px
 .account-error { color: #ad253b; font-weight: 700; min-height: 18px; }
 .profile-card { text-align: center; }
 .profile-avatar { display: grid; place-items: center; width: 112px; height: 112px; margin: 0 auto 15px; background: #f1e7ff; border-radius: 50%; font-size: 65px; }
-.profile-stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin: 22px 0; }
+.profile-stats { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin: 22px 0; }
 .profile-stats span { border: 2px solid var(--line); border-radius: 13px; padding: 10px 4px; font-size: 12px; }
 .profile-stats strong { display: block; color: #356b0a; font-size: 19px; }
 .avatar-options { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
@@ -913,3 +913,16 @@ body:has(.account-flow):not(:has(nav button)) main { margin: auto; padding: 26px
 #username-suggestions { display: flex; flex-wrap: wrap; gap: 8px; margin: 10px 0; }
 #username-suggestions:empty { display: none; }
 #username-suggestions .secondary { padding: 6px 10px; }
+
+.profile-statistics { text-align: start; margin: 24px 0; }
+.profile-statistics h2 { margin-bottom: 12px; }
+.profile-stat-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+.profile-stat-box {
+  display: flex; align-items: flex-start; gap: 9px; padding: 12px 10px;
+  border: 2px solid #e5e5e5; border-radius: 15px;
+}
+.profile-stat-box svg { flex: none; width: 26px; height: 26px; color: #dedede; }
+.profile-stat-box.has-streak svg { color: #ff9600; }
+.profile-stat-box.profile-xp svg { color: #ffc800; }
+.profile-stat-box strong { display: block; font-size: 19px; line-height: 1.25; }
+.profile-stat-box small { display: block; margin-top: 4px; font-size: 12px; }

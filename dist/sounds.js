@@ -154,6 +154,7 @@ function advanceSoundRound() {
   if (soundCursor < soundRound.length) { drawSoundQuestion(); return; }
   const points = soundAttempted ? 10 : 0;
   state.soundXp += points;
+  if (points) recordStudyDay();
   save();
   app.innerHTML = '<section class="lesson-body panel"><div class="lesson-reward is-new" role="status">' +
     '<span class="reward-medal" aria-hidden="true">★</span><div><strong>Վարժությունն ավարտված է։</strong><small>' +
