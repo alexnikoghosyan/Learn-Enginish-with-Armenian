@@ -11,7 +11,7 @@ const onboardingQuestions = [
   ['level', 'Որքա՞ն անգլերեն գիտես', levelOptions.map((label, index) => [index, label])],
   ['source', 'Որտեղի՞ց իմացար մեր մասին', sourceOptions.map(value => [value, value])],
   ['reasons', 'Ինչո՞ւ ես ուզում անգլերեն սովորել', reasonOptions],
-  ['age', 'Քանի՞ տարեկան ես', ageOptions.map(value => [value, value])],
+  ['age', 'Քանի՞ տարեկան ես', ageOptions.map(value => [value, value === '13–17' ? '18-ից ցածր' : value])],
   ['name', 'Ինչպե՞ս դիմենք քեզ'],
   ['username', 'Ընտրիր օգտանուն'],
   ['auth', 'Ինչպե՞ս ես ուզում գրանցվել']
@@ -104,6 +104,23 @@ function showAccountWelcome() {
     '<button class="text-button" onclick="continueAsGuest()">Շարունակել առանց հաշվի</button></div></div>';
 }
 
+const signupChoiceIcons = {
+  level: ['🌱', '📗', '💬', '🧭', '🎯'],
+  source: [
+    '<svg viewBox="0 0 24 24"><defs><linearGradient id="signup-ig" x2="1" y2="1"><stop stop-color="#f9a93d"/><stop offset="1" stop-color="#ac34b9"/></linearGradient></defs><rect width="24" height="24" rx="6" fill="url(#signup-ig)"/><rect x="5" y="5" width="14" height="14" rx="4" fill="none" stroke="white" stroke-width="1.8"/><circle cx="12" cy="12" r="3.2" fill="none" stroke="white" stroke-width="1.8"/><circle cx="16.5" cy="7.8" r="1" fill="white"/></svg>',
+    '<svg viewBox="0 0 24 24"><rect width="24" height="24" rx="6" fill="#1877f2"/><path fill="#fff" d="M14 24v-9h3l.5-3H14v-2c0-1 .3-2 2-2h2V5l-3-.3c-3 0-5 1.8-5 5V12H7v3h3v9z"/></svg>',
+    '<svg viewBox="0 0 24 24"><rect width="24" height="24" rx="6" fill="#171717"/><path d="M6 5h4l8 14h-4zM18 5 6 19" fill="none" stroke="white" stroke-width="1.5" stroke-linejoin="round"/></svg>',
+    '<svg viewBox="0 0 24 24"><rect width="24" height="24" rx="6" fill="#171717"/><path d="M14 5v11a3.4 3.4 0 1 1-3.4-3.4M14 5c0 3 2 4.7 5 4.8" fill="none" stroke="#28e3df" stroke-width="2.7" stroke-linecap="round" transform="translate(-.8,.8)"/><path d="M14 5v11a3.4 3.4 0 1 1-3.4-3.4M14 5c0 3 2 4.7 5 4.8" fill="none" stroke="white" stroke-width="2.7" stroke-linecap="round"/></svg>',
+    '👥', '✨'
+  ],
+  reasons: ['🤝', '🎉', '📚', '⏳', '💼', '✈️', '✨'],
+  age: ['🎒', '🌱', '🌿', '🌳', '🍃', '⭐']
+};
+
+function signupIcon(markup) {
+  return '<span class="signup-choice-icon" aria-hidden="true">' + markup + '</span>';
+}
+
 function drawSignup(message = '') {
   document.getElementById('nav').innerHTML = '';
   const [key, title, choices] = onboardingQuestions[signupStep];
@@ -112,12 +129,12 @@ function drawSignup(message = '') {
     body = '<div class="account-options">' + choices.map(([value, label], index) => {
       const chosen = key === 'reasons' ? (registration.reasons || []).includes(value) : registration[key] === value;
       return '<button class="secondary" aria-pressed="' + chosen + '" onclick="chooseSignupOption(' + index +
-        ')">' + esc(label) + '</button>';
+        ')">' + signupIcon(signupChoiceIcons[key][index]) + esc(label) + '</button>';
     }).join('') + '</div>';
   } else if (key === 'auth') {
     body = account.authenticated ? '<button class="primary" onclick="createStudyProfile()">Ստեղծել պրոֆիլը</button>' :
-      '<div class="account-actions"><a class="secondary" href="/signin-with-chatgpt?return_to=%2F" target="_top">Շարունակել Google-ով</a>' +
-      '<a class="secondary" href="/signin-with-chatgpt?return_to=%2F" target="_top">Շարունակել էլ․ փոստով</a></div>' +
+      '<div class="account-actions"><a class="secondary" href="/signin-with-chatgpt?return_to=%2F" target="_top">' + signupIcon('<b class="signup-google">G</b>') + 'Շարունակել Google-ով</a>' +
+      '<a class="secondary" href="/signin-with-chatgpt?return_to=%2F" target="_top">' + signupIcon('✉️') + 'Շարունակել էլ․ փոստով</a></div>' +
       '<p class="muted">Մուտքի էջում ընտրիր Google-ը կամ էլ․ փոստը։</p>';
   } else {
     body = '<form onsubmit="event.preventDefault();nextSignupStep()"><label for="signup-input">' +
