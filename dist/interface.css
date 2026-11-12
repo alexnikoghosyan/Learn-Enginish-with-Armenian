@@ -860,3 +860,5 @@ body:has(#app .lesson-controls) main {
   box-shadow: 0 0 var(--unit-shadow);
   transition: none;
 }
+
+.path-node.path-current .path-dumbbell { color: #fff; }
