@@ -10,5 +10,5 @@ const referenceArt = {
 };
 
 function referenceIcon(name, className = "") {
-  return '<img class="reference-icon ' + className + '" src="' + referenceArt[name] + '" alt="" aria-hidden="true" draggable="false">';
+  return '<img class="reference-icon ' + className + '" src="' + (gardenIllustrations[{ home: 'cottage', sounds: 'mouth', chest: 'chest', practice: 'pencil' }[name]] || referenceArt[name]) + '" alt="" aria-hidden="true" draggable="false">';
 }

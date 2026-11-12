@@ -441,11 +441,7 @@ function wordPathIcon(word) {
   return '<span class="path-letter">' + esc(Array.from(word.en).slice(0, 2).join('').toUpperCase()) + '</span>';
 }
 
-const reviewPathIcon = '<svg class="path-dumbbell" viewBox="0 0 36 36" fill="none" aria-hidden="true">' +
-  '<g transform="rotate(-32 18 18)" fill="currentColor">' +
-  '<rect x="5" y="15.5" width="26" height="5" rx="2.5"/><rect x="6" y="10" width="5" height="16" rx="2.5"/>' +
-  '<rect x="11" y="7" width="5" height="22" rx="2.5"/><rect x="20" y="7" width="5" height="22" rx="2.5"/>' +
-  '<rect x="25" y="10" width="5" height="16" rx="2.5"/></g></svg>';
+const reviewPathIcon = gardenIllustration('dumbbell');
 
 function drawLearningPath() {
   const completed = wordOrder.filter(index => state.wordLessons[index]?.done).length;

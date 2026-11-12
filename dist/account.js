@@ -6,7 +6,7 @@ const reasonOptions = [
   ['other', 'Ուրիշ պատճառ']
 ];
 const ageOptions = ['13–17', '18–24', '25–34', '35–44', '45–54', '55+'];
-const profileAvatars = { bear: '🐻', fox: gardenIllustration('fox'), frog: gardenIllustration('frog'), cat: gardenIllustration('cat'), rabbit: gardenIllustration('rabbit'), owl: '🦉' };
+const profileAvatars = { bear: gardenIllustration('bearAvatar'), fox: gardenIllustration('fox'), frog: gardenIllustration('frog'), cat: gardenIllustration('cat'), rabbit: gardenIllustration('rabbit'), owl: gardenIllustration('owlAvatar') };
 const onboardingQuestions = [
   ['level', 'Որքա՞ն անգլերեն գիտես', levelOptions.map((label, index) => [index, label])],
   ['source', 'Որտեղի՞ց իմացար մեր մասին', sourceOptions.map(value => [value, value])],
@@ -272,6 +272,11 @@ function scheduleUsernameCheck(input) {
   input.setAttribute('aria-invalid', String(Boolean(warning)));
   document.getElementById('username-status').textContent = warning;
   document.getElementById('username-suggestions').replaceChildren();
+  if (warning) {
+    mark.className = "username-taken";
+    mark.textContent = "×";
+    mark.hidden = false;
+  }
   if (value && !warning) {
     usernameTimer = setTimeout(() => checkSignupUsername(input), 300);
   }
@@ -447,8 +452,8 @@ function profileStatistics() {
   const words = Object.values(state.wordLessons).filter(item => item.done).length;
   const streak = currentStudyStreak();
   const xp = 10 * (words + state.lessons.length) + state.soundXp;
-  const flame = '<svg viewBox="0 0 28 28" aria-hidden="true"><path fill="currentColor" d="M15 2c1 6 8 8 8 15a9 9 0 1 1-18 0c0-4 2-7 5-9 0 3 2 4 2 4 2-3 3-6 3-10z"/><path fill="#fff" d="M14 15c-2 3-3 4-3 6a3 3 0 0 0 6 0c0-2-2-4-3-6z"/></svg>';
-  const lightning = '<svg viewBox="0 0 28 28" aria-hidden="true"><path fill="currentColor" d="M16 2 5 15c-1 1 0 3 1 3h6l-1 7c0 1 1 2 2 1l10-13c1-1 0-3-1-3h-6l2-7c0-1-1-2-2-1z"/></svg>';
+  const flame = gardenIllustration('flame');
+  const lightning = gardenIllustration('lightning');
   return '<section class="profile-statistics"><h2>Վիճակագրություն</h2><div class="profile-stat-grid">' +
     '<div class="profile-stat-box ' + (streak ? 'has-streak' : '') + '">' + flame +
     '<div><strong>' + streak + '</strong><small>Օրերի շարք</small></div></div>' +

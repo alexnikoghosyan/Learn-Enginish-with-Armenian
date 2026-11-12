@@ -166,7 +166,7 @@ function drawReviewQuestion(mode = 'typing') {
     (question.type === 'picture' ? '' : '<button type="button" class="text-button" id="review-mode" onclick="drawReviewQuestion(\'' +
       (mode !== 'typing' ? 'typing' : question.sentence ? 'sentence' : 'bank') + '\')">' +
       (mode === 'sentence' ? 'Պարզեցնել առաջադրանքը' : mode === 'bank' ? 'Գրել ինքնուրույն' :
-        question.sentence ? 'Դժվարացնել առաջադրանքը' : 'Օգտագործել բառերի բանկը') + '</button>') +
+        question.sentence ? 'Դժվարացնել առաջադրանքը' : gardenIllustration('tiles') + 'Օգտագործել բառերի բանկը') + '</button>') +
     '</div></form></section>';
   paintLessonAnswerStreak();
 }
