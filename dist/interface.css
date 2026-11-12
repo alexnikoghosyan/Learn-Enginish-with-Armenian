@@ -839,7 +839,7 @@ body:has(#app .lesson-controls) main {
 
 .path-node-icon .reference-icon { width: 37px; height: 37px; }
 
-.path-node:is(.path-current, .path-done)::before {
+.path-node.path-done::before {
   content: '';
   position: absolute;
   inset: 0;
