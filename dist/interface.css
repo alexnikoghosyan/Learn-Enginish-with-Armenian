@@ -972,3 +972,5 @@ body:has(.account-flow):not(:has(nav button)) main { margin: auto; padding: 26px
 
 .account-options .secondary[aria-pressed="true"] { box-shadow: 0 4px #84d8ff; }
 .account-options .secondary[aria-pressed="true"]:active { box-shadow: 0 1px #84d8ff; }
+
+.signup-paired-search svg:last-child { right: 3px; bottom: 2px; }

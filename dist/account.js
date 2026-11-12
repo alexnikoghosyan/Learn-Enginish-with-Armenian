@@ -151,7 +151,7 @@ const signupChoiceIcons = {
 };
 
 function pairedSignupIcons(first, second) {
-  return '<span class="signup-paired-icons">' + first + second + '</span>';
+  return '<span class="signup-paired-icons' + (first === signupGoogleIcon ? ' signup-paired-search' : '') + '">' + first + second + '</span>';
 }
 
 function signupIcon(markup) {
