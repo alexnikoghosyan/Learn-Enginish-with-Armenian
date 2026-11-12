@@ -813,3 +813,20 @@ body:has(#app .lesson-controls) main {
 @media(max-width:730px) {
   .path-jump { right: 15px; bottom: calc(91px + env(safe-area-inset-bottom, 0px)); }
 }
+
+.path-node.path-current:not(:disabled):active,
+.path-node.path-done:not(:disabled):active {
+  transform: translateY(6px);
+  box-shadow: 0 2px var(--unit-shadow);
+  transition: none;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .path-preview:not([hidden]) {
+    transform-origin: top center;
+    animation: lesson-preview-open .24s cubic-bezier(.22,.75,.3,1) both;
+  }
+}
+@keyframes lesson-preview-open {
+  from { opacity: 0; transform: translate(-50%, -7px) scale(.96); }
+  to { opacity: 1; transform: translate(-50%, 0) scale(1); }
+}
