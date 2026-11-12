@@ -221,7 +221,7 @@ function drawSignup(message = '') {
     '<div class="signup-page"><h1>' + title + '</h1>' + (key === 'reasons' ? '<p>Կարող ես ընտրել մի քանի պատճառ։</p>' : '') +
     body + '<p class="account-error" role="status">' + esc(message) + '</p></div>' +
     (key === 'auth' || (key === 'placement' && registration.placement === undefined) ? '' :
-      '<div class="signup-controls"><button class="primary" onclick="nextSignupStep()"' + (key === 'level' && registration.level === undefined ? ' disabled' : '') + '>Շարունակել →</button></div>') + '</section>';
+      '<div class="signup-controls"><button class="primary" onclick="nextSignupStep()"' + (!hasSignupAnswer(registration[key]) ? ' disabled' : '') + '>Շարունակել →</button></div>') + '</section>';
   if (displayedSignupStep !== signupStep && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
     app.querySelector('.signup-progress span')?.animate([
       { width: (displayedSignupStep / onboardingQuestions.length * 100) + '%' },
@@ -229,7 +229,12 @@ function drawSignup(message = '') {
     ], { duration: 310, easing: 'cubic-bezier(.2,.75,.3,1)' });
   }
   displayedSignupStep = signupStep;
-  if (key === 'username' && registration.username) scheduleUsernameCheck(document.getElementById('signup-input'));
+  const input = app.querySelector('#signup-input');
+  if (input) {
+    const next = app.querySelector('.signup-controls button');
+    input.addEventListener('input', () => { next.disabled = !hasSignupAnswer(input.value.trim()); });
+  }
+  if (key === 'username' && registration.username) scheduleUsernameCheck(input);
 }
 
 async function chooseStudyReminder(enabled) {
@@ -308,8 +313,12 @@ function chooseSignupOption(index) {
     const selected = key === 'reasons' ? registration.reasons.includes(option) : registration[key] === option;
     button.setAttribute('aria-pressed', String(selected));
   });
-  app.querySelector('.signup-controls button').disabled = false;
+  app.querySelector('.signup-controls button').disabled = !hasSignupAnswer(registration[key]);
   app.querySelector('.account-error').textContent = '';
+}
+
+function hasSignupAnswer(value) {
+  return value !== undefined && value !== '' && (!Array.isArray(value) || value.length > 0);
 }
 
 async function nextSignupStep() {
@@ -318,7 +327,7 @@ async function nextSignupStep() {
   const input = document.getElementById('signup-input');
   if (input) registration[key] = input.value.trim();
   const value = registration[key];
-  if (value === undefined || value === '' || (Array.isArray(value) && !value.length)) {
+  if (!hasSignupAnswer(value)) {
     drawSignup('Նախ լրացրու այս քայլը։');
     return;
   }
