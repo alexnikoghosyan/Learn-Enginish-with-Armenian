@@ -10,7 +10,8 @@ function courseLayout(track, course) {
   const total = course === 'grammar' ? LESSONS.length : WORDS.length;
   const complete = course === 'grammar' ? grammarDone : wordsDone;
   const label = course === 'grammar' ? 'Քերականական թեմաներ' : 'Սովորած բառեր';
-  return '<div class="course-layout"><div class="course-track">' + track + '</div>' +
+  return '<div class="course-layout"><div class="course-track">' + track + '<button class="icon-btn path-jump" hidden onclick="jumpToCurrentLesson()" aria-label="Գնալ ընթացիկ դասին">' +
+    '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20V4m-6 6 6-6 6 6" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>' +
     '<div class="course-rail"><section class="panel course-progress"><h2>Քո առաջընթացը</h2>' +
     '<div class="course-stat">' + referenceIcon('progress', 'course-stat-icon') + '<div><strong>' +
     esc(label) + '</strong><p>' + complete + ' / ' + total + '</p></div></div>' +
@@ -39,3 +40,26 @@ function focusLessonHeader(step, total, destination, { showCount = true, showIni
     '<button class="text-button lesson-leave" onclick="this.closest(\'dialog\').close();go(\'' + destination +
     '\')">Դուրս գալ</button></dialog></div>';
 }
+
+function updatePathArrow() {
+  const arrow = app.querySelector('.path-jump');
+  if (!arrow) return;
+  const current = app.querySelector('.path-node.path-current');
+  if (!current) { arrow.hidden = true; return; }
+  const rect = current.getBoundingClientRect();
+  const above = rect.top < 60;
+  const below = rect.bottom > window.innerHeight - 85;
+  arrow.hidden = !above && !below;
+  arrow.classList.toggle('points-down', !above && below);
+}
+
+function jumpToCurrentLesson() {
+  const current = app.querySelector('.path-node.path-current');
+  if (!current) return;
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  current.scrollIntoView({ block: 'center', behavior: reduced ? 'auto' : 'smooth' });
+  current.focus({ preventScroll: true });
+}
+
+window.addEventListener('scroll', updatePathArrow, { passive: true });
+window.addEventListener('resize', updatePathArrow);

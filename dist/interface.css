@@ -799,3 +799,17 @@ body:has(#app .lesson-controls) main {
   #sound-feedback { gap: 8px; }
   .sound-result-symbol { width: 36px; height: 36px; font-size: 22px; }
 }
+
+.path-page-controls .path-next { grid-column: 3; justify-self: end; }
+.path-page-controls .path-previous:last-child { grid-column: 1; justify-self: start; }
+.path-jump[hidden] { display: none; }
+.path-jump {
+  position: fixed; right: max(18px, calc((100vw - 1190px) / 2));
+  bottom: 27px; z-index: 6; display: grid; place-items: center;
+  width: 50px; height: 48px; padding: 0; color: #1cb0f6; background: #fff;
+}
+.path-jump svg { width: 25px; height: 25px; }
+.path-jump.points-down svg { transform: rotate(180deg); }
+@media(max-width:730px) {
+  .path-jump { right: 15px; bottom: calc(91px + env(safe-area-inset-bottom, 0px)); }
+}

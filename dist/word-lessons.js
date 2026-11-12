@@ -482,12 +482,14 @@ function drawLearningPath() {
     '</div><div class="progress" role="progressbar" aria-label="Ուսուցման առաջընթաց" aria-valuemin="0" aria-valuemax="' +
     WORDS.length + '" aria-valuenow="' + completed + '"><span style="width:' + completed / WORDS.length * 100 +
     '%"></span></div><div class="path-page-controls">' +
-    (pathPage > 0 && lastUnit < pathUnitCount ? '<button class="secondary path-previous" onclick="showLearningPath(' +
+    (pathPage > 0 ? '<button class="secondary path-previous" onclick="showLearningPath(' +
       (pathPage - 1) + ')">← Նախորդ</button>' : '') + '<small>Բաժիններ ' +
-    (firstUnit + 1) + '–' + lastUnit + '</small><button class="secondary" onclick="showLearningPath(' + (pathPage + 1) +
-    ')" ' + (lastUnit === pathUnitCount ? 'disabled' : '') + '>Հաջորդ →</button></div>' +
+    (firstUnit + 1) + '–' + lastUnit + '</small>' +
+    (lastUnit < pathUnitCount ? '<button class="secondary path-next" onclick="showLearningPath(' + (pathPage + 1) +
+      ')">Հաջորդ →</button>' : '') + '</div>' +
     (pathPage !== nextPage ? '<button class="text-button path-return" onclick="showLearningPath(' + nextPage +
       ')">Գտնել իմ հաջորդ դասը</button>' : '') + units.join('') + '</div>', 'words');
+  updatePathArrow();
 }
 
 function openWordLesson(index = firstUnfinishedWord()) {
