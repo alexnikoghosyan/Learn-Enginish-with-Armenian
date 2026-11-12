@@ -839,3 +839,10 @@ body:has(#app .lesson-controls) main {
   from { opacity: 1; transform: translate(-50%, 0) scale(1); }
   to { opacity: 0; transform: translate(-50%, 0) scale(.72); }
 }
+
+@media (prefers-reduced-motion: no-preference) {
+  .garden-bear-head { transform-box: fill-box; transform-origin: center 85%; animation: garden-bear-idle 3.6s ease-in-out infinite; }
+  .garden-bear-eyes { transform-box: fill-box; transform-origin: center; animation: garden-bear-blink 3.6s ease-in-out infinite; }
+}
+@keyframes garden-bear-idle { 0%, 100% { transform: rotate(3deg); } 45%, 65% { transform: rotate(-3deg); } }
+@keyframes garden-bear-blink { 0%, 47%, 54%, 100% { transform: scaleY(1); } 50% { transform: scaleY(.12); } }
