@@ -6,16 +6,17 @@ let arrangedWords = [];
 function renderPathStop(title, offset, status, action, icon, language = 'hy') {
   const current = status === 'current';
   const done = status === 'done';
+  const hasPreview = Boolean(action) && (current || done);
   const label = current ? 'Սկսել' : done ? 'Ավարտված' : 'Դեռ հասանելի չէ';
   const bend = [0, 1, 2, 2, 1, 0, 0, 1, 2, 1][offset % 10];
   return '<li class="path-stop" style="--bend:' + bend + '">' +
     '<button class="path-node path-' + status + '" aria-label="' + esc(title + ' · ' + label) + '"' +
-    (current ? ' aria-current="step" aria-expanded="false" onclick="togglePathPreview(this)"' :
-      action ? ' onclick="' + action + '"' : ' disabled') + '>' +
+    (current ? ' aria-current="step"' : '') +
+    (hasPreview ? ' aria-expanded="false" onclick="togglePathPreview(this)"' : ' disabled') + '>' +
     '<span class="path-node-icon" aria-hidden="true">' + (done ? '<svg class="path-check" viewBox="0 0 32 32" focusable="false"><path d="m7 16 6 6 12-12" fill="none" stroke="currentColor" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/></svg>' : icon) +
     '</span></button><span><strong lang="' + language + '">' + esc(title) + '</strong>' +
     (current ? '<small class="path-current-label">' + label + '</small>' : '') + '</span>' +
-    (current ? '<div class="path-preview" hidden><strong lang="' + language + '">' + esc(title) +
+    (hasPreview ? '<div class="path-preview" hidden><strong lang="' + language + '">' + esc(title) +
       '</strong><button class="secondary" onclick="' + action + '">Սկսել</button></div>' : '') + '</li>';
 }
 
