@@ -328,28 +328,37 @@ async function nextSignupStep() {
     if (value !== 'test') registration.placement = value === 'basics' ? 0 : registration.level;
   }
   accountStorage('eg-registration', JSON.stringify(registration));
+  if (await transitionSignupStep(1) && signupStep === authStep && account.authenticated) createStudyProfile();
+}
+
+async function transitionSignupStep(direction) {
   const page = app.querySelector('.signup-page');
+  if (page?.inert) return false;
   const animate = page?.animate && !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   if (animate) {
     page.inert = true;
     await page.animate([
       { transform: 'translateX(0)', opacity: 1 },
-      { transform: 'translateX(-44px)', opacity: 0 }
+      { transform: 'translateX(' + (-44 * direction) + 'px)', opacity: 0 }
     ], { duration: 170, easing: 'ease-in', fill: 'forwards' }).finished.catch(() => {});
-    if (!page.isConnected) return;
+    if (!page.isConnected) return false;
   }
-  signupStep++;
-  drawSignup();
-  if (animate) app.querySelector('.signup-page')?.animate([
-    { transform: 'translateX(44px)', opacity: .25 },
+  signupStep += direction;
+  if (signupStep < 0) {
+    signupStep = 0;
+    showAccountWelcome();
+  } else {
+    drawSignup();
+  }
+  if (animate) (app.querySelector('.signup-page') || app.querySelector('.account-flow'))?.animate([
+    { transform: 'translateX(' + (44 * direction) + 'px)', opacity: .25 },
     { transform: 'translateX(0)', opacity: 1 }
   ], { duration: 240, easing: 'ease-out' });
-  if (signupStep === authStep && account.authenticated) createStudyProfile();
+  return true;
 }
 
 function previousSignupStep() {
-  if (signupStep > 0) { signupStep--; drawSignup(); }
-  else showAccountWelcome();
+  return transitionSignupStep(-1);
 }
 
 async function createStudyProfile() {
