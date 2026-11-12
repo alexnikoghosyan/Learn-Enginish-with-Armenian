@@ -846,3 +846,5 @@ body:has(#app .lesson-controls) main {
 }
 @keyframes garden-bear-idle { 0%, 100% { transform: rotate(3deg); } 45%, 65% { transform: rotate(-3deg); } }
 @keyframes garden-bear-blink { 0%, 47%, 54%, 100% { transform: scaleY(1); } 50% { transform: scaleY(.12); } }
+
+.path-node-icon .reference-icon { width: 37px; height: 37px; }
