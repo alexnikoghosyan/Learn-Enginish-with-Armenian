@@ -554,7 +554,7 @@ function drawWordLesson(justCompleted = false) {
       esc([entry.sentence, entry.second].filter(Boolean).join('\n')) + '</div>' +
       (exampleBlock ? '<h3>Համեմատիր օրինակի հետ</h3>' + exampleBlock : '') +
       (entry.done ? '<div role="status" class="lesson-reward' + (justCompleted ? ' is-new' : '') +
-        '"><span class="reward-medal" aria-hidden="true">★</span><div><strong>Դասն ավարտված է։</strong>' +
+        '"><span class="reward-medal" aria-hidden="true">' + gardenIllustration('medal') + '</span><div><strong>Դասն ավարտված է։</strong>' +
         '<small>Գրածդ պահպանվել է «Իմ գրառումները» բաժնում։</small></div></div>' : '');
   }
   app.innerHTML = focusLessonHeader(entry.step, wordLessonStepCount, 'vocabulary', { showInitialFill: true }) + '<h1>Բառեր</h1>'  +

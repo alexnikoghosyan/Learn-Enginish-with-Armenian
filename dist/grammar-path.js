@@ -231,7 +231,7 @@ function checkGrammarPractice() {
   save();
   const next = nextGrammarTopic();
   app.innerHTML = '<section class="lesson-body panel"><div class="lesson-reward is-new" role="status">' +
-    '<span class="reward-medal" aria-hidden="true">★</span><div><strong>Վարժությունն ավարտված է։</strong>' +
+    '<span class="reward-medal" aria-hidden="true">' + gardenIllustration('medal') + '</span><div><strong>Վարժությունն ավարտված է։</strong>' +
     '<small>' + (next >= 0 ? 'Հաջորդ քերականական դասը բացվել է։' : 'Ավարտել ես քերականության ճանապարհը։') +
     '</small></div></div><div class="tools">' +
     (next >= 0 ? '<button class="primary" onclick="lesson(' + next + ')">Հաջորդ դասը →</button>' : '') +

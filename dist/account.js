@@ -144,9 +144,9 @@ const signupChoiceIcons = {
     pairedSignupIcons(signupGoogleIcon, '<svg viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="5" fill="#ff0000"/><path d="m10 8 6 4-6 4z" fill="white"/></svg>'),
     '<img class="signup-source-image" src="data:image/webp;base64,UklGRjABAABXRUJQVlA4WAoAAAAQAAAAKAAAHQAAQUxQSCIAAAABDzD/ERFCbRtJylzf1Pg9U/ZxRP8noK1s5CfqAihAtngBVlA4IOgAAACwBQCdASopAB4APikQhkIhoQ6tmgAMAUJaQAD2RPQ9PRSvTJPkSIGOl/LI+knWVJgJbhWyqHAA/vln9nWz1fb/Ex+Nz7DU4UX4ekTynFlpkEOX0HwgkUFwaqDv96B+xwO9cOijxrHQn7LPplkkWllP3e6rpH3nrq6B+EXltk9Wqs5WwDD7AMant0ZXO4ne2VWZhgcs8uvo/9OdOK0vuvX/iVo7f/Fz7xPTZ745rU2Lmyh/p+m17RL6NcF4lot1p965/2h95c++8LRSeh1Ws9XsfL/MikMjWohK1+31pP/80wROvS0AAAAA" alt="">', signupOtherIcon
   ],
-  reasons: [signupFriendsIcon, '🎉', '📚', '⏳', '💼', '✈️', signupOtherIcon],
+  reasons: [signupFriendsIcon, gardenIllustration('party'), gardenIllustration('books'), gardenIllustration('hourglass'), gardenIllustration('briefcase'), gardenIllustration('airplane'), signupOtherIcon],
   dailyGoal: ['◷', '◷', '◷', '◷'],
-  path: ['📗', '🧭', '🎯'],
+  path: [gardenIllustration('workbook'), gardenIllustration('compass'), gardenIllustration('target')],
   age: ['🎒', '🌱', '🌿', '🌳', '🍃', '⭐']
 };
 
@@ -529,7 +529,7 @@ function offerMobileProgress() {
   accountStorage(studyStorageKey() + '-mobile-progress', 'shown');
   const dialog = document.createElement('dialog');
   dialog.className = 'lesson-exit-dialog';
-  dialog.innerHTML = '<div class="exit-owl" aria-hidden="true">🏅</div><h2>Առաջին դասն ավարտեցիր։</h2>' +
+  dialog.innerHTML = '<div class="exit-owl" aria-hidden="true">' + gardenIllustration('medal') + '</div><h2>Առաջին դասն ավարտեցիր։</h2>' +
     '<p>Ցույց տուր առաջընթացդ կամ ավելացրու կայքը հեռախոսի գլխավոր էկրանին։</p><div class="account-actions">' +
     (navigator.share ? '<button class="primary" onclick="shareStudyProgress()">Կիսվել առաջընթացով</button>' : '') +
     '<button class="secondary" onclick="this.closest(\'dialog\').querySelector(\'.install-help\').hidden=false">Ինչպես ավելացնել էկրանին</button>' +

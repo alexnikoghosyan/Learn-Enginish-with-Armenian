@@ -95,7 +95,7 @@ function drawReviewQuestion(mode = 'typing') {
     save();
     activeReview = null;
     app.innerHTML = '<h1>Կրկնություն</h1><section class="panel word-lesson-panel"><div class="lesson-reward is-new">' +
-      '<span class="reward-medal" aria-hidden="true">★</span><div><strong>Կրկնությունն ավարտված է։</strong>' +
+      '<span class="reward-medal" aria-hidden="true">' + gardenIllustration('medal') + '</span><div><strong>Կրկնությունն ավարտված է։</strong>' +
       '<small>Կրկնեցիր անցած բոլոր բառերը։</small></div></div><div class="tools">' +
       '<button class="primary" onclick="continueAfterReview()">' +
       (nextCourseWord() !== undefined ? 'Հաջորդ բառը →' : 'Վերադառնալ ճանապարհին →') +

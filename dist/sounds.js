@@ -161,7 +161,7 @@ function advanceSoundRound() {
   if (points) recordStudyDay();
   save();
   app.innerHTML = '<section class="lesson-body panel"><div class="lesson-reward is-new" role="status">' +
-    '<span class="reward-medal" aria-hidden="true">★</span><div><strong>Վարժությունն ավարտված է։</strong><small>' +
+    '<span class="reward-medal" aria-hidden="true">' + gardenIllustration('medal') + '</span><div><strong>Վարժությունն ավարտված է։</strong><small>' +
     soundCorrect + ' / ' + soundRound.length + ' ճիշտ պատասխան' + (points ? ' · +10 միավոր' : '') +
     '</small></div></div><div class="tools"><button class="primary" onclick="go(\'sounds\')">' +
     'Վերադառնալ հնչյուններին</button></div></section>';

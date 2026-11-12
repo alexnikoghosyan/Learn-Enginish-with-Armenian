@@ -46,7 +46,7 @@ function focusLessonHeader(step, total, destination, { showCount = true, showIni
     '" max="' + total + '" aria-label="Դասի առաջընթաց"></progress></div>' +
     (showCount ? '<small>' + Math.min(step + 1, total) + ' / ' + total + '</small>' : '') +
     '<dialog class="lesson-exit-dialog" aria-labelledby="lesson-exit-title">' +
-    '<div class="exit-owl" aria-hidden="true">🦉</div><h2 id="lesson-exit-title">Դո՞ւրս գալ դասից</h2>' +
+    '<div class="exit-owl" aria-hidden="true">' + gardenIllustration('bear') + '</div><h2 id="lesson-exit-title">Դո՞ւրս գալ դասից</h2>' +
     '<p>Այս պահին չավարտած հարցը կարող է չպահպանվել։</p><form method="dialog">' +
     '<button class="primary" autofocus>Շարունակել սովորել</button></form>' +
     '<button class="text-button lesson-leave" onclick="this.closest(\'dialog\').close();go(\'' + destination +

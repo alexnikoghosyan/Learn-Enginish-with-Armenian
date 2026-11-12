@@ -987,3 +987,10 @@ body:has(.account-flow):not(:has(nav button)) main { margin: auto; padding: 26px
 #username-mark svg { width: 18px; height: 18px; }
 #username-status { color: #b72f2f; }
 #username-status:empty { display: none; }
+
+.garden-illustration { display: block; object-fit: contain; mix-blend-mode: multiply; }
+.signup-choice-icon:has(.garden-illustration) { mix-blend-mode: multiply; }
+.signup-choice-icon .garden-illustration { width: 34px; height: 34px; }
+.exit-owl .garden-illustration { width: 120px; height: 120px; margin: auto; }
+.reward-medal:has(.garden-illustration) { background: transparent; box-shadow: none; mix-blend-mode: multiply; }
+.reward-medal .garden-illustration { width: 100%; height: 100%; }
