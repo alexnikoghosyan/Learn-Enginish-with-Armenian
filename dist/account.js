@@ -145,9 +145,9 @@ const signupChoiceIcons = {
     '<img class="signup-source-image" src="data:image/webp;base64,UklGRjABAABXRUJQVlA4WAoAAAAQAAAAKAAAHQAAQUxQSCIAAAABDzD/ERFCbRtJylzf1Pg9U/ZxRP8noK1s5CfqAihAtngBVlA4IOgAAACwBQCdASopAB4APikQhkIhoQ6tmgAMAUJaQAD2RPQ9PRSvTJPkSIGOl/LI+knWVJgJbhWyqHAA/vln9nWz1fb/Ex+Nz7DU4UX4ekTynFlpkEOX0HwgkUFwaqDv96B+xwO9cOijxrHQn7LPplkkWllP3e6rpH3nrq6B+EXltk9Wqs5WwDD7AMant0ZXO4ne2VWZhgcs8uvo/9OdOK0vuvX/iVo7f/Fz7xPTZ745rU2Lmyh/p+m17RL6NcF4lot1p965/2h95c++8LRSeh1Ws9XsfL/MikMjWohK1+31pP/80wROvS0AAAAA" alt="">', signupOtherIcon
   ],
   reasons: [signupFriendsIcon, gardenIllustration('party'), gardenIllustration('books'), gardenIllustration('hourglass'), gardenIllustration('briefcase'), gardenIllustration('airplane'), signupOtherIcon],
-  dailyGoal: ['◷', '◷', '◷', '◷'],
+  dailyGoal: [5, 10, 15, 20].map(minutes => gardenIllustration('timer' + minutes)),
   path: [gardenIllustration('workbook'), gardenIllustration('compass'), gardenIllustration('target')],
-  age: ['🎒', '🌱', '🌿', '🌳', '🍃', '⭐']
+  age: [gardenIllustration('backpack'), gardenIllustration('seedling'), gardenIllustration('sprig'), gardenIllustration('tree'), '🍃', '⭐']
 };
 
 function pairedSignupIcons(first, second) {
@@ -184,8 +184,8 @@ function drawSignup(message = '') {
     body = '<div class="signup-bubble">' + lessonBear() +
       '<p>Կարող եմ ժամը 19։00-ին հիշեցնել սովորելու մասին, երբ կայքը բաց է։</p></div>' +
       '<div class="account-options"><button class="secondary" aria-pressed="' + (registration.reminders === true) +
-      '" onclick="chooseStudyReminder(true)">🔔 Միացնել հիշեցումը</button><button class="secondary" aria-pressed="' +
-      (registration.reminders === false) + '" onclick="chooseStudyReminder(false)">Հիմա ոչ</button></div>';
+      '" onclick="chooseStudyReminder(true)">' + signupIcon(gardenIllustration('bell')) + 'Միացնել հիշեցումը</button><button class="secondary" aria-pressed="' +
+      (registration.reminders === false) + '" onclick="chooseStudyReminder(false)">' + signupIcon(gardenIllustration('mutedBell')) + 'Հիմա ոչ</button></div>';
   } else if (key === 'placement') {
     if (registration.path === 'test' && registration.placement === undefined) {
       if (placementIndex < 0) { placementIndex = 0; placementPoints = 0; }
