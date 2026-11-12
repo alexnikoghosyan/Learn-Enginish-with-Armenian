@@ -303,7 +303,13 @@ function chooseSignupOption(index) {
     if (chosen.has(value)) chosen.delete(value); else chosen.add(value);
     registration.reasons = [...chosen];
   } else registration[key] = value;
-  drawSignup();
+  app.querySelectorAll('.account-options button').forEach((button, position) => {
+    const option = choices[position][0];
+    const selected = key === 'reasons' ? registration.reasons.includes(option) : registration[key] === option;
+    button.setAttribute('aria-pressed', String(selected));
+  });
+  app.querySelector('.signup-controls button').disabled = false;
+  app.querySelector('.account-error').textContent = '';
 }
 
 async function nextSignupStep() {
