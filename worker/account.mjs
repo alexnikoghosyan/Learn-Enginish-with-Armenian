@@ -18,7 +18,24 @@ function parseRegistration(data) {
   return { name, username, level: data.level, source: data.source, age: data.age, reasons: [...new Set(data.reasons)] };
 }
 
+async function usernameAvailability(request, env) {
+  const name = new URL(request.url).searchParams.get('name')?.trim().toLowerCase();
+  if (!name || !/^[a-z][a-z0-9_]{2,19}$/.test(name)) return json({ error: 'invalid' }, 400);
+  const taken = await env.DB.prepare('SELECT 1 FROM profiles WHERE username = ?').bind(name).first();
+  if (!taken) return json({ available: true, suggestions: [] });
+  const suffixes = new Set();
+  while (suffixes.size < 12) suffixes.add(1000 + Math.floor(Math.random() * 9000));
+  const candidates = [...suffixes].map(suffix => name.slice(0, 15) + '_' + suffix);
+  const placeholders = candidates.map(() => '?').join(', ');
+  const { results } = await env.DB.prepare(
+    'SELECT username FROM profiles WHERE username IN (' + placeholders + ')'
+  ).bind(...candidates).all();
+  const unavailable = new Set(results.map(row => row.username));
+  return json({ available: false, suggestions: candidates.filter(candidate => !unavailable.has(candidate)).slice(0, 3) });
+}
+
 export async function accountRequest(request, env, pathname) {
+  if (pathname === '/api/username' && request.method === 'GET') return usernameAvailability(request, env);
   const id = request.headers.get('oai-authenticated-user-id');
   if (pathname === '/api/account' && request.method === 'GET' && !id) {
     return json({ authenticated: false, profile: null });

@@ -899,3 +899,17 @@ body:has(.account-flow):not(:has(nav button)) main { margin: auto; padding: 26px
 }
 .signup-choice-icon svg { width: 24px; height: 24px; }
 .signup-google { color: #4285f4; font: 800 23px Nunito, sans-serif; }
+
+.signup-field { position: relative; }
+.signup-field:has(#username-mark) input { padding-inline-end: 46px; }
+#username-mark:not([hidden]) {
+  display: grid; place-items: center; position: absolute; inset-inline-end: 12px;
+  top: 50%; transform: translateY(-50%); width: 24px; height: 24px;
+  border-radius: 50%; font-weight: 800; font-size: 19px; line-height: 1;
+  pointer-events: none;
+}
+#username-mark.username-free { color: #367b00; background: #e4f7d6; }
+#username-mark.username-taken { color: #fff; background: #db3232; }
+#username-suggestions { display: flex; flex-wrap: wrap; gap: 8px; margin: 10px 0; }
+#username-suggestions:empty { display: none; }
+#username-suggestions .secondary { padding: 6px 10px; }

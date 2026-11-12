@@ -21,6 +21,7 @@ let registration = {};
 let signupStep = 0;
 let guestMode = false;
 let accountBusy = false;
+let usernameTimer;
 
 function accountStorage(key, value) {
   try {
@@ -138,15 +139,64 @@ function drawSignup(message = '') {
       '<p class="muted">Մուտքի էջում ընտրիր Google-ը կամ էլ․ փոստը։</p>';
   } else {
     body = '<form onsubmit="event.preventDefault();nextSignupStep()"><label for="signup-input">' +
-      (key === 'name' ? 'Անուն' : 'Օգտանուն') + '</label><input id="signup-input" value="' + esc(registration[key] || '') +
+      (key === 'name' ? 'Անուն' : 'Օգտանուն') + '</label><div class="signup-field"><input id="signup-input" value="' + esc(registration[key] || '') +
       '" maxlength="' + (key === 'name' ? '50' : '20') + '" autocomplete="' + key +
-      '">' + (key === 'username' ? '<small>3–20 նիշ։ Սկսիր անգլերեն տառով։ Կարող ես օգտագործել թվեր և _ նշանը։</small>' : '') + '</form>';
+      '"' + (key === 'username' ? ' autocapitalize="none" spellcheck="false" oninput="scheduleUsernameCheck(this)" aria-describedby="username-status"' : '') +
+      '>' + (key === 'username' ? '<span id="username-mark" aria-hidden="true" hidden></span>' : '') + '</div>' +
+      (key === 'username' ? '<small>3–20 նիշ։ Սկսիր անգլերեն տառով։ Կարող ես օգտագործել թվեր և _ նշանը։</small>' +
+        '<small id="username-status" role="status"></small><div id="username-suggestions"></div>' : '') + '</form>';
   }
   app.innerHTML = '<section class="account-flow"><div class="account-step"><button class="icon-btn" onclick="previousSignupStep()" aria-label="Նախորդ">←</button>' +
     '<progress value="' + signupStep + '" max="' + onboardingQuestions.length + '" aria-label="Գրանցման առաջընթաց"></progress></div>' +
     '<h1>' + title + '</h1>' + (key === 'reasons' ? '<p>Կարող ես ընտրել մի քանի պատճառ։</p>' : '') +
     body + '<p class="account-error" role="status">' + esc(message) + '</p>' +
     (key === 'auth' ? '' : '<button class="primary" onclick="nextSignupStep()">Շարունակել →</button>') + '</section>';
+  if (key === 'username' && registration.username) scheduleUsernameCheck(document.getElementById('signup-input'));
+}
+
+function scheduleUsernameCheck(input) {
+  clearTimeout(usernameTimer);
+  const mark = document.getElementById('username-mark');
+  mark.hidden = true;
+  input.removeAttribute('aria-invalid');
+  document.getElementById('username-status').textContent = '';
+  document.getElementById('username-suggestions').replaceChildren();
+  if (/^[a-z][a-z0-9_]{2,19}$/i.test(input.value.trim())) {
+    usernameTimer = setTimeout(() => checkSignupUsername(input), 300);
+  }
+}
+
+async function checkSignupUsername(input) {
+  const value = input.value.trim().toLowerCase();
+  if (!/^[a-z][a-z0-9_]{2,19}$/.test(value)) return false;
+  try {
+    const response = await fetch('/api/username?name=' + encodeURIComponent(value), { cache: 'no-store' });
+    if (!response.ok) throw new Error('username');
+    const result = await response.json();
+    if (!input.isConnected || input.value.trim().toLowerCase() !== value) return false;
+    const mark = document.getElementById('username-mark');
+    mark.className = result.available ? 'username-free' : 'username-taken';
+    mark.textContent = result.available ? '✓' : '×';
+    mark.hidden = false;
+    input.setAttribute('aria-invalid', String(!result.available));
+    document.getElementById('username-status').textContent = result.available ? 'Օգտանունն ազատ է։' : 'Օգտանունը զբաղված է։';
+    const suggestions = document.getElementById('username-suggestions');
+    suggestions.replaceChildren();
+    for (const name of (result.suggestions || []).slice(0, 3)) {
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.className = 'secondary';
+      button.textContent = name;
+      button.onclick = () => { input.value = name; input.focus(); scheduleUsernameCheck(input); };
+      suggestions.append(button);
+    }
+    return result.available;
+  } catch {
+    if (input.isConnected && input.value.trim().toLowerCase() === value) {
+      document.getElementById('username-status').textContent = 'Չհաջողվեց ստուգել օգտանունը։ Փորձիր կրկին։';
+    }
+    return false;
+  }
 }
 
 function chooseSignupOption(index) {
@@ -160,7 +210,7 @@ function chooseSignupOption(index) {
   drawSignup();
 }
 
-function nextSignupStep() {
+async function nextSignupStep() {
   const [key] = onboardingQuestions[signupStep];
   const input = document.getElementById('signup-input');
   if (input) registration[key] = input.value.trim();
@@ -172,6 +222,11 @@ function nextSignupStep() {
   if (key === 'username' && !/^[a-z][a-z0-9_]{2,19}$/i.test(value)) {
     drawSignup('Մուտքագրիր նշված ձևաչափով օգտանուն։');
     return;
+  }
+  if (key === 'username') {
+    clearTimeout(usernameTimer);
+    if (!(await checkSignupUsername(input)) || !input.isConnected) return;
+    registration.username = input.value.trim().toLowerCase();
   }
   accountStorage('eg-registration', JSON.stringify(registration));
   signupStep++;
