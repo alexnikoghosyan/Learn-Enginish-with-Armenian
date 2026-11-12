@@ -11,6 +11,10 @@ const onboardingQuestions = [
   ['level', 'Որքա՞ն անգլերեն գիտես', levelOptions.map((label, index) => [index, label])],
   ['source', 'Որտեղի՞ց իմացար մեր մասին', sourceOptions.map(value => [value, value])],
   ['reasons', 'Ինչո՞ւ ես ուզում անգլերեն սովորել', reasonOptions],
+  ['dailyGoal', 'Ի՞նչ նպատակ դնենք օրվա համար', [[5, 'Օրական 5 րոպե'], [10, 'Օրական 10 րոպե'], [15, 'Օրական 15 րոպե'], [20, 'Օրական 20 րոպե']]],
+  ['reminders', 'Կցանկանա՞ս սովորելու հիշեցումներ'],
+  ['path', 'Որտեղի՞ց սկսենք', [['basics', 'Սկսել հիմքերից'], ['test', 'Ստուգել իմ մակարդակը'], ['self', 'Սկսել իմ նշած մակարդակից']]],
+  ['placement', 'Քո մեկնարկային դասը'],
   ['age', 'Քանի՞ տարեկան ես', ageOptions.map(value => [value, value === '13–17' ? '18-ից ցածր' : value])],
   ['name', 'Ինչպե՞ս դիմենք քեզ'],
   ['username', 'Ընտրիր օգտանուն'],
@@ -23,6 +27,19 @@ let guestMode = false;
 let accountBusy = false;
 let usernameTimer;
 let displayedSignupStep = 0;
+const usernameStep = onboardingQuestions.findIndex(([key]) => key === 'username');
+const authStep = onboardingQuestions.findIndex(([key]) => key === 'auth');
+let placementIndex = -1;
+let placementPoints = 0;
+
+const placementQuestions = [
+  ['I ___ a student.', ['am', 'is', 'are'], 0],
+  ['She ___ to work every day.', ['go', 'goes', 'going'], 1],
+  ['We ___ that film yesterday.', ['see', 'have seen', 'saw'], 2],
+  ['I have lived here ___ 2020.', ['for', 'since', 'from'], 1],
+  ['If I had more time, I ___ read more.', ['will', 'would', 'am'], 1],
+  ['When I arrived, they ___ already left.', ['had', 'have', 'are'], 0]
+];
 
 function accountStorage(key, value) {
   try {
@@ -54,8 +71,8 @@ function useAccountProgress(importGuest = false) {
 }
 
 function courseLevel() { return account.profile?.level ?? 0; }
-function grammarStartingIndex() { return [0, 5, 10, 20, 30][courseLevel()]; }
-function wordStartingPosition() { return [0, 5, 20, 50, 80][courseLevel()]; }
+function grammarStartingIndex(level = courseLevel()) { return [0, 5, 10, 20, 30][level]; }
+function wordStartingPosition(level = courseLevel()) { return [0, 5, 20, 50, 80][level]; }
 function nextCourseWord() {
   return wordOrder.slice(wordStartingPosition()).find(index => !state.wordLessons[index]?.done);
 }
@@ -86,7 +103,7 @@ async function loadAccount() {
   } else if (account.authenticated) {
     signupStep = onboardingQuestions.findIndex(([key]) => key === 'auth' || registration[key] === undefined);
     drawSignup();
-    if (signupStep === 6) await createStudyProfile();
+    if (signupStep === authStep) await createStudyProfile();
   } else if (guestMode) render();
   else showAccountWelcome();
 }
@@ -122,6 +139,8 @@ const signupChoiceIcons = {
     '📺', '<b class="signup-google">G</b>', '✨'
   ],
   reasons: ['🤝', '🎉', '📚', '⏳', '💼', '✈️', '✨'],
+  dailyGoal: ['◷', '◷', '◷', '◷'],
+  path: ['📗', '🧭', '🎯'],
   age: ['🎒', '🌱', '🌿', '🌳', '🍃', '⭐']
 };
 
@@ -136,9 +155,32 @@ function drawSignup(message = '') {
   if (choices) {
     body = '<div class="account-options' + (key === 'source' ? ' signup-sources' : '') + '">' + choices.map(([value, label], index) => {
       const chosen = key === 'reasons' ? (registration.reasons || []).includes(value) : registration[key] === value;
+      const detail = key === 'dailyGoal' ? ['Թեթև', 'Սովորական', 'Լուրջ', 'Ինտենսիվ'][index] :
+        key === 'path' ? ['Առաջին բառերն ու կանոնները', 'Վեց հարցով մոտավոր գնահատում', 'Հիմնված է քո առաջին պատասխանի վրա'][index] : '';
       return '<button class="secondary" aria-pressed="' + chosen + '" onclick="chooseSignupOption(' + index +
-        ')">' + signupIcon(signupChoiceIcons[key][index]) + esc(label) + '</button>';
+        ')">' + signupIcon(signupChoiceIcons[key][index]) + '<span>' + esc(label) +
+        (detail ? '<small class="signup-option-detail">' + esc(detail) + '</small>' : '') + '</span></button>';
     }).join('') + '</div>';
+  } else if (key === 'reminders') {
+    body = '<div class="signup-bubble">' + lessonBear() +
+      '<p>Կարող եմ ժամը 19։00-ին հիշեցնել սովորելու մասին, երբ կայքը բաց է։</p></div>' +
+      '<div class="account-options"><button class="secondary" aria-pressed="' + (registration.reminders === true) +
+      '" onclick="chooseStudyReminder(true)">🔔 Միացնել հիշեցումը</button><button class="secondary" aria-pressed="' +
+      (registration.reminders === false) + '" onclick="chooseStudyReminder(false)">Հիմա ոչ</button></div>';
+  } else if (key === 'placement') {
+    if (registration.path === 'test' && registration.placement === undefined) {
+      if (placementIndex < 0) { placementIndex = 0; placementPoints = 0; }
+      const [prompt, options] = placementQuestions[placementIndex];
+      body = '<p>Հարց ' + (placementIndex + 1) + ' / ' + placementQuestions.length + '</p><h2 lang="en">' +
+        esc(prompt) + '</h2><div class="account-options">' + options.map((option, index) =>
+        '<button class="secondary" lang="en" onclick="answerPlacement(' + index + ')">' + esc(option) + '</button>'
+      ).join('') + '</div>';
+    } else {
+      const level = registration.placement ?? 0;
+      body = '<div class="signup-bubble">' + lessonBear() + '<p>Բառերի ճանապարհը կսկսես <strong>' +
+        (Math.floor(wordStartingPosition(level) / wordsPerUnit) + 1) + '-րդ բաժնից</strong>։ Քերականության մեջ՝ <strong>' +
+        (grammarStartingIndex(level) + 1) + '-րդ դասից</strong>։</p></div>';
+    }
   } else if (key === 'auth') {
     body = account.authenticated ? '<button class="primary" onclick="createStudyProfile()">Ստեղծել պրոֆիլը</button>' :
       '<div class="account-actions"><a class="secondary" href="/signin-with-chatgpt?return_to=%2F" target="_top">' + signupIcon('<b class="signup-google">G</b>') + 'Շարունակել Google-ով</a>' +
@@ -159,7 +201,8 @@ function drawSignup(message = '') {
     (signupStep / onboardingQuestions.length * 100) + '%"></span></div></div>' +
     '<h1>' + title + '</h1>' + (key === 'reasons' ? '<p>Կարող ես ընտրել մի քանի պատճառ։</p>' : '') +
     body + '<p class="account-error" role="status">' + esc(message) + '</p>' +
-    (key === 'auth' ? '' : '<button class="primary" onclick="nextSignupStep()">Շարունակել →</button>') + '</section>';
+    (key === 'auth' || (key === 'placement' && registration.placement === undefined) ? '' :
+      '<div class="signup-controls"><button class="primary" onclick="nextSignupStep()">Շարունակել →</button></div>') + '</section>';
   if (displayedSignupStep !== signupStep && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
     app.querySelector('.signup-progress span')?.animate([
       { width: (displayedSignupStep / onboardingQuestions.length * 100) + '%' },
@@ -168,6 +211,24 @@ function drawSignup(message = '') {
   }
   displayedSignupStep = signupStep;
   if (key === 'username' && registration.username) scheduleUsernameCheck(document.getElementById('signup-input'));
+}
+
+async function chooseStudyReminder(enabled) {
+  registration.reminders = enabled;
+  if (enabled && 'Notification' in window && Notification.permission === 'default') {
+    try { await Notification.requestPermission(); } catch {}
+  }
+  if (onboardingQuestions[signupStep][0] === 'reminders') drawSignup();
+}
+
+function answerPlacement(answer) {
+  if (placementQuestions[placementIndex][2] === answer) placementPoints++;
+  placementIndex++;
+  if (placementIndex >= placementQuestions.length) {
+    registration.placement = [0, 0, 1, 2, 2, 3, 4][placementPoints];
+    placementIndex = -1;
+  }
+  drawSignup();
 }
 
 function scheduleUsernameCheck(input) {
@@ -244,10 +305,15 @@ async function nextSignupStep() {
     if (!(await checkSignupUsername(input)) || !input.isConnected) return;
     registration.username = input.value.trim().toLowerCase();
   }
+  if (key === 'path') {
+    delete registration.placement;
+    placementIndex = -1;
+    if (value !== 'test') registration.placement = value === 'basics' ? 0 : registration.level;
+  }
   accountStorage('eg-registration', JSON.stringify(registration));
   signupStep++;
   drawSignup();
-  if (signupStep === 6 && account.authenticated) createStudyProfile();
+  if (signupStep === authStep && account.authenticated) createStudyProfile();
 }
 
 function previousSignupStep() {
@@ -258,12 +324,14 @@ function previousSignupStep() {
 async function createStudyProfile() {
   if (accountBusy) return;
   accountBusy = true;
+  app.innerHTML = '<section class="account-flow signup-loading" role="status">' + lessonBear() + '<p>Պատրաստում ենք քո պրոֆիլը…</p></section>';
   try {
     const response = await fetch('/api/account', {
-      method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(registration)
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ ...registration, level: registration.placement ?? registration.level })
     });
     if (response.status === 409) {
-      signupStep = 5;
+      signupStep = usernameStep;
       drawSignup('Այս օգտանունն արդեն զբաղված է։ Փորձիր ուրիշը։');
       return;
     }
@@ -318,6 +386,41 @@ function profileStatistics() {
     '<div><strong>' + xp.toLocaleString('hy-AM') + '</strong><small>Փորձի միավորներ</small></div></div></div></section>';
 }
 
+function dailyGoalMarkup() {
+  const goal = account.profile.daily_goal || 10;
+  const seconds = state.studyTime?.[studyDayKey(new Date())] || 0;
+  const minutes = Math.floor(seconds / 60);
+  return '<section class="profile-statistics"><h2>Օրվա նպատակ</h2><p>' + minutes + ' / ' + goal +
+    ' րոպե այսօր</p><progress class="daily-goal-progress" aria-label="Օրվա նպատակ" value="' +
+    Math.min(seconds, goal * 60) + '" max="' + goal * 60 + '"></progress></section>';
+}
+
+function studyTimerTick() {
+  if (!account.profile || document.visibilityState !== 'visible') return;
+  const now = new Date();
+  const day = studyDayKey(now);
+  if (app.querySelector('.focus-lesson-header')) {
+    state.studyTime ??= {};
+    state.studyTime[day] = (state.studyTime[day] || 0) + 30;
+    save();
+    return;
+  }
+  if (!account.profile.reminders || now.getHours() < 19 || (state.studyTime?.[day] || 0) >= account.profile.daily_goal * 60 ||
+      accountStorage(studyStorageKey() + '-reminder-day') === day) return;
+  accountStorage(studyStorageKey() + '-reminder-day', day);
+  const message = 'Այսօրվա անգլերենի նպատակիդ համար դեռ ժամանակ կա։';
+  if ('Notification' in window && Notification.permission === 'granted') {
+    try { new Notification('English Garden', { body: message }); return; } catch {}
+  }
+  const status = document.getElementById('study-reminder');
+  if (status) {
+    status.textContent = message;
+    setTimeout(() => { status.textContent = ''; }, 7000);
+  }
+}
+
+window.setInterval(studyTimerTick, 30000);
+
 function profile() {
   const user = account.profile;
   if (!user) {
@@ -329,7 +432,7 @@ function profile() {
     '</div><h1>' + esc(user.name) + '</h1><p>@' + esc(user.username) + '</p>' +
     '<p>' + esc(levelOptions[user.level]) + '</p><div class="profile-stats"><span><strong>' +
     Object.values(state.wordLessons).filter(item => item.done).length + '</strong> բառ</span><span><strong>' +
-    state.lessons.length + '</strong> քերականական դաս</span></div>' + profileStatistics() +
+    state.lessons.length + '</strong> քերականական դաս</span></div>' + profileStatistics() + dailyGoalMarkup() +
     '<h2>Ընտրիր ավատար</h2><div class="avatar-options">' + Object.entries(profileAvatars).map(([key, icon]) =>
       '<button class="secondary" aria-label="' + key + '" aria-pressed="' + (key === user.avatar) +
       '" onclick="saveAvatar(\'' + key + '\')">' + icon + '</button>').join('') + '</div>' +

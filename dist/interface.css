@@ -935,3 +935,17 @@ body:has(.account-flow):not(:has(nav button)) main { margin: auto; padding: 26px
   background: linear-gradient(#83dd30,#83dd30) center 4px / calc(100% - 10px) 4px no-repeat, #58cc02;
 }
 @media(max-width:480px) { .signup-sources { grid-template-columns: 1fr; } }
+.signup-controls { position: fixed; inset: auto 0 0; z-index: 5; padding: 22px max(18px, calc((100vw - 960px) / 2)); background: #fff; border-top: 2px solid #e5e5e5; text-align: end; }
+.account-flow:has(.signup-controls) { padding-bottom: 95px; }
+.signup-option-detail { display: block; margin-top: 5px; color: #68707b; font-weight: 500; }
+.signup-bubble { display: flex; align-items: center; gap: 18px; margin-bottom: 20px; }
+.signup-bubble .lesson-bear { width: 96px; flex: 0 0 auto; }
+.signup-bubble p, .review-hint-bubble { padding: 12px 16px; border: 2px solid #e5e5e5; border-radius: 14px; font-size: 17px; font-weight: 600; }
+.signup-loading { display: grid; min-height: 65vh; place-content: center; justify-items: center; }
+.review-inline-answer, .review-panel textarea { width: 100%; min-height: 130px; padding: 14px; border: 2px solid #e5e5e5; border-radius: 12px; background: #f7f7f7; }
+.review-inline-answer #review-answer { display: inline-block; width: clamp(70px, 20vw, 160px); margin: 0 4px; padding: 0 4px; border: 0; border-bottom: 2px solid #1cb0f6; border-radius: 0; background: transparent; }
+.review-bank { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; padding: 16px 0; border-block: 2px solid #e5e5e5; }
+.review-bank [aria-pressed="true"] { background: #ddf4ff; border-color: #84d8ff; }
+.daily-goal-progress { width: 100%; accent-color: #58cc02; }
+#study-reminder:empty { display: none; }
+#study-reminder { position: fixed; inset: auto 16px 16px auto; z-index: 10; margin: 0; max-width: calc(100% - 32px); padding: 12px 16px; border-radius: 12px; background: #ddf4ff; color: #155575; }

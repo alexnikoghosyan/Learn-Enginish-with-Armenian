@@ -3,6 +3,8 @@ let reviewQuestions = [];
 let pictureSelectionIndex = null;
 let reviewChecked = false;
 let reviewPictures = [];
+let reviewInputMode = 'typing';
+let reviewBankChoices = [];
 
 const reviewPictureBank = [...illustrations].map(([word, entry]) => ({
   word, emoji: entry[2], shape: entry[3]
@@ -51,7 +53,9 @@ function makeReviewQuestions(indices) {
     if (!word) continue;
     const meaning = hy(word) || state.wordLessons[index]?.explanation?.trim() || WORD_HINTS[word.en]?.[0] || word.en;
     const armenian = /[\u0531-\u0587]/.test(meaning);
-    questions.push({ type: 'cloze', prompt: clozeForWord(word, meaning), answer: word.en });
+    const example = curatedExamples[word.en];
+    questions.push({ type: 'cloze', prompt: clozeForWord(word, meaning), answer: word.en, meaning,
+      sentence: example?.[1] ? example : null });
     if (armenian) {
       questions.push({ type: 'to-en', prompt: meaning, answer: word.en });
       questions.push({ type: 'to-hy', prompt: word.en, answer: meaning });
@@ -79,7 +83,7 @@ function startCumulativeReview() {
   window.scrollTo(0, 0);
 }
 
-function drawReviewQuestion() {
+function drawReviewQuestion(mode = 'typing') {
   reviewChecked = false;
   pictureSelectionIndex = null;
   const cursor = activeReview.cursor;
@@ -97,13 +101,35 @@ function drawReviewQuestion() {
       '</button></div></section>';
     return;
   }
+  reviewInputMode = mode;
   const labels = {
     cloze: 'Լրացրու բաց թողած բառը', 'to-en': 'Գրիր անգլերեն տարբերակը',
     'to-hy': 'Գրիր հայերեն տարբերակը', picture: 'Ընտրիր բառին համապատասխան պատկերը'
   };
-  let exercise = '<label for="review-answer">Քո պատասխանը</label>' +
-    '<input id="review-answer" oninput="updateReviewCheck()" autocomplete="off" spellcheck="false" maxlength="300" ' +
-    'lang="' + (question.type === 'to-hy' ? 'hy' : 'en') + '">';
+  const language = question.type === 'to-hy' ? 'hy' : 'en';
+  const inlineAnswer = question.type === 'cloze' && mode === 'typing';
+  const input = '<input id="review-answer" aria-label="Քո պատասխանը" oninput="updateReviewCheck()" autocomplete="off" spellcheck="false" maxlength="300" lang="' + language + '">';
+  let exercise = '<label for="review-answer">Քո պատասխանը</label><textarea id="review-answer" rows="3" maxlength="300" ' +
+    'oninput="updateReviewCheck()" spellcheck="false" lang="' + language + '"></textarea>';
+  if (inlineAnswer) {
+    const [before, after] = question.prompt.split('_____');
+    exercise = '<div class="review-inline-answer" lang="en">' + esc(before) + input + esc(after || '') + '</div>';
+  } else if (mode === 'bank') {
+    const source = question.type === 'to-hy' ? WORDS.filter(word => hy(word)).map(word => hy(word)) : WORDS.map(word => word.en);
+    const seen = new Set([normalizeReviewAnswer(question.answer)]);
+    const choices = [question.answer];
+    for (const option of shuffled(source)) {
+      const key = normalizeReviewAnswer(option);
+      if (!key || seen.has(key)) continue;
+      choices.push(option);
+      seen.add(key);
+      if (choices.length === 4) break;
+    }
+    reviewBankChoices = shuffled(choices);
+    exercise = '<input type="hidden" id="review-answer"><div class="review-bank" role="group" aria-label="Բառերի բանկ">' +
+      reviewBankChoices.map((option, index) => '<button type="button" class="secondary" aria-pressed="false" lang="' +
+        language + '" onclick="pickReviewWord(' + index + ')">' + esc(option) + '</button>').join('') + '</div>';
+  }
   if (question.type === 'picture') {
     const size = activeReview.words.length >= 8 ? 8 : 6;
     const seen = new Set([question.picture.shape || question.picture.emoji]);
@@ -124,17 +150,31 @@ function drawReviewQuestion() {
   app.innerHTML = focusLessonHeader(cursor, reviewQuestions.length, 'vocabulary') +
     '<h1>Կրկնություն</h1><section class="panel word-lesson-panel review-panel">' +
     '<small>Հարց ' + (cursor + 1) + ' / ' + reviewQuestions.length + ' · ' + activeReview.words.length + ' բառ</small>' +
-    '<h2>' + labels[question.type] + '</h2><div class="review-prompt' +
-    (question.type === 'to-hy' ? ' with-bear' : '') + '" lang="' + (question.type === 'to-en' ? 'hy' : 'en') + '">' +
+    '<h2>' + (mode === 'sentence' ? 'Գրիր ամբողջ նախադասությունն անգլերենով' : labels[question.type]) + '</h2><div class="review-prompt' +
+    (question.type === 'to-hy' || mode === 'sentence' ? ' with-bear' : '') + '" lang="' + (question.type === 'to-en' ? 'hy' : 'en') + '">' +
     (question.type === 'to-hy' || question.type === 'picture' ?
       (question.type === 'to-hy' ? lessonBear() : '') +
       '<button type="button" class="secondary lesson-speech" data-speak="' + esc(question.prompt) + '">' +
-      actionIcon('speaker') + '<span>' + esc(question.prompt) + '</span></button>' : esc(question.prompt)) + '</div><form onsubmit="event.preventDefault();checkReviewAnswer()">' + exercise +
+    actionIcon('speaker') + '<span>' + esc(question.prompt) + '</span></button>' :
+      mode === 'sentence' ? lessonBear() + '<span class="review-hint-bubble" lang="hy">' + esc(question.sentence[1]) + '</span>' :
+      inlineAnswer ? '<span class="review-hint-bubble" lang="hy">' + esc(question.meaning) + '</span>' : esc(question.prompt)) +
+    '</div><form onsubmit="event.preventDefault();checkReviewAnswer()">' + exercise +
     '<p id="review-feedback" role="status"></p><div class="tools lesson-controls">' +
     '<button class="primary" id="review-check" disabled>Ստուգել</button>' +
-    '<button type="button" class="secondary hidden" id="review-reveal" onclick="revealReviewAnswer()">Տեսնել պատասխանը</button>' +
-    '<button type="button" class="secondary" onclick="go(\'vocabulary\')">Շարունակել ավելի ուշ</button>' +
+    '<button type="button" class="secondary" id="review-reveal" onclick="revealReviewAnswer()">Բաց թողնել</button>' +
+    (question.type === 'picture' ? '' : '<button type="button" class="text-button" id="review-mode" onclick="drawReviewQuestion(\'' +
+      (mode !== 'typing' ? 'typing' : question.sentence ? 'sentence' : 'bank') + '\')">' +
+      (mode === 'sentence' ? 'Պարզեցնել առաջադրանքը' : mode === 'bank' ? 'Գրել ինքնուրույն' :
+        question.sentence ? 'Դժվարացնել առաջադրանքը' : 'Օգտագործել բառերի բանկը') + '</button>') +
     '</div></form></section>';
+}
+
+function pickReviewWord(index) {
+  if (reviewChecked) return;
+  document.getElementById('review-answer').value = reviewBankChoices[index];
+  app.querySelectorAll('.review-bank button').forEach((button, position) =>
+    button.setAttribute('aria-pressed', String(index === position)));
+  updateReviewCheck();
 }
 
 function selectReviewPicture(index) {
@@ -166,7 +206,7 @@ function checkReviewAnswer() {
     feedback.textContent = question.type === 'picture' ? 'Նախ ընտրիր պատկեր։' : 'Նախ գրիր պատասխանդ։';
     return;
   }
-  const accepted = question.type === 'to-hy' ?
+  const accepted = reviewInputMode === 'sentence' ? [question.sentence[0]] : question.type === 'to-hy' ?
     [question.answer, ...question.answer.replace(/\([^)]*\)/g, '').split(/[,;،/՝]/)] : [question.answer];
   if (accepted.some(answer => normalizeReviewAnswer(answer) === normalizeReviewAnswer(value))) {
     finishReviewQuestion('Ճիշտ է։ ✓');
@@ -177,14 +217,17 @@ function checkReviewAnswer() {
 }
 
 function revealReviewAnswer() {
-  finishReviewQuestion('Ճիշտ պատասխանը՝ ' + reviewQuestions[activeReview.cursor].answer);
+  const question = reviewQuestions[activeReview.cursor];
+  finishReviewQuestion('Ճիշտ պատասխանը՝ ' + (reviewInputMode === 'sentence' ? question.sentence[0] : question.answer));
 }
 
 function finishReviewQuestion(message) {
   reviewChecked = true;
   document.getElementById('review-feedback').textContent = message;
   document.getElementById('review-check').textContent = 'Շարունակել →';
+  document.getElementById('review-check').disabled = false;
   document.getElementById('review-reveal').classList.add('hidden');
+  document.getElementById('review-mode')?.classList.add('hidden');
   const question = reviewQuestions[activeReview.cursor];
   app.querySelectorAll('.review-grid button').forEach((button, index) => {
     if (reviewPictures[index].word === question.answer) button.classList.add('correct');

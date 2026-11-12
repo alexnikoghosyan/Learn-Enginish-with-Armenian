@@ -15,7 +15,10 @@ function parseRegistration(data) {
       !Number.isInteger(data.level) || data.level < 0 || data.level > 4 ||
       !sources.includes(data.source) || !ages.includes(data.age) || !Array.isArray(data.reasons) ||
       !data.reasons.length || data.reasons.length > reasons.length || !data.reasons.every(reason => reasons.includes(reason))) return null;
-  return { name, username, level: data.level, source: data.source, age: data.age, reasons: [...new Set(data.reasons)] };
+  const dailyGoal = data.dailyGoal ?? 10;
+  if (![5, 10, 15, 20].includes(dailyGoal)) return null;
+  return { name, username, level: data.level, source: data.source, age: data.age,
+    reasons: [...new Set(data.reasons)], dailyGoal, reminders: data.reminders === true ? 1 : 0 };
 }
 
 async function usernameAvailability(request, env) {
@@ -42,7 +45,7 @@ export async function accountRequest(request, env, pathname) {
   }
   if (!id) return json({ error: 'sign_in_required' }, 401);
   const readProfile = () => env.DB.prepare(
-    'SELECT name, username, level, avatar, created_at FROM profiles WHERE account_id = ?'
+    'SELECT name, username, level, avatar, created_at, daily_goal, reminders FROM profiles WHERE account_id = ?'
   ).bind(id).first();
   if (pathname === '/api/account' && request.method === 'GET') {
     return json({ authenticated: true, profile: await readProfile() });
@@ -55,8 +58,8 @@ export async function accountRequest(request, env, pathname) {
     const existing = await readProfile();
     if (existing) return json({ profile: existing });
     await env.DB.prepare(
-      'INSERT INTO profiles (account_id, username, name, level, source, age_band, reasons) VALUES (?, ?, ?, ?, ?, ?, ?) ON CONFLICT DO NOTHING'
-    ).bind(id, data.username, data.name, data.level, data.source, data.age, JSON.stringify(data.reasons)).run();
+      'INSERT INTO profiles (account_id, username, name, level, source, age_band, reasons, daily_goal, reminders) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?) ON CONFLICT DO NOTHING'
+    ).bind(id, data.username, data.name, data.level, data.source, data.age, JSON.stringify(data.reasons), data.dailyGoal, data.reminders).run();
     const profile = await readProfile();
     return profile ? json({ profile }, 201) : json({ error: 'username_taken' }, 409);
   }
