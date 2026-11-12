@@ -848,3 +848,13 @@ body:has(#app .lesson-controls) main {
 @keyframes garden-bear-blink { 0%, 47%, 54%, 100% { transform: scaleY(1); } 50% { transform: scaleY(.12); } }
 
 .path-node-icon .reference-icon { width: 37px; height: 37px; }
+
+.path-node:is(.path-current, .path-done)::before {
+  content: '';
+  position: absolute;
+  inset: 4px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, transparent 13%, #ffffff30 13% 35%, transparent 35% 43%, #ffffff29 43% 60%, transparent 60%);
+  pointer-events: none;
+}
+.path-check { display: block; width: 33px; height: 33px; color: #fff; }

@@ -12,7 +12,7 @@ function renderPathStop(title, offset, status, action, icon, language = 'hy') {
     '<button class="path-node path-' + status + '" aria-label="' + esc(title + ' · ' + label) + '"' +
     (current ? ' aria-current="step" aria-expanded="false" onclick="togglePathPreview(this)"' :
       action ? ' onclick="' + action + '"' : ' disabled') + '>' +
-    '<span class="path-node-icon" aria-hidden="true">' + (done ? '✓' : icon) +
+    '<span class="path-node-icon" aria-hidden="true">' + (done ? '<svg class="path-check" viewBox="0 0 32 32" focusable="false"><path d="m7 16 6 6 12-12" fill="none" stroke="currentColor" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/></svg>' : icon) +
     '</span></button><span><strong lang="' + language + '">' + esc(title) + '</strong>' +
     (current ? '<small class="path-current-label">' + label + '</small>' : '') + '</span>' +
     (current ? '<div class="path-preview" hidden><strong lang="' + language + '">' + esc(title) +
