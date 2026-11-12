@@ -19,6 +19,8 @@ function renderPathStop(title, offset, status, action, icon, language = 'hy') {
       '</strong><button class="secondary" onclick="' + action + '">Սկսել</button></div>' : '') + '</li>';
 }
 
+let previewScrollPosition = 0;
+
 function closePathPreview(preview) {
   const button = preview.parentElement.querySelector('.path-node');
   if (button.getAttribute('aria-expanded') !== 'true') return;
@@ -44,6 +46,7 @@ function togglePathPreview(button) {
   });
   preview.classList.remove('is-closing');
   preview.hidden = false;
+  previewScrollPosition = window.scrollY;
   preview.inert = false;
   button.setAttribute('aria-expanded', 'true');
   preview.querySelector('button').focus({ preventScroll: true });
@@ -54,6 +57,14 @@ document.addEventListener('click', event => {
     if (!preview.parentElement.contains(event.target)) closePathPreview(preview);
   });
 });
+
+window.addEventListener('scroll', () => {
+  const preview = app.querySelector('.path-preview:not([hidden]):not(.is-closing)');
+  if (!preview) return;
+  const position = window.scrollY;
+  if (position > previewScrollPosition) closePathPreview(preview);
+  previewScrollPosition = position;
+}, { passive: true });
 
 document.addEventListener('keydown', event => {
   if (event.key !== 'Escape') return;
