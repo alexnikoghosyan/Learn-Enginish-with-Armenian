@@ -94,3 +94,9 @@ document.addEventListener('click', event => {
   };
   speechSynthesis.speak(utterance);
 });
+
+document.addEventListener('keydown', event => {
+  if (event.key === 'Tab' && !event.ctrlKey && !event.altKey && !event.metaKey) {
+    event.preventDefault();
+  }
+});
