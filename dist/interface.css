@@ -898,7 +898,6 @@ body:has(.account-flow):not(:has(nav button)) main { margin: auto; padding: 26px
   font-size: 22px; line-height: 1;
 }
 .signup-choice-icon svg { width: 24px; height: 24px; }
-.signup-google { color: #4285f4; font: 800 23px Nunito, sans-serif; }
 
 .signup-field { position: relative; }
 .signup-field:has(#username-mark) input { padding-inline-end: 46px; }
@@ -953,3 +952,7 @@ body:has(.account-flow):not(:has(nav button)) main { margin: auto; padding: 26px
 .lesson-progress-track { position: relative; flex: 1; min-width: 0; display: flex; }
 .lesson-progress-track progress { width: 100%; }
 .lesson-answer-streak { position: absolute; bottom: calc(100% + 4px); inset-inline: 0; text-align: center; color: #4da900; font-size: clamp(11px, 2vw, 14px); font-weight: 800; }
+
+.account-step .signup-back { display: grid; place-items: center; flex: 0 0 36px; height: 36px; padding: 0; border: 0; box-shadow: none; background: transparent; color: #afafaf; cursor: pointer; }
+.signup-back svg { width: 21px; height: 21px; }
+.account-step .signup-back:hover { color: #777; }

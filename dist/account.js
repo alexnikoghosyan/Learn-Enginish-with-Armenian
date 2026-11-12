@@ -118,10 +118,12 @@ function showAccountWelcome() {
   document.getElementById('nav').innerHTML = '';
   app.innerHTML = '<div class="account-flow"><div class="account-mascot">' + lessonBear() +
     '</div><h1>Սովորիր անգլերեն քո տեմպով</h1><div class="account-actions">' +
-    '<button class="primary" onclick="drawSignup()">Գրանցվել</button>' +
+    '<button class="primary" onclick="startSignup()">Գրանցվել</button>' +
     '<a class="secondary" href="/signin-with-chatgpt?return_to=%2F" target="_top">Մուտք գործել</a>' +
     '<button class="text-button" onclick="continueAsGuest()">Շարունակել առանց հաշվի</button></div></div>';
 }
+
+const signupGoogleIcon = '<svg viewBox="0 0 24 24"><path fill="#4285f4" d="M22 12.2c0-.7-.1-1.4-.2-2H12v4h5.6a4.8 4.8 0 0 1-2.1 3.1v2.6H19c2-1.8 3-4.5 3-7.7Z"/><path fill="#34a853" d="M12 22c2.8 0 5.1-.9 7-2.1l-3.5-2.6c-.9.6-2.1.9-3.5.9-2.7 0-5-1.8-5.8-4.2H2.7v2.7A10 10 0 0 0 12 22Z"/><path fill="#fbbc05" d="M6.2 14a6.3 6.3 0 0 1 0-4V7.3H2.7a10 10 0 0 0 0 9.4Z"/><path fill="#ea4335" d="M12 5.8c1.5 0 2.8.5 3.8 1.5l2.9-2.8A9.6 9.6 0 0 0 12 2a10 10 0 0 0-9.3 5.3L6.2 10C7 7.6 9.3 5.8 12 5.8Z"/></svg>';
 
 const signupChoiceIcons = {
   level: levelOptions.map((_, level) => '<svg viewBox="0 0 24 24">' +
@@ -132,11 +134,11 @@ const signupChoiceIcons = {
     '<svg viewBox="0 0 24 24"><defs><linearGradient id="signup-ig" x1="0%" y1="100%" x2="65%" y2="0%"><stop stop-color="#ffda78"/><stop offset=".26" stop-color="#fb8539"/><stop offset=".53" stop-color="#e22a73"/><stop offset=".77" stop-color="#a530a9"/><stop offset="1" stop-color="#505bc7"/></linearGradient></defs><rect width="24" height="24" rx="6" fill="url(#signup-ig)"/><rect x="5" y="5" width="14" height="14" rx="4" fill="none" stroke="white" stroke-width="1.8"/><circle cx="12" cy="12" r="3.2" fill="none" stroke="white" stroke-width="1.8"/><circle cx="16.5" cy="7.8" r="1" fill="white"/></svg>',
     '<svg viewBox="0 0 24 24"><rect width="24" height="24" rx="6" fill="#1877f2"/><path fill="#fff" d="M14 24v-9h3l.5-3H14v-2c0-1 .3-2 2-2h2V5l-3-.3c-3 0-5 1.8-5 5V12H7v3h3v9z"/></svg>',
     '<svg viewBox="0 0 24 24"><rect width="24" height="24" rx="6" fill="#171717"/><path d="M6 5h4l8 14h-4zM18 5 6 19" fill="none" stroke="white" stroke-width="1.5" stroke-linejoin="round"/></svg>',
-    '<svg viewBox="0 0 24 24"><rect width="24" height="24" rx="6" fill="#171717"/><path d="M14 5v11a3.4 3.4 0 1 1-3.4-3.4M14 5c0 3 2 4.7 5 4.8" fill="none" stroke="#28e3df" stroke-width="2.7" stroke-linecap="round" transform="translate(-.8,.8)"/><path d="M14 5v11a3.4 3.4 0 1 1-3.4-3.4M14 5c0 3 2 4.7 5 4.8" fill="none" stroke="white" stroke-width="2.7" stroke-linecap="round"/></svg>',
+    '<svg viewBox="0 0 24 24"><g fill="none" stroke-width="3.1" stroke-linecap="round"><path stroke="#25f4ee" transform="translate(-.8,-.4)" d="M14 3v13a4.4 4.4 0 1 1-4.4-4.4M14 3c.6 3.3 2.4 5.2 5.6 5.7"/><path stroke="#fe2c55" transform="translate(.8,.7)" d="M14 3v13a4.4 4.4 0 1 1-4.4-4.4M14 3c.6 3.3 2.4 5.2 5.6 5.7"/><path stroke="#171717" d="M14 3v13a4.4 4.4 0 1 1-4.4-4.4M14 3c.6 3.3 2.4 5.2 5.6 5.7"/></g></svg>',
     '<svg viewBox="0 0 24 24"><path fill="#32a66b" d="M4 3v18l9-9z"/><path fill="#51b9f0" d="m4 3 13 7-4 2z"/><path fill="#f9bd42" d="m17 10 4 2-4 2-4-2z"/><path fill="#e8516a" d="m4 21 13-7-4-2z"/></svg>',
     '👥', '📰',
-    '<svg viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="5" fill="#f42532"/><path d="m10 8 6 4-6 4z" fill="white"/></svg>',
-    '📺', '<b class="signup-google">G</b>', '✨'
+    '<svg viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="5" fill="#ff0000"/><path d="m10 8 6 4-6 4z" fill="white"/></svg>',
+    '📺', signupGoogleIcon, '✨'
   ],
   reasons: ['🤝', '🎉', '📚', '⏳', '💼', '✈️', '✨'],
   dailyGoal: ['◷', '◷', '◷', '◷'],
@@ -146,6 +148,15 @@ const signupChoiceIcons = {
 
 function signupIcon(markup) {
   return '<span class="signup-choice-icon" aria-hidden="true">' + markup + '</span>';
+}
+
+function startSignup() {
+  signupStep = 0;
+  displayedSignupStep = 0;
+  delete registration.level;
+  delete registration.placement;
+  accountStorage('eg-registration', JSON.stringify(registration));
+  drawSignup();
 }
 
 function drawSignup(message = '') {
@@ -183,7 +194,7 @@ function drawSignup(message = '') {
     }
   } else if (key === 'auth') {
     body = account.authenticated ? '<button class="primary" onclick="createStudyProfile()">Ստեղծել պրոֆիլը</button>' :
-      '<div class="account-actions"><a class="secondary" href="/signin-with-chatgpt?return_to=%2F" target="_top">' + signupIcon('<b class="signup-google">G</b>') + 'Շարունակել Google-ով</a>' +
+      '<div class="account-actions"><a class="secondary" href="/signin-with-chatgpt?return_to=%2F" target="_top">' + signupIcon(signupGoogleIcon) + 'Շարունակել Google-ով</a>' +
       '<a class="secondary" href="/signin-with-chatgpt?return_to=%2F" target="_top">' + signupIcon('✉️') + 'Շարունակել էլ․ փոստով</a></div>' +
       '<p class="muted">Մուտքի էջում ընտրիր Google-ը կամ էլ․ փոստը։</p>';
   } else {
@@ -195,14 +206,14 @@ function drawSignup(message = '') {
       (key === 'username' ? '<small>3–20 նիշ։ Սկսիր անգլերեն տառով։ Կարող ես օգտագործել թվեր և _ նշանը։</small>' +
         '<small id="username-status" role="status"></small><div id="username-suggestions"></div>' : '') + '</form>';
   }
-  app.innerHTML = '<section class="account-flow"><div class="account-step"><button class="icon-btn" onclick="previousSignupStep()" aria-label="Նախորդ">←</button>' +
+  app.innerHTML = '<section class="account-flow"><div class="account-step"><button type="button" class="signup-back" onclick="previousSignupStep()" aria-label="Հետ"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 12H4m7-7-7 7 7 7" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>' +
     '<div class="signup-progress" role="progressbar" aria-label="Գրանցման առաջընթաց" aria-valuemin="0" aria-valuemax="' +
     onboardingQuestions.length + '" aria-valuenow="' + signupStep + '"><span style="width:' +
     (signupStep / onboardingQuestions.length * 100) + '%"></span></div></div>' +
     '<h1>' + title + '</h1>' + (key === 'reasons' ? '<p>Կարող ես ընտրել մի քանի պատճառ։</p>' : '') +
     body + '<p class="account-error" role="status">' + esc(message) + '</p>' +
     (key === 'auth' || (key === 'placement' && registration.placement === undefined) ? '' :
-      '<div class="signup-controls"><button class="primary" onclick="nextSignupStep()">Շարունակել →</button></div>') + '</section>';
+      '<div class="signup-controls"><button class="primary" onclick="nextSignupStep()"' + (key === 'level' && registration.level === undefined ? ' disabled' : '') + '>Շարունակել →</button></div>') + '</section>';
   if (displayedSignupStep !== signupStep && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
     app.querySelector('.signup-progress span')?.animate([
       { width: (displayedSignupStep / onboardingQuestions.length * 100) + '%' },
