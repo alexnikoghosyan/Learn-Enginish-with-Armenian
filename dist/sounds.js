@@ -160,4 +160,5 @@ function advanceSoundRound() {
     soundCorrect + ' / ' + soundRound.length + ' ճիշտ պատասխան' + (points ? ' · +10 միավոր' : '') +
     '</small></div></div><div class="tools"><button class="primary" onclick="go(\'sounds\')">' +
     'Վերադառնալ հնչյուններին</button></div></section>';
+  if (points && state.soundXp === 10 && !state.lessons.length && !Object.values(state.wordLessons).some(item => item.done)) offerMobileProgress();
 }

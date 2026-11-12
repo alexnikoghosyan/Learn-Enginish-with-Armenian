@@ -77,7 +77,7 @@ document.addEventListener('keydown', event => {
 });
 
 function nextGrammarTopic() {
-  return LESSONS.findIndex((_, index) => !state.lessons.includes(index));
+  return LESSONS.findIndex((_, index) => index >= grammarStartingIndex() && !state.lessons.includes(index));
 }
 
 function grammar() {
@@ -235,4 +235,5 @@ function checkGrammarPractice() {
     '</small></div></div><div class="tools">' +
     (next >= 0 ? '<button class="primary" onclick="lesson(' + next + ')">Հաջորդ դասը →</button>' : '') +
     '<button class="secondary" onclick="go(\'grammar\')">Վերադառնալ ճանապարհին</button></div></section>';
+  if (Object.values(state.wordLessons).filter(item => item.done).length + state.lessons.length === 1 && !state.soundXp) offerMobileProgress();
 }

@@ -23,17 +23,17 @@ const LESSONS=[
 {title:'Շատ, քիչ և ավելի',en:'Some, any & comparisons',desc:'Քանակ և համեմատություն',rule:'Many՝ հաշվելի հոգնակի գոյականների հետ, much՝ անհաշվելի։ Some հաճախ հաստատականում է, any՝ հարցերում ու ժխտումներում։ Առաջարկներում և խնդրանքներում կարող է լինել some։ Կարճ ածական՝ small → smaller → the smallest։ Երկար՝ more beautiful → the most beautiful։ Good → better → the best։',examples:[['I have some books. I don’t have any milk.','Ես մի քանի գիրք ունեմ։ Կաթ չունեմ։'],['How many books? How much water?','Քանի՞ գիրք։ Որքա՞ն ջուր։'],['This book is better than that one.','Այս գիրքն ավելի լավն է, քան այն մեկը։']],q:'How ___ water do you drink?',options:['many','much','a','an'],a:1,why:'Water-ն անհաշվելի է․ օգտագործում ենք much։'}
 ];
 let state;try{state=JSON.parse(localStorage.getItem('eg-v1'))||{}}catch{state={}}state.known??=[];state.lessons??=[];state.notes??={};state.review??={};let view=lastStudySection(),page=0,query='',filter='all',letter='',flashIndex=0,flipped=false,quizIndex=0,answered=false,score=0;const app=document.getElementById('app');
-const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));const save=()=>{try{localStorage.setItem('eg-v1',JSON.stringify(state))}catch{alert('Առաջընթացը հնարավոր չեղավ պահպանել։ Դիտարկիչի պահոցը հասանելի չէ։')}};const hy=w=>state.notes[w.en]||w.hy||w.mt||'';const translated=()=>WORDS.filter(w=>hy(w));const known=w=>state.known.includes(w);const go=v=>{view=v;render();window.scrollTo(0,0)};
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));const save=()=>{try{localStorage.setItem(studyStorageKey(),JSON.stringify(state))}catch{alert('Առաջընթացը հնարավոր չեղավ պահպանել։ Դիտարկիչի պահոցը հասանելի չէ։')}};const hy=w=>state.notes[w.en]||w.hy||w.mt||'';const translated=()=>WORDS.filter(w=>hy(w));const known=w=>state.known.includes(w);const go=v=>{view=v;render();window.scrollTo(0,0)};
 const navigationIcons = {
   journal: '<rect x="5" y="6" width="22" height="23" rx="4" fill="#ffca3a"/><path fill="#fff0b5" d="M10 10h14v15H10z"/><path d="M10 4v6m11-6v6" stroke="#af7314" stroke-width="3" stroke-linecap="round"/><path fill="#f39318" d="m12 20 10-9 3 3-10 9-4 1z"/>'
 };
 
-const studySectionNames = ['home', 'grammar', 'vocabulary', 'sounds', 'journal'];
+const studySectionNames = ['home', 'grammar', 'vocabulary', 'sounds', 'journal', 'profile'];
 
 function lastStudySection() {
   try {
     const saved = localStorage.getItem('eg-section');
-    if (['home', 'grammar', 'vocabulary', 'sounds', 'journal'].includes(saved)) return saved;
+    if (['home', 'grammar', 'vocabulary', 'sounds', 'journal', 'profile'].includes(saved)) return saved;
   } catch {}
   return 'vocabulary';
 }
@@ -43,22 +43,23 @@ function renderNavigation() {
   if (studySectionNames.includes(section)) {
     try { localStorage.setItem('eg-section', section); } catch {}
   }
-  const activeView = ['journal', 'sounds'].includes(view) ? view : 'home';
+  const activeView = ['journal', 'sounds', 'profile'].includes(view) ? view : 'home';
   const links = [
     ['home', 'Սովորել'],
     ['sounds', 'Հնչյուններ'],
-    ['journal', 'Իմ գրառումները']
+    ['journal', 'Իմ գրառումները'],
+    ['profile', 'Պրոֆիլ']
   ];
   document.getElementById('nav').innerHTML = links.map(([id, name]) =>
     '<button ' + (activeView === id ? 'class="active" aria-current="page" ' : '') +
     'onclick="go(\'' + id + '\')"><i aria-hidden="true">' +
-    (id === 'home' || id === 'sounds' ? referenceIcon(id) : '<svg viewBox="0 0 32 32" focusable="false">' + navigationIcons[id] + '</svg>') +
+    (id === 'home' || id === 'sounds' ? referenceIcon(id) : '<svg viewBox="0 0 32 32" focusable="false">' + (navigationIcons[id] || '<circle cx="16" cy="10" r="6" fill="#9b73dc"/><path d="M5 28c0-8 5-12 11-12s11 4 11 12z" fill="#9b73dc"/>') + '</svg>') +
     '</i>' + name + '</button>'
   ).join('');
 }
 function render() {
   renderNavigation();
-  const pages = { home: studyHome, grammar, vocabulary, quiz, journal, sounds };
+  const pages = { home: studyHome, grammar, vocabulary, quiz, journal, sounds, profile };
   (pages[view] ?? studyHome)();
 }
 function filtered(){return WORDS.filter(w=>(!query||w.en.toLowerCase().includes(query.toLowerCase())||hy(w).toLowerCase().includes(query.toLowerCase()))&&(!letter||w.en[0].toUpperCase()===letter)&&(filter==='all'||filter==='translated'&&hy(w)||filter==='known'&&known(w.en)||filter==='new'&&!known(w.en)))}

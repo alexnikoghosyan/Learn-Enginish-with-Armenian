@@ -1,8 +1,8 @@
 function studyHome() {
   const grammarDone = LESSONS.filter((_, index) => state.lessons.includes(index)).length;
   const wordsDone = wordOrder.filter(index => state.wordLessons[index]?.done).length;
-  const nextGrammar = LESSONS.findIndex((_, index) => !state.lessons.includes(index));
-  const nextWord = wordOrder.find(index => !state.wordLessons[index]?.done);
+  const nextGrammar = LESSONS.findIndex((_, index) => index >= grammarStartingIndex() && !state.lessons.includes(index));
+  const nextWord = nextCourseWord();
   const grammarButton = nextGrammar < 0 ? "go('grammar')" : 'lesson(' + nextGrammar + ')';
   const wordButton = state.cumulativeReview ? 'startCumulativeReview()' : nextWord === undefined ? "go('vocabulary')" : 'resumeWordFromHome(' + nextWord + ')';
   app.innerHTML = `

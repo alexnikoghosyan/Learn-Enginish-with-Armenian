@@ -92,7 +92,7 @@ function drawReviewQuestion() {
       '<span class="reward-medal" aria-hidden="true">★</span><div><strong>Կրկնությունն ավարտված է։</strong>' +
       '<small>Կրկնեցիր անցած բոլոր բառերը։</small></div></div><div class="tools">' +
       '<button class="primary" onclick="continueAfterReview()">' +
-      (wordOrder.some(index => !state.wordLessons[index]?.done) ? 'Հաջորդ բառը →' : 'Վերադառնալ ճանապարհին →') +
+      (nextCourseWord() !== undefined ? 'Հաջորդ բառը →' : 'Վերադառնալ ճանապարհին →') +
       '</button></div></section>';
     return;
   }
@@ -192,7 +192,7 @@ function finishReviewQuestion(message) {
 }
 
 function continueAfterReview() {
-  const index = wordOrder.find(position => !state.wordLessons[position]?.done);
+  const index = nextCourseWord();
   if (index === undefined) showLearningPath(pathPage);
   else openWordLesson(index);
 }

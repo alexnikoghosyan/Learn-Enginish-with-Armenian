@@ -1,0 +1,11 @@
+CREATE TABLE profiles (
+  account_id TEXT PRIMARY KEY NOT NULL,
+  username TEXT NOT NULL COLLATE NOCASE UNIQUE,
+  name TEXT NOT NULL,
+  level INTEGER NOT NULL CHECK (level BETWEEN 0 AND 4),
+  source TEXT NOT NULL,
+  age_band TEXT NOT NULL,
+  reasons TEXT NOT NULL,
+  avatar TEXT NOT NULL DEFAULT 'bear',
+  created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+);

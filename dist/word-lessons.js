@@ -411,7 +411,7 @@ function lessonEntry(index) {
 }
 
 function firstUnfinishedWord() {
-  return wordOrder.find(index => !state.wordLessons[index]?.done) ?? wordOrder[0];
+  return nextCourseWord() ?? wordOrder[wordStartingPosition()];
 }
 
 const wordsPerUnit = 5;
@@ -449,7 +449,7 @@ const reviewPathIcon = '<svg class="path-dumbbell" viewBox="0 0 36 36" fill="non
 
 function drawLearningPath() {
   const completed = wordOrder.filter(index => state.wordLessons[index]?.done).length;
-  const nextIndex = wordOrder.find(index => !state.wordLessons[index]?.done);
+  const nextIndex = nextCourseWord();
   const nextPosition = wordOrder.indexOf(state.cumulativeReview?.afterWord ?? state.cumulativeReview?.words.at(-1) ?? nextIndex);
   const nextPage = nextPosition < 0 ? 0 : Math.floor(nextPosition / (wordsPerUnit * unitsPerPage));
   const firstUnit = pathPage * unitsPerPage;
@@ -598,6 +598,7 @@ function moveWordLesson(direction) {
       queueCumulativeReview(currentWordIndex);
       save();
       drawWordLesson(true);
+      if (Object.values(state.wordLessons).filter(item => item.done).length + state.lessons.length === 1 && !state.soundXp) offerMobileProgress();
       return;
     }
   }
