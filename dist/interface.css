@@ -886,3 +886,5 @@ body:has(.account-flow):not(:has(nav button)) main { margin: auto; padding: 26px
 .avatar-options { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
 .avatar-options button { font-size: 25px; padding: 7px 10px; }
 @media(max-width:730px) { aside nav { grid-template-columns: repeat(4, minmax(0,1fr)); } }
+
+.account-mascot + h1 + .account-actions .primary { color: #fff; }
