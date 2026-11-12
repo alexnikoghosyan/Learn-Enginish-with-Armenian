@@ -6,7 +6,7 @@ const reasonOptions = [
   ['other', 'Ուրիշ պատճառ']
 ];
 const ageOptions = ['13–17', '18–24', '25–34', '35–44', '45–54', '55+'];
-const profileAvatars = { bear: '🐻', fox: '🦊', frog: '🐸', cat: '🐱', rabbit: '🐰', owl: '🦉' };
+const profileAvatars = { bear: '🐻', fox: gardenIllustration('fox'), frog: gardenIllustration('frog'), cat: gardenIllustration('cat'), rabbit: gardenIllustration('rabbit'), owl: '🦉' };
 const onboardingQuestions = [
   ['level', 'Որքա՞ն անգլերեն գիտես', levelOptions.map((label, index) => [index, label])],
   ['source', 'Որտեղի՞ց իմացար մեր մասին', sourceOptions.map(value => [value, value])],
@@ -147,7 +147,7 @@ const signupChoiceIcons = {
   reasons: [signupFriendsIcon, gardenIllustration('party'), gardenIllustration('books'), gardenIllustration('hourglass'), gardenIllustration('briefcase'), gardenIllustration('airplane'), signupOtherIcon],
   dailyGoal: [5, 10, 15, 20].map(minutes => gardenIllustration('timer' + minutes)),
   path: [gardenIllustration('workbook'), gardenIllustration('compass'), gardenIllustration('target')],
-  age: [gardenIllustration('backpack'), gardenIllustration('seedling'), gardenIllustration('sprig'), gardenIllustration('tree'), '🍃', '⭐']
+  age: [gardenIllustration('backpack'), gardenIllustration('seedling'), gardenIllustration('sprig'), gardenIllustration('tree'), gardenIllustration('ageLeaves'), gardenIllustration('ageStar')]
 };
 
 function pairedSignupIcons(first, second) {
@@ -203,7 +203,7 @@ function drawSignup(message = '') {
   } else if (key === 'auth') {
     body = account.authenticated ? '<button class="primary" onclick="createStudyProfile()">Ստեղծել պրոֆիլը</button>' :
       '<div class="account-actions"><a class="secondary" href="/signin-with-chatgpt?return_to=%2F" target="_top">' + signupIcon(signupGoogleIcon) + 'Շարունակել Google-ով</a>' +
-      '<a class="secondary" href="/signin-with-chatgpt?return_to=%2F" target="_top">' + signupIcon('✉️') + 'Շարունակել էլ․ փոստով</a></div>' +
+      '<a class="secondary" href="/signin-with-chatgpt?return_to=%2F" target="_top">' + signupIcon(gardenIllustration('envelope')) + 'Շարունակել էլ․ փոստով</a></div>' +
       '<p class="muted">Մուտքի էջում ընտրիր Google-ը կամ էլ․ փոստը։</p>';
   } else {
     body = '<form onsubmit="event.preventDefault();nextSignupStep()"><label for="signup-input">' +
@@ -529,7 +529,7 @@ function offerMobileProgress() {
   accountStorage(studyStorageKey() + '-mobile-progress', 'shown');
   const dialog = document.createElement('dialog');
   dialog.className = 'lesson-exit-dialog';
-  dialog.innerHTML = '<div class="exit-owl" aria-hidden="true">' + gardenIllustration('medal') + '</div><h2>Առաջին դասն ավարտեցիր։</h2>' +
+  dialog.innerHTML = '<div class="exit-owl" aria-hidden="true">' + gardenIllustration('happyBear') + '</div><h2>Առաջին դասն ավարտեցիր։</h2>' +
     '<p>Ցույց տուր առաջընթացդ կամ ավելացրու կայքը հեռախոսի գլխավոր էկրանին։</p><div class="account-actions">' +
     (navigator.share ? '<button class="primary" onclick="shareStudyProgress()">Կիսվել առաջընթացով</button>' : '') +
     '<button class="secondary" onclick="this.closest(\'dialog\').querySelector(\'.install-help\').hidden=false">Ինչպես ավելացնել էկրանին</button>' +
