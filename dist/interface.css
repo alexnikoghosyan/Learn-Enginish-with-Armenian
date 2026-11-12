@@ -926,3 +926,12 @@ body:has(.account-flow):not(:has(nav button)) main { margin: auto; padding: 26px
 .profile-stat-box.profile-xp svg { color: #ffc800; }
 .profile-stat-box strong { display: block; font-size: 19px; line-height: 1.25; }
 .profile-stat-box small { display: block; margin-top: 4px; font-size: 12px; }
+
+.signup-sources { grid-template-columns: repeat(2, minmax(0,1fr)); gap: 13px; }
+.signup-sources .secondary { min-height: 60px; padding: 10px 12px; }
+.signup-progress { flex: 1; min-width: 0; height: 16px; overflow: hidden; border-radius: 999px; background: #e5e5e5; }
+.signup-progress span {
+  display: block; height: 100%; border-radius: inherit;
+  background: linear-gradient(#83dd30,#83dd30) center 4px / calc(100% - 10px) 4px no-repeat, #58cc02;
+}
+@media(max-width:480px) { .signup-sources { grid-template-columns: 1fr; } }

@@ -1,5 +1,5 @@
 const avatars = ['bear', 'fox', 'frog', 'cat', 'rabbit', 'owl'];
-const sources = ['Instagram', 'Facebook', 'X (Twitter)', 'TikTok', 'Play Market', 'Ընկերներից', 'Ուրիշ'];
+const sources = ['Instagram', 'Facebook', 'X (Twitter)', 'TikTok', 'Play Market', 'Ընկերներից', 'Նորություններից կամ բլոգից', 'YouTube', 'Հեռուստատեսությունից', 'Google-ի որոնումից', 'Ուրիշ'];
 const reasons = ['people', 'fun', 'education', 'time', 'career', 'travel', 'other'];
 const ages = ['13–17', '18–24', '25–34', '35–44', '45–54', '55+'];
 

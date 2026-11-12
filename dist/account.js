@@ -1,5 +1,5 @@
 const levelOptions = ['Սկսում եմ զրոյից', 'Գիտեմ մի քանի տարածված բառ', 'Կարող եմ պարզ զրույց վարել', 'Կարող եմ խոսել տարբեր թեմաներով', 'Կարող եմ մանրամասն քննարկել շատ թեմաներ'];
-const sourceOptions = ['Instagram', 'Facebook', 'X (Twitter)', 'TikTok', 'Play Market', 'Ընկերներից', 'Ուրիշ'];
+const sourceOptions = ['Instagram', 'Facebook', 'X (Twitter)', 'TikTok', 'Play Market', 'Ընկերներից', 'Նորություններից կամ բլոգից', 'YouTube', 'Հեռուստատեսությունից', 'Google-ի որոնումից', 'Ուրիշ'];
 const reasonOptions = [
   ['people', 'Շփվել մարդկանց հետ'], ['fun', 'Սովորել հաճույքի համար'], ['education', 'Օգնել ուսմանս'],
   ['time', 'Ժամանակս օգտակար անցկացնել'], ['career', 'Զարգացնել կարիերաս'], ['travel', 'Պատրաստվել ճանապարհորդության'],
@@ -22,6 +22,7 @@ let signupStep = 0;
 let guestMode = false;
 let accountBusy = false;
 let usernameTimer;
+let displayedSignupStep = 0;
 
 function accountStorage(key, value) {
   try {
@@ -116,7 +117,9 @@ const signupChoiceIcons = {
     '<svg viewBox="0 0 24 24"><rect width="24" height="24" rx="6" fill="#171717"/><path d="M6 5h4l8 14h-4zM18 5 6 19" fill="none" stroke="white" stroke-width="1.5" stroke-linejoin="round"/></svg>',
     '<svg viewBox="0 0 24 24"><rect width="24" height="24" rx="6" fill="#171717"/><path d="M14 5v11a3.4 3.4 0 1 1-3.4-3.4M14 5c0 3 2 4.7 5 4.8" fill="none" stroke="#28e3df" stroke-width="2.7" stroke-linecap="round" transform="translate(-.8,.8)"/><path d="M14 5v11a3.4 3.4 0 1 1-3.4-3.4M14 5c0 3 2 4.7 5 4.8" fill="none" stroke="white" stroke-width="2.7" stroke-linecap="round"/></svg>',
     '<svg viewBox="0 0 24 24"><path fill="#32a66b" d="M4 3v18l9-9z"/><path fill="#51b9f0" d="m4 3 13 7-4 2z"/><path fill="#f9bd42" d="m17 10 4 2-4 2-4-2z"/><path fill="#e8516a" d="m4 21 13-7-4-2z"/></svg>',
-    '👥', '✨'
+    '👥', '📰',
+    '<svg viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="5" fill="#f42532"/><path d="m10 8 6 4-6 4z" fill="white"/></svg>',
+    '📺', '<b class="signup-google">G</b>', '✨'
   ],
   reasons: ['🤝', '🎉', '📚', '⏳', '💼', '✈️', '✨'],
   age: ['🎒', '🌱', '🌿', '🌳', '🍃', '⭐']
@@ -131,7 +134,7 @@ function drawSignup(message = '') {
   const [key, title, choices] = onboardingQuestions[signupStep];
   let body = '';
   if (choices) {
-    body = '<div class="account-options">' + choices.map(([value, label], index) => {
+    body = '<div class="account-options' + (key === 'source' ? ' signup-sources' : '') + '">' + choices.map(([value, label], index) => {
       const chosen = key === 'reasons' ? (registration.reasons || []).includes(value) : registration[key] === value;
       return '<button class="secondary" aria-pressed="' + chosen + '" onclick="chooseSignupOption(' + index +
         ')">' + signupIcon(signupChoiceIcons[key][index]) + esc(label) + '</button>';
@@ -151,10 +154,19 @@ function drawSignup(message = '') {
         '<small id="username-status" role="status"></small><div id="username-suggestions"></div>' : '') + '</form>';
   }
   app.innerHTML = '<section class="account-flow"><div class="account-step"><button class="icon-btn" onclick="previousSignupStep()" aria-label="Նախորդ">←</button>' +
-    '<progress value="' + signupStep + '" max="' + onboardingQuestions.length + '" aria-label="Գրանցման առաջընթաց"></progress></div>' +
+    '<div class="signup-progress" role="progressbar" aria-label="Գրանցման առաջընթաց" aria-valuemin="0" aria-valuemax="' +
+    onboardingQuestions.length + '" aria-valuenow="' + signupStep + '"><span style="width:' +
+    (signupStep / onboardingQuestions.length * 100) + '%"></span></div></div>' +
     '<h1>' + title + '</h1>' + (key === 'reasons' ? '<p>Կարող ես ընտրել մի քանի պատճառ։</p>' : '') +
     body + '<p class="account-error" role="status">' + esc(message) + '</p>' +
     (key === 'auth' ? '' : '<button class="primary" onclick="nextSignupStep()">Շարունակել →</button>') + '</section>';
+  if (displayedSignupStep !== signupStep && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    app.querySelector('.signup-progress span')?.animate([
+      { width: (displayedSignupStep / onboardingQuestions.length * 100) + '%' },
+      { width: (signupStep / onboardingQuestions.length * 100) + '%' }
+    ], { duration: 310, easing: 'cubic-bezier(.2,.75,.3,1)' });
+  }
+  displayedSignupStep = signupStep;
   if (key === 'username' && registration.username) scheduleUsernameCheck(document.getElementById('signup-input'));
 }
 
