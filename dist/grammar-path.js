@@ -20,15 +20,31 @@ function renderPathStop(title, offset, status, action, icon, language = 'hy') {
 }
 
 function closePathPreview(preview) {
-  preview.hidden = true;
-  preview.parentElement.querySelector('.path-node').setAttribute('aria-expanded', 'false');
+  const button = preview.parentElement.querySelector('.path-node');
+  if (button.getAttribute('aria-expanded') !== 'true') return;
+  button.setAttribute('aria-expanded', 'false');
+  preview.inert = true;
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    preview.hidden = true;
+    return;
+  }
+  preview.classList.add('is-closing');
+  preview.addEventListener('animationend', () => {
+    if (!preview.classList.contains('is-closing')) return;
+    preview.hidden = true;
+    preview.classList.remove('is-closing');
+  }, { once: true });
 }
 
 function togglePathPreview(button) {
   const preview = button.parentElement.querySelector('.path-preview');
-  if (!preview.hidden) { closePathPreview(preview); return; }
-  app.querySelectorAll('.path-preview:not([hidden])').forEach(closePathPreview);
+  if (button.getAttribute('aria-expanded') === 'true') { closePathPreview(preview); return; }
+  app.querySelectorAll('.path-preview:not([hidden])').forEach(other => {
+    if (other !== preview) closePathPreview(other);
+  });
+  preview.classList.remove('is-closing');
   preview.hidden = false;
+  preview.inert = false;
   button.setAttribute('aria-expanded', 'true');
   preview.querySelector('button').focus({ preventScroll: true });
 }

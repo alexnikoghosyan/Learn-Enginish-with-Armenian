@@ -827,6 +827,15 @@ body:has(#app .lesson-controls) main {
   }
 }
 @keyframes lesson-preview-open {
-  from { opacity: 0; transform: translate(-50%, -7px) scale(.96); }
+  from { opacity: 0; transform: translate(-50%, 0) scale(.72); }
   to { opacity: 1; transform: translate(-50%, 0) scale(1); }
+}
+
+.path-preview.is-closing { pointer-events: none; }
+@media (prefers-reduced-motion: no-preference) {
+  .path-preview.is-closing:not([hidden]) { animation: lesson-preview-close .18s ease-in both; }
+}
+@keyframes lesson-preview-close {
+  from { opacity: 1; transform: translate(-50%, 0) scale(1); }
+  to { opacity: 0; transform: translate(-50%, 0) scale(.72); }
 }
