@@ -575,6 +575,7 @@ function saveWordDraft(field) {
 }
 
 function moveWordLesson(direction) {
+  if (lessonTransitionRunning) return;
   const entry = lessonEntry(currentWordIndex);
   if (direction > 0) {
     const message = entry.step === 1 && !entry.explanation.trim() ? 'Շարունակելու համար գրիր քո բացատրությունը։' :
@@ -594,12 +595,12 @@ function moveWordLesson(direction) {
       recordStudyDay();
       queueCumulativeReview(currentWordIndex);
       save();
-      drawWordLesson(true);
+      transitionLesson(() => drawWordLesson(true));
       if (Object.values(state.wordLessons).filter(item => item.done).length + state.lessons.length === 1 && !state.soundXp) offerMobileProgress();
       return;
     }
   }
   entry.step = Math.max(0, Math.min(3, entry.step + direction));
   save();
-  drawWordLesson();
+  transitionLesson(drawWordLesson, direction);
 }

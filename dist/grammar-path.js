@@ -208,6 +208,7 @@ function normalizeGrammar(value) {
 }
 
 function checkGrammarPractice() {
+  if (lessonTransitionRunning) return;
   const task = grammarExercises[grammarTopic];
   const steps = grammarPracticeKinds(task);
   const step = state.grammarPractice[grammarTopic];
@@ -222,7 +223,7 @@ function checkGrammarPractice() {
   if (step + 1 < steps.length) {
     state.grammarPractice[grammarTopic]++;
     save();
-    drawGrammarPractice();
+    transitionLesson(drawGrammarPractice);
     return;
   }
   if (!state.lessons.includes(grammarTopic)) state.lessons.push(grammarTopic);

@@ -147,15 +147,16 @@ function checkSoundAnswer() {
   feedback.innerHTML = '<span class="sound-result-symbol" aria-hidden="true">' + (correct ? '✓' : '✕') +
     '</span><div><strong>' + (correct ? 'Ճիշտ է։' : 'Այս անգամ չստացվեց։') + '</strong>' +
     (correct ? '' : '<small>Ճիշտ պատասխանը՝ ' + esc(question.options[question.answer]) + '</small>') + '</div>';
-  app.querySelector('.focus-lesson-header progress').value = soundCursor + 1;
+  setLessonProgress(soundCursor + 1);
   document.getElementById('sound-check').textContent = 'Շարունակել →';
 }
 
 function advanceSoundRound() {
+  if (lessonTransitionRunning) return;
   if (soundCursor >= soundRound.length) return;
   if (!soundChecked) recordLessonAnswer(false);
   soundCursor++;
-  if (soundCursor < soundRound.length) { drawSoundQuestion(); return; }
+  if (soundCursor < soundRound.length) { transitionLesson(drawSoundQuestion); return; }
   const points = soundAttempted ? 10 : 0;
   state.soundXp += points;
   if (points) recordStudyDay();

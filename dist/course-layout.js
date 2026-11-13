@@ -42,8 +42,7 @@ function recordLessonAnswer(correct) {
 function focusLessonHeader(step, total, destination, { showCount = true, showInitialFill = false } = {}) {
   const fill = showInitialFill ? Math.max(step, total * .1) : step;
   return '<div class="focus-lesson-header"><button class="focus-lesson-close" onclick="this.parentElement.querySelector(\'dialog\').showModal()"' +
-    ' aria-label="Փակել դասը">×</button><div class="lesson-progress-track"><span class="lesson-answer-streak" role="status"></span><progress value="' + fill +
-    '" max="' + total + '" aria-label="Դասի առաջընթաց"></progress></div>' +
+    ' aria-label="Փակել դասը">×</button><div class="lesson-progress-track"><span class="lesson-answer-streak" role="status"></span><div class="lesson-meter" role="progressbar" aria-label="Դասի առաջընթաց" aria-valuemin="0" aria-valuenow="' + fill + '" aria-valuemax="' + total + '"><span style="width:' + (100 * fill / total) + '%"></span></div></div>' +
     (showCount ? '<small>' + Math.min(step + 1, total) + ' / ' + total + '</small>' : '') +
     '<dialog class="lesson-exit-dialog" aria-labelledby="lesson-exit-title">' +
     '<div class="exit-owl" aria-hidden="true">' + gardenIllustration('bear') + '</div><h2 id="lesson-exit-title">Դո՞ւրս գալ դասից</h2>' +
@@ -75,3 +74,50 @@ function jumpToCurrentLesson() {
 
 window.addEventListener('scroll', updatePathArrow, { passive: true });
 window.addEventListener('resize', updatePathArrow);
+
+let lessonTransitionRunning = false;
+
+function setLessonProgress(value) {
+  const meter = app.querySelector('.lesson-meter');
+  if (!meter) return;
+  meter.setAttribute('aria-valuenow', value);
+  meter.firstElementChild.style.width = (100 * value / Number(meter.getAttribute('aria-valuemax'))) + '%';
+}
+
+async function transitionLesson(render, direction = 1) {
+  if (lessonTransitionRunning) return;
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    render();
+    return;
+  }
+  lessonTransitionRunning = true;
+  const previousMeter = app.querySelector('.lesson-meter span');
+  const previousWidth = previousMeter && previousMeter.getBoundingClientRect().width;
+  const oldContent = app.firstElementChild;
+  const animatedContent = () => [...app.children].flatMap(element =>
+    element.matches('.focus-lesson-header') ? [] :
+      element.querySelector(':scope > .focus-lesson-header') ?
+        [...element.children].filter(child => !child.matches('.focus-lesson-header')) : [element]);
+  const animate = (frames, duration) => Promise.all(animatedContent().map(element =>
+    element.animate(frames, { duration, easing: 'ease-out', fill: 'backwards' }).finished.catch(() => {})));
+  try {
+    const outgoing = animatedContent().map(element => element.animate([
+      { opacity: 1, transform: 'translateX(0)' },
+      { opacity: 0, transform: 'translateX(' + (-direction * 24) + 'px)' }
+    ], { duration: 140, easing: 'ease-in', fill: 'forwards' }));
+    await Promise.all(outgoing.map(animation => animation.finished.catch(() => {})));
+    if (oldContent !== app.firstElementChild) return;
+    render();
+    const next = app.querySelector('.lesson-meter span');
+    if (next && previousMeter) {
+      next.animate([{ width: previousWidth + 'px' }, { width: next.style.width }],
+        { duration: 360, easing: 'ease-out' });
+    }
+    await animate([
+      { opacity: 0, transform: 'translateX(' + (direction * 24) + 'px)' },
+      { opacity: 1, transform: 'translateX(0)' }
+    ], 220);
+  } finally {
+    lessonTransitionRunning = false;
+  }
+}

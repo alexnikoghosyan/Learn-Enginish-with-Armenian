@@ -194,10 +194,11 @@ function updateReviewCheck() {
 }
 
 function checkReviewAnswer() {
+  if (lessonTransitionRunning) return;
   if (reviewChecked) {
     activeReview.cursor++;
     save();
-    drawReviewQuestion();
+    transitionLesson(drawReviewQuestion);
     return;
   }
   const question = reviewQuestions[activeReview.cursor];
