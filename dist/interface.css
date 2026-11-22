@@ -1067,3 +1067,6 @@ aside nav button.active {
   white-space: normal;
   overflow-wrap: anywhere;
 }
+
+/* Կողային մենյուի ընտրված կոճակը՝ առանց ներքևի մուգ կապույտ եզրի */
+aside nav button.active { box-shadow: none; }

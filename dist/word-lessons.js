@@ -529,7 +529,7 @@ function drawWordLesson(justCompleted = false) {
       '<button class="secondary" data-speak="' + esc(word.en) + '">' + actionIcon('speaker') + ' Լսել արտասանությունը</button>' +
       (meaning ? '<h2>' + esc(meaning) + '</h2>' : '') +
       (machine ? '<small>Ավտոմատ թարգմանություն · ստուգիր իմաստը համատեքստում</small>' : '') +
-      (hint?.[0] ? '<p lang="en">' + esc(hint[0]) + '</p>' : '') +
+      (typeof WORD_HINTS_HY !== 'undefined' && WORD_HINTS_HY[word.en] ? '<p>' + esc(WORD_HINTS_HY[word.en]) + '</p>' : '') +
       (exampleBlock ? '<h3>Օրինակ</h3>' + exampleBlock : '') +
       '<p><a href="' + lookup + '" target="_blank" rel="noopener">Դիտել թարգմանության տարբերակները ' + actionIcon('external') + '</a></p></div>';
   } else if (entry.step === 1) {

@@ -51,7 +51,7 @@ function makeReviewQuestions(indices) {
   for (const index of indices) {
     const word = WORDS[index];
     if (!word) continue;
-    const meaning = hy(word) || state.wordLessons[index]?.explanation?.trim() || WORD_HINTS[word.en]?.[0] || word.en;
+    const meaning = hy(word) || state.wordLessons[index]?.explanation?.trim() || (typeof WORD_HINTS_HY !== 'undefined' && WORD_HINTS_HY[word.en]) || word.mt || word.en;
     const armenian = /[\u0531-\u0587]/.test(meaning);
     const example = curatedExamples[word.en];
     questions.push({ type: 'cloze', prompt: clozeForWord(word, meaning), answer: word.en, meaning,
