@@ -495,6 +495,11 @@ function openWordLesson(index = firstUnfinishedWord()) {
   }
   if (!state.wordLessons[index]?.done) index = firstUnfinishedWord();
   currentWordIndex = index;
+  // Կիսատ թողած նոր բառի դասը հաջորդ մուտքին սկսվում է 0-ից (գրածդ սևագրերը պահվում են)
+  if (!state.wordLessons[index]?.done) {
+    const entry = lessonEntry(index);
+    if (entry.step) { entry.step = 0; save(); }
+  }
   beginLessonCounters('word:' + index);
   view = 'vocabulary';
   pictureTab = 'pictures';
