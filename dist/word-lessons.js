@@ -542,8 +542,7 @@ function drawWordLesson(justCompleted = false) {
       '<label for="explanation">Իմ բացատրությունը</label>' +
       draftField('explanation', entry.explanation, 'Գրիր քո բառերով…');
   } else if (entry.step === 2) {
-    content = '<h2>Կազմիր նախադասություն</h2><p>Գրիր անգլերեն նախադասություն՝ օգտագործելով <strong lang="en">' +
-      esc(word.en) + '</strong> բառը։ Փորձիր նկարագրել մի իրական իրավիճակ։</p>' +
+    content = '<h2>Կազմիր նախադասություն <span lang="en">' + esc(word.en) + '</span> բառով</h2>' +
       (exampleBlock ? '<details><summary>Տեսնել օրինակ</summary>' + exampleBlock + '</details>' : '') +
       '<label for="sentence">Իմ նախադասությունը</label>' + draftField('sentence', entry.sentence, 'Գրիր անգլերեն…') +
       '<label for="second">Երկրորդ նախադասություն (ըստ ցանկության)</label>' + draftField('second', entry.second, 'Օգտագործիր բառը մեկ այլ իրավիճակում…');
