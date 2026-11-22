@@ -1,5 +1,5 @@
 import json, re, urllib.request, urllib.parse, concurrent.futures, pathlib
-p=pathlib.Path('work/english-garden/dist')
+p=pathlib.Path(__file__).parent/'dist'
 words=json.loads((p/'words.js').read_text(encoding='utf8').removeprefix('const WORDS=').rstrip(';'))
 todo=[w for w in words if not w['hy']]
 def batch(group):

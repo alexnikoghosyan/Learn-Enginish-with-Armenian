@@ -1,2 +1,8 @@
 
 /dist/server/
+/deploy/
+/deploy.zip
+/.wrangler/
+__pycache__/
+*-log.txt
+/new-images/

@@ -1,0 +1,1 @@
+const WORD_IMAGES = ["apple", "bag", "beer", "book", "bread", "broccoli", "cat", "chair", "cheese", "clock", "coffee", "corn", "cow", "dog", "egg", "horse", "house", "juice", "lemon", "milk", "mother", "rice", "tea", "water"];

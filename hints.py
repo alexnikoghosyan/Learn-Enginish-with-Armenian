@@ -1,5 +1,5 @@
 import json,re,urllib.request,zipfile,io,pathlib
-p=pathlib.Path('work/english-garden/dist')
+p=pathlib.Path(__file__).parent/'dist'
 with urllib.request.urlopen('https://raw.githubusercontent.com/nltk/nltk_data/gh-pages/packages/corpora/wordnet.zip',timeout=20) as r:
     z=zipfile.ZipFile(io.BytesIO(r.read()))
 data={}

@@ -435,7 +435,7 @@ function showLearningPath(page) {
 
 function wordPathIcon(word) {
   const illustration = illustrations.get(word.en.toLowerCase());
-  if (illustration) return pictureArt(illustration[2], illustration[3]);
+  if (illustration) return pictureArt(illustration[2], illustration[3], illustration[0]);
   const icon = WORD_HINTS[word.en]?.[2];
   if (icon) return '<span class="picture-emoji">' + esc(icon) + '</span>';
   return '<span class="path-letter">' + esc(Array.from(word.en).slice(0, 2).join('').toUpperCase()) + '</span>';
@@ -504,7 +504,7 @@ function openWordLesson(index = firstUnfinishedWord()) {
 function wordArtwork(word, hint) {
   const entry = illustrations.get(word.en.toLowerCase());
   const hash = Array.from(word.en).reduce((number, letter) => (number * 31 + letter.codePointAt(0)) >>> 0, 0);
-  const art = entry ? pictureArt(entry[2], entry[3]) :
+  const art = entry ? pictureArt(entry[2], entry[3], entry[0]) :
     hint?.[2] ? '<span class="picture-emoji" aria-hidden="true">' + hint[2] + '</span>' :
     '<span class="word-monogram" aria-hidden="true">' + esc(Array.from(word.en).slice(0, 2).join('').toUpperCase()) + '</span>';
   const caption = entry ? '' : hint?.[3] ? 'Թեմատիկ հուշում · ' + esc(hint[3]) : 'Տառային հուշում';
@@ -555,12 +555,12 @@ function drawWordLesson(justCompleted = false) {
   }
   app.innerHTML = focusLessonHeader(entry.step, wordLessonStepCount, 'vocabulary', { showInitialFill: true }) + '<h1>Բառեր</h1>'  +
     '<section class="panel word-lesson-panel">' + content +
-    '<p id="word-lesson-error" role="alert" class="word-lesson-error"></p>' +
-    '<div class="tools word-actions lesson-controls">' +
+    '<p id="word-lesson-error" role="alert" class="word-lesson-error"></p></section>' +
+    '<div class="word-actions lesson-controls">' +
     (entry.step ? '<button class="secondary" onclick="moveWordLesson(-1)">← Հետ</button>' : '') +
     '<button class="primary" onclick="moveWordLesson(1)">' +
     (entry.step < 3 ? 'Շարունակել →' : entry.done ? (state.cumulativeReview ? 'Սկսել կրկնությունը →' : 'Հաջորդ բառը →') : 'Ավարտել դասը ✓') +
-    '</button></div></section>';
+    '</button></div>';
 }
 
 function draftField(key, value, placeholder) {

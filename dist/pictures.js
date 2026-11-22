@@ -59,7 +59,15 @@ function selectPictureTopic(topic) {
   picturePage();
 }
 
-function pictureArt(emoji, shape) {
+function wordImageSlug(english) {
+  return String(english || '').toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+}
+
+function pictureArt(emoji, shape, english) {
+  const slug = wordImageSlug(english);
+  if (slug && typeof WORD_IMAGES !== 'undefined' && WORD_IMAGES.includes(slug)) {
+    return '<img class="picture-emoji picture-img" src="/word-' + slug + '.webp" alt="" aria-hidden="true" loading="lazy" decoding="async">';
+  }
   if (!shape) return '<span class="picture-emoji" aria-hidden="true">' + emoji + '</span>';
   return '<span class="drink-art ' + shape + '" aria-hidden="true"><i></i><b></b></span>';
 }
@@ -80,7 +88,7 @@ function picturePage() {
       const active = english === pictureSelection;
       const result = exercise?.checked && active ? (english === exercise.target[0] ? ' correct' : ' wrong') : '';
       return '<button class="picture-tile' + result + '" aria-pressed="' + active +
-        '" onclick="pickPicture(\'' + english + '\')">' + pictureArt(emoji, shape) +
+        '" onclick="pickPicture(\'' + english + '\')">' + pictureArt(emoji, shape, english) +
         '<strong lang="en">' + english + '</strong>' + (!exercise && active ? '<small>' + esc(armenian) + '</small>' : '') + '</button>';
     }).join('') + '</div>' +
     '<div class="picture-feedback" aria-live="polite">' +

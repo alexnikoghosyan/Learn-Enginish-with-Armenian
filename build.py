@@ -1,6 +1,10 @@
 import re,json,pathlib
 root=pathlib.Path(__file__).parent
-raw=pathlib.Path(r'C:/Users/User/.codex/attachments/6cff1ca1-72c0-4611-8536-efe51f15cb86/Pasted text.txt').read_text(encoding='utf-8-sig')
+import sys
+# Բառացանկի աղբյուրը՝ կամ առաջին արգումենտը, կամ words-source.txt-ը այս ֆայլի կողքին
+source=pathlib.Path(sys.argv[1]) if len(sys.argv)>1 else root/'words-source.txt'
+if not source.is_file(): sys.exit('Բառացանկի ֆայլը չի գտնվել՝ '+str(source)+'\nՕգտագործում՝ python build.py <words.txt>')
+raw=source.read_text(encoding='utf-8-sig')
 words=list(dict.fromkeys(w.strip() for w in re.split(r',|\r?\n',raw) if w.strip() and not re.fullmatch('[A-Z]',w.strip())))
 pairs='''a|մի (անորոշ հոդ)
 about|մասին, մոտավորապես

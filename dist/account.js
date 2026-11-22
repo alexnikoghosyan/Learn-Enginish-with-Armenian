@@ -121,7 +121,7 @@ function showAccountWelcome() {
   app.innerHTML = '<div class="account-flow"><div class="account-mascot">' + lessonBear() +
     '</div><h1>Սովորիր անգլերեն քո տեմպով</h1><div class="account-actions">' +
     '<button class="primary" onclick="startSignup()">Գրանցվել</button>' +
-    '<a class="secondary" href="/signin-with-chatgpt?return_to=%2F" target="_top">Մուտք գործել</a>' +
+    '<a class="secondary" href="/auth/google?return_to=%2F" target="_top">Մուտք գործել</a>' +
     '<button class="text-button" onclick="continueAsGuest()">Շարունակել առանց հաշվի</button></div></div>';
 }
 
@@ -202,9 +202,8 @@ function drawSignup(message = '') {
     }
   } else if (key === 'auth') {
     body = account.authenticated ? '<button class="primary" onclick="createStudyProfile()">Ստեղծել պրոֆիլը</button>' :
-      '<div class="account-actions"><a class="secondary" href="/signin-with-chatgpt?return_to=%2F" target="_top">' + signupIcon(signupGoogleIcon) + 'Շարունակել Google-ով</a>' +
-      '<a class="secondary" href="/signin-with-chatgpt?return_to=%2F" target="_top">' + signupIcon(gardenIllustration('envelope')) + 'Շարունակել էլ․ փոստով</a></div>' +
-      '<p class="muted">Մուտքի էջում ընտրիր Google-ը կամ էլ․ փոստը։</p>';
+      '<div class="account-actions"><a class="secondary" href="/auth/google?return_to=%2F" target="_top">' + signupIcon(signupGoogleIcon) + 'Շարունակել Google-ով</a></div>' +
+      '<p class="muted">Քո առաջընթացը կպահվի Google հաշվով։</p>';
   } else {
     body = '<form onsubmit="event.preventDefault();nextSignupStep()"><label for="signup-input">' +
       (key === 'name' ? 'Անուն' : 'Օգտանուն') + '</label><div class="signup-field"><input id="signup-input" value="' + esc(registration[key] || '') +
@@ -511,7 +510,7 @@ function profile() {
     '<h2>Ընտրիր ավատար</h2><div class="avatar-options">' + Object.entries(profileAvatars).map(([key, icon]) =>
       '<button class="secondary" aria-label="' + key + '" aria-pressed="' + (key === user.avatar) +
       '" onclick="saveAvatar(\'' + key + '\')">' + icon + '</button>').join('') + '</div>' +
-    '<p id="profile-status" role="status"></p><a class="secondary" href="/signout-with-chatgpt?return_to=%2F" target="_top">Դուրս գալ հաշվից</a></section>';
+    '<p id="profile-status" role="status"></p><a class="secondary" href="/auth/signout" target="_top">Դուրս գալ հաշվից</a></section>';
 }
 
 async function saveAvatar(avatar) {

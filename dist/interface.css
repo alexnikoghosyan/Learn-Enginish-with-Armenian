@@ -1043,3 +1043,27 @@ aside nav button.active {
 @media (prefers-reduced-motion: reduce) {
   .lesson-meter > span { transition: none; }
 }
+
+#app > .word-actions.lesson-controls {
+  position: fixed;
+  inset: auto 0 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
+  align-items: center;
+}
+#app > .word-actions > .secondary {
+  grid-column: 1;
+  grid-row: 1;
+  justify-self: start;
+}
+#app > .word-actions > .primary {
+  grid-column: 2;
+  grid-row: 1;
+  justify-self: end;
+  width: max-content;
+  min-width: 0;
+  max-width: 100%;
+  margin: 0;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}

@@ -145,7 +145,7 @@ function drawReviewQuestion(mode = 'typing') {
     reviewPictures = shuffled(choices);
     exercise = '<div class="picture-grid review-grid">' + reviewPictures.map((picture, index) =>
       '<button type="button" class="picture-tile" aria-pressed="false" aria-label="Պատկեր ' + (index + 1) +
-      '" onclick="selectReviewPicture(' + index + ')">' + pictureArt(picture.emoji, picture.shape) + '</button>'
+      '" onclick="selectReviewPicture(' + index + ')">' + pictureArt(picture.emoji, picture.shape, picture.word) + '</button>'
     ).join('') + '</div>';
   }
   app.innerHTML = focusLessonHeader(cursor, reviewQuestions.length, 'vocabulary') +

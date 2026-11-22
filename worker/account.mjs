@@ -37,9 +37,9 @@ async function usernameAvailability(request, env) {
   return json({ available: false, suggestions: candidates.filter(candidate => !unavailable.has(candidate)).slice(0, 3) });
 }
 
-export async function accountRequest(request, env, pathname) {
+export async function accountRequest(request, env, pathname, userId = request.headers.get('oai-authenticated-user-id')) {
   if (pathname === '/api/username' && request.method === 'GET') return usernameAvailability(request, env);
-  const id = request.headers.get('oai-authenticated-user-id');
+  const id = userId;
   if (pathname === '/api/account' && request.method === 'GET' && !id) {
     return json({ authenticated: false, profile: null });
   }
