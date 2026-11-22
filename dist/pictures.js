@@ -63,10 +63,16 @@ function wordImageSlug(english) {
   return String(english || '').toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
 }
 
+// Մեկ ֆայլի տարբերակում (worker/single-file.mjs) նկարները ներդրված են EMBEDDED_ASSETS-ում որպես data: URI։
+function wordImageUrl(slug) {
+  const path = '/word-' + slug + '.webp';
+  return typeof EMBEDDED_ASSETS !== 'undefined' && EMBEDDED_ASSETS[path] || path;
+}
+
 function pictureArt(emoji, shape, english) {
   const slug = wordImageSlug(english);
   if (slug && typeof WORD_IMAGES !== 'undefined' && WORD_IMAGES.includes(slug)) {
-    return '<img class="picture-emoji picture-img" src="/word-' + slug + '.webp" alt="" aria-hidden="true" loading="lazy" decoding="async">';
+    return '<img class="picture-emoji picture-img" src="' + wordImageUrl(slug) + '" alt="" aria-hidden="true" loading="lazy" decoding="async">';
   }
   if (!shape) return '<span class="picture-emoji" aria-hidden="true">' + emoji + '</span>';
   return '<span class="drink-art ' + shape + '" aria-hidden="true"><i></i><b></b></span>';

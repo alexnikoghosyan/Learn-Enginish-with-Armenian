@@ -1145,3 +1145,43 @@ aside nav button.active:is(:hover, :active, :focus-visible) {
 @media (prefers-reduced-motion: reduce) {
   :is(.primary, .secondary, .icon-btn, .option, .picture-tile, .sound-tile) { transition: none; }
 }
+
+/* Ընթացիկ դասընթացի հղումը («Քերականություն» կամ «Բառեր») ընտրված տեսք ունի,
+   ինչպես գրանցման ընտրված տարբերակը։ Սեղմելիս դեմքը իջնում է 3px, հիմքը՝ 4px → 1px։ */
+.course-link[aria-current="page"],
+.course-link[aria-current="page"]:not(:disabled):hover {
+  background: #ddf4ff;
+  border: 2px solid #8ad8ff;
+  box-shadow: 0 4px #84d8ff;
+  color: #006f9f;
+}
+.course-link[aria-current="page"]:not(:disabled):active {
+  transform: translateY(3px);
+  box-shadow: 0 1px #84d8ff;
+}
+
+/* Մուտքի էկրան և էլ. փոստի ձևաթուղթ */
+.auth-divider { display: flex; align-items: center; gap: 12px; margin: 6px 0 2px; color: #8a8a8a; font-weight: 800; font-size: 14px; text-transform: uppercase; }
+.auth-divider::before, .auth-divider::after { content: ""; flex: 1; height: 2px; background: #e5e5e5; }
+.email-form { display: grid; gap: 4px; text-align: start; margin: 10px 0 14px; }
+.email-form label { margin: 10px 0 4px; font-weight: 800; color: #4b4b4b; }
+.email-form input { min-height: 48px; padding: 10px 14px; border: 2px solid #e5e5e5; border-radius: 14px; background: #f7f7f7; font: inherit; font-size: 16px; }
+.email-form input:focus { outline: none; border-color: #84d8ff; background: #fff; }
+.email-form small { color: #777; margin: 4px 2px 0; }
+.email-form .primary { margin-top: 10px; width: 100%; color: #fff; }
+.email-form .account-error:empty { min-height: 0; }
+.email-form .account-error { margin-top: 6px; }
+.password-field input { padding-inline-end: 52px; }
+.password-toggle {
+  position: absolute; inset-block: 0; inset-inline-end: 4px; width: 44px; margin: auto 0; height: 40px;
+  display: grid; place-items: center; border: 0; border-radius: 10px; background: transparent; color: #8a8a8a; cursor: pointer;
+}
+.password-toggle:hover { color: #4b4b4b; background: #ededed; }
+.password-toggle svg { width: 22px; height: 22px; }
+.password-toggle[aria-pressed="true"] .eye-slash { display: none; }
+.signin-notice { margin: 12px 0 8px; padding: 14px 16px; border: 2px solid #ffc1c8; border-radius: 16px; background: #fff0f2; text-align: center; }
+.signin-notice p { margin: 0 0 10px; color: #b3243b; font-weight: 800; }
+.signin-notice .primary { width: 100%; color: #fff; }
+.signin-notice .text-button { display: inline-block; margin-top: 10px; text-decoration: none; }
+.signin-page .account-actions { margin-bottom: 8px; }
+.signin-page > .text-button { display: block; margin: 4px auto 0; }

@@ -13,3 +13,18 @@ CREATE TABLE profiles (
 ALTER TABLE profiles ADD COLUMN daily_goal INTEGER NOT NULL DEFAULT 10;
 
 ALTER TABLE profiles ADD COLUMN reminders INTEGER NOT NULL DEFAULT 0;
+
+-- Email + password accounts (account_id = email:<uuid>), rate limiting
+CREATE TABLE IF NOT EXISTS credentials (
+  account_id TEXT PRIMARY KEY NOT NULL,
+  email TEXT NOT NULL COLLATE NOCASE UNIQUE,
+  pass_hash TEXT NOT NULL,
+  pass_salt TEXT NOT NULL,
+  iterations INTEGER NOT NULL,
+  created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+CREATE TABLE IF NOT EXISTS auth_attempts (
+  attempt_key TEXT NOT NULL,
+  at INTEGER NOT NULL
+);
+CREATE INDEX IF NOT EXISTS auth_attempts_key_at ON auth_attempts (attempt_key, at);

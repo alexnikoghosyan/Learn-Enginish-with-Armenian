@@ -14,23 +14,36 @@ for (const file of await readdir(dist, { withFileTypes: true })) {
 // ուստի ամեն deploy-ից հետո դիտարկիչը բեռնում է նոր ֆայլերը, ոչ թե հին պահված պատճենը։
 const hash = async name => createHash('sha1').update(await readFile(dist + name)).digest('hex').slice(0, 10);
 let html = await readFile(out + 'index.html', 'utf8');
-for (const [, attr, name] of [...html.matchAll(/\b(href|src)="([\w.-]+\.(?:css|js))"/g)]) {
-  html = html.replace(`${attr}="${name}"`, `${attr}="${name}?v=${await hash(name)}"`);
+for (const [, attr, slash, name] of [...html.matchAll(/\b(href|src)="(\/?)([\w.-]+\.(?:css|js))"/g)]) {
+  html = html.replace(`${attr}="${slash}${name}"`, `${attr}="${slash}${name}?v=${await hash(name)}"`);
 }
 await writeFile(out + 'index.html', html);
 const strip = text => text.replace(/^export /gm, '');
 const account = strip(await readFile(root + 'worker/account.mjs', 'utf8'));
 const auth = strip(await readFile(root + 'worker/google-auth.mjs', 'utf8'));
-await writeFile(out + '_worker.js', account + '\n' + auth + `
+const emailAuth = strip(await readFile(root + 'worker/email-auth.mjs', 'utf8'));
+await writeFile(out + '_worker.js', account + '\n' + auth + '\n' + emailAuth + `
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
-    if (url.pathname.startsWith('/auth/')) return authRequest(request, env, url);
+    if (url.pathname.startsWith('/auth/')) {
+      try { return await authRequest(request, env, url); }
+      catch {
+        if (url.pathname.startsWith('/auth/email/')) return json({ error: 'unavailable', message: 'Մուտքը ժամանակավորապես հասանելի չէ։ Փորձիր ավելի ուշ։' }, 503);
+        return friendlyPage('Մուտքը ժամանակավորապես հասանելի չէ', 'Ինչ-որ բան սխալ գնաց։ Քո առաջընթացը պահպանվում է այս սարքում։', '/', 503); }
+    }
     if (url.pathname.startsWith('/api/')) {
       try { return await accountRequest(request, env, url.pathname, await sessionUserId(request, env)); }
       catch { return json({ error: 'unavailable' }, 503); }
     }
-    return env.ASSETS.fetch(request);
+    const response = await env.ASSETS.fetch(request);
+    // SPA fallback. /grammar/lesson/3 և նման հասցեները ֆայլ չեն, ուստի տալիս ենք index.html-ը,
+    // իսկ էջի JS-ը (routes.js) բացում է համապատասխան էկրանը։
+    if (response.status !== 404 || !['GET', 'HEAD'].includes(request.method) || /\\.[a-z0-9]+$/i.test(url.pathname)) return response;
+    const index = await env.ASSETS.fetch(new Request(new URL('/', url), { headers: request.headers }));
+    const headers = new Headers(index.headers);
+    headers.set('Cache-Control', 'no-cache');
+    return new Response(request.method === 'HEAD' ? null : index.body, { status: index.ok ? 200 : index.status, headers });
   }
 };
 `);

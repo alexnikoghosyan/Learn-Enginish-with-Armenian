@@ -81,7 +81,7 @@ async function loadAccount() {
   // The downloadable copy still works as a device-local guest.
   if (location.protocol === 'file:') {
     guestMode = true;
-    render();
+    openRoute();
     return;
   }
   try {
@@ -101,13 +101,12 @@ async function loadAccount() {
   if (account.profile) {
     accountStorage('eg-registration', null);
     useAccountProgress();
-    render();
-  } else if (account.authenticated) {
+    openRoute();
+  } else if (account.authenticated && readRoute().path !== '/signin') {
     signupStep = onboardingQuestions.findIndex(([key]) => key === 'auth' || registration[key] === undefined);
     drawSignup();
     if (signupStep === authStep) await createStudyProfile();
-  } else if (guestMode) render();
-  else showAccountWelcome();
+  } else openRoute();
 }
 
 function continueAsGuest() {
@@ -121,7 +120,7 @@ function showAccountWelcome() {
   app.innerHTML = '<div class="account-flow"><div class="account-mascot">' + lessonBear() +
     '</div><h1>Սովորիր անգլերեն քո տեմպով</h1><div class="account-actions">' +
     '<button class="primary" onclick="startSignup()">Գրանցվել</button>' +
-    '<a class="secondary" href="/auth/google?return_to=%2F" target="_top">Մուտք գործել</a>' +
+    '<button class="secondary" onclick="showSignin()">Մուտք գործել</button>' +
     '<button class="text-button" onclick="continueAsGuest()">Շարունակել առանց հաշվի</button></div></div>';
 }
 
@@ -202,8 +201,9 @@ function drawSignup(message = '') {
     }
   } else if (key === 'auth') {
     body = account.authenticated ? '<button class="primary" onclick="createStudyProfile()">Ստեղծել պրոֆիլը</button>' :
-      '<div class="account-actions"><a class="secondary" href="/auth/google?return_to=%2F" target="_top">' + signupIcon(signupGoogleIcon) + 'Շարունակել Google-ով</a></div>' +
-      '<p class="muted">Քո առաջընթացը կպահվի Google հաշվով։</p>';
+      '<div class="account-actions"><a class="secondary" href="/auth/google?mode=signup&amp;return_to=%2Fsignup" target="_top">' + signupIcon(signupGoogleIcon) + 'Շարունակել Google-ով</a></div>' +
+      '<div class="auth-divider"><span>կամ</span></div>' + emailFormMarkup('signup') +
+      '<p class="muted">Քո առաջընթացը կպահվի քո հաշվում։</p>';
   } else {
     body = '<form onsubmit="event.preventDefault();nextSignupStep()"><label for="signup-input">' +
       (key === 'name' ? 'Անուն' : 'Օգտանուն') + '</label><div class="signup-field"><input id="signup-input" value="' + esc(registration[key] || '') +
@@ -498,8 +498,9 @@ window.setInterval(studyTimerTick, 30000);
 function profile() {
   const user = account.profile;
   if (!user) {
-    app.innerHTML = '<div class="account-flow"><h1>Անձնական պրոֆիլ</h1>' +
-      '<button class="primary" onclick="showAccountWelcome()">Գրանցվել կամ մուտք գործել</button></div>';
+    app.innerHTML = '<div class="account-flow"><h1>Անձնական պրոֆիլ</h1>' + (location.protocol === 'file:' ?
+      '<p>Հաշիվները հասանելի են միայն առցանց՝ <a href="https://armduo.pages.dev/signin">armduo.pages.dev</a>։ Այս ֆայլում առաջընթացը պահվում է այս սարքում։</p>' :
+      '<button class="primary" onclick="showAccountWelcome()">Գրանցվել կամ մուտք գործել</button>') + '</div>';
     return;
   }
   app.innerHTML = '<section class="account-flow profile-card"><div class="profile-avatar">' + profileAvatars[user.avatar] +
@@ -550,4 +551,93 @@ async function shareStudyProgress() {
     await navigator.share({ title: 'English Garden', text: 'English Garden-ում սովորել եմ ' + words +
       ' բառ և ավարտել ' + state.lessons.length + ' քերականական դաս։', url: location.origin });
   } catch {}
+}
+
+// ---- Մուտք (Google կամ էլ. փոստ + գաղտնաբառ) ----
+let signinEmail = '';
+const authEmailPattern = /^[^\s@]+@[^\s@.]+(\.[^\s@.]+)+$/;
+const passwordEyeIcon = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12Z" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="2"/><path class="eye-slash" d="M4 4l16 16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>';
+
+function notRegisteredMarkup() {
+  return '<div class="signin-notice" role="alert"><p>Այս հաշիվը գրանցված չէ։</p>' +
+    '<button class="primary" type="button" onclick="startSignup()">Գրանցվել</button>' +
+    (account.authenticated ? '<a class="text-button" href="/auth/signout" target="_top">Մուտք գործել այլ հաշվով</a>' : '') + '</div>';
+}
+
+function showSignin(error = '') {
+  document.getElementById('nav').innerHTML = '';
+  app.innerHTML = '<section class="account-flow signin-page"><div class="account-mascot">' + lessonBear() + '</div><h1>Մուտք գործել</h1>' +
+    (error === 'not_registered' ? notRegisteredMarkup() : '') +
+    '<div class="account-actions"><a class="secondary" href="/auth/google?mode=signin&amp;return_to=%2F" target="_top">' +
+    signupIcon(signupGoogleIcon) + 'Շարունակել Google-ով</a></div>' +
+    '<div class="auth-divider"><span>կամ</span></div>' + emailFormMarkup('signin') +
+    '<button class="text-button" type="button" onclick="showAccountWelcome()">Չունե՞ս հաշիվ։ Գրանցվել</button></section>';
+}
+
+function emailFormMarkup(mode) {
+  const signup = mode === 'signup';
+  return '<form class="email-form" novalidate onsubmit="event.preventDefault();submitEmailAuth(\'' + mode + '\', this)">' +
+    '<label for="auth-email">Էլ. հասցե</label><input id="auth-email" name="email" type="email" inputmode="email" autocomplete="email" ' +
+    'autocapitalize="none" spellcheck="false" maxlength="254" required value="' + esc(signinEmail) + '">' +
+    '<label for="auth-password">Գաղտնաբառ</label><div class="signup-field password-field"><input id="auth-password" name="password" type="password" ' +
+    'autocomplete="' + (signup ? 'new-password' : 'current-password') + '" maxlength="200" required' +
+    (signup ? ' minlength="8" aria-describedby="auth-password-hint"' : '') + '>' +
+    '<button type="button" class="password-toggle" aria-label="Ցույց տալ գաղտնաբառը" aria-pressed="false" onclick="togglePasswordVisibility(this)">' +
+    passwordEyeIcon + '</button></div>' + (signup ? '<small id="auth-password-hint">Առնվազն 8 նիշ</small>' : '') +
+    '<div class="account-error" id="auth-error" role="alert"></div>' +
+    '<button class="primary" type="submit">' + (signup ? 'Գրանցվել էլ. փոստով' : 'Մուտք գործել') + '</button></form>';
+}
+
+function togglePasswordVisibility(button) {
+  const input = button.parentElement.querySelector('input');
+  const visible = input.type === 'password';
+  input.type = visible ? 'text' : 'password';
+  button.setAttribute('aria-pressed', String(visible));
+  button.setAttribute('aria-label', visible ? 'Թաքցնել գաղտնաբառը' : 'Ցույց տալ գաղտնաբառը');
+  input.focus();
+}
+
+async function submitEmailAuth(mode, form) {
+  if (accountBusy) return;
+  const email = form.email.value.trim();
+  const password = form.password.value;
+  const errorBox = form.querySelector('#auth-error');
+  const submit = form.querySelector('[type="submit"]');
+  const showError = text => { errorBox.textContent = text; };
+  if (!authEmailPattern.test(email)) return showError('Մուտքագրիր ճիշտ էլ. հասցե։');
+  if (!password) return showError('Մուտքագրիր գաղտնաբառը։');
+  if (mode === 'signup' && password.length < 8) return showError('Գաղտնաբառը պետք է լինի առնվազն 8 նիշ։');
+  signinEmail = email;
+  showError('');
+  accountBusy = true;
+  submit.disabled = true;
+  let next = null;
+  try {
+    const response = await fetch('/auth/email/' + mode, {
+      method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email, password })
+    });
+    const data = await response.json().catch(() => ({}));
+    if (!response.ok) {
+      if (data.error === 'not_registered') errorBox.innerHTML = notRegisteredMarkup();
+      else showError(data.message || 'Ինչ-որ բան սխալ գնաց։ Փորձիր կրկին։');
+      return;
+    }
+    form.password.value = '';
+    account = { authenticated: true, profile: null };
+    next = data.registered ? 'load' : mode === 'signup' ? 'create' : 'onboarding';
+  } catch {
+    showError('Կապ չկա։ Ստուգիր ինտերնետը և փորձիր կրկին։');
+  } finally {
+    accountBusy = false;
+    if (submit.isConnected) submit.disabled = false;
+  }
+  if (next === 'load') {
+    history.replaceState(null, '', '/');
+    await loadAccount();
+  } else if (next === 'create') {
+    await createStudyProfile();
+  } else if (next === 'onboarding') {
+    resumeSignupStep();
+    if (signupStep === authStep) await createStudyProfile();
+  }
 }

@@ -17,8 +17,8 @@ function courseLayout(track, course) {
     esc(label) + '</strong><p>' + complete + ' / ' + total + '</p></div></div>' +
     '<progress value="' + complete + '" max="' + total + '" aria-label="' + esc(label) + '"></progress></section>' +
     '<section class="panel course-progress"><h2>' + referenceIcon('goal') + 'Քո դասերը</h2>' +
-    '<button class="secondary course-link" onclick="switchCourse(\'grammar\')">' + referenceIcon('grammar') + 'Քերականություն <strong>' + grammarDone +
-    '</strong></button><button class="secondary course-link" onclick="switchCourse(\'vocabulary\')">' + referenceIcon('words') + 'Բառեր <strong>' + wordsDone +
+    '<button class="secondary course-link"' + (course === 'grammar' ? ' aria-current="page"' : '') + ' onclick="switchCourse(\'grammar\')">' + referenceIcon('grammar') + 'Քերականություն <strong>' + grammarDone +
+    '</strong></button><button class="secondary course-link"' + (course === 'grammar' ? '' : ' aria-current="page"') + ' onclick="switchCourse(\'vocabulary\')">' + referenceIcon('words') + 'Բառեր <strong>' + wordsDone +
     '</strong></button></section></div></div>';
 }
 
