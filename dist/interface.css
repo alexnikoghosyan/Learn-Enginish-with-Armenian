@@ -1202,3 +1202,7 @@ aside nav button.active:is(:hover, :active, :focus-visible) {
 /* Արդյունքների չիպեր (ճշտություն) */
 .reward-chips b { display: inline-flex; align-items: center; gap: 4px; }
 .reward-chips .chip-accuracy { background: #1cb0f6; box-shadow: 0 2px #1899d6; }
+
+/* Գլխավոր էջի քարտեր. երկու կոճակները նույն լայնությամբ են և իրար տակ՝ առանց կողային տեղաշարժի */
+.study-card > .primary, .study-card > .secondary { display: block; width: 100%; margin: 0; }
+.study-card > .primary + .secondary { margin-top: 12px; }
