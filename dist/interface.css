@@ -999,7 +999,6 @@ body:has(.account-flow):not(:has(nav button)) main { margin: auto; padding: 26px
 .avatar-options .garden-illustration { width: 32px; height: 32px; margin: auto; }
 
 .profile-stat-box .garden-illustration { width: 26px; height: 26px; flex: none; }
-.profile-stat-box:not(.has-streak):not(.profile-xp) .garden-illustration { filter: grayscale(1); opacity: .45; }
 .path-node .garden-illustration { width: 35px; height: 35px; mix-blend-mode: normal; }
 .path-node:disabled .garden-illustration { filter: brightness(.7); }
 #review-mode .garden-illustration { width: 20px; height: 20px; display: inline-block; vertical-align: middle; margin-right: 6px; }
@@ -1206,3 +1205,72 @@ aside nav button.active:is(:hover, :active, :focus-visible) {
 /* Գլխավոր էջի քարտեր. երկու կոճակները նույն լայնությամբ են և իրար տակ՝ առանց կողային տեղաշարժի */
 .study-card > .primary, .study-card > .secondary { display: block; width: 100%; margin: 0; }
 .study-card > .primary + .secondary { margin-top: 12px; }
+
+/* ===== Կողային մենյու (միայն համակարգչի լայնության վրա. հեռախոսի ներքևի մենյուն նույնն է) ===== */
+.brand { color: #58cc02; font-weight: 800; }
+@media (min-width: 731px) {
+  aside { width: 255px; }
+  main { margin-left: 255px; }
+  aside nav button { white-space: nowrap; text-transform: uppercase; letter-spacing: .05em; font-size: 14px; }
+}
+
+/* ===== Պրոֆիլ (Duolingo-ի ձևով). կենտրոնական սյունակ + աջ վահանակ ===== */
+body:has(.profile-page) .top { display: none; }
+.profile-page { display: grid; grid-template-columns: minmax(0, 592px) minmax(0, 368px); gap: 32px; justify-content: center; align-items: start; }
+.profile-page h2 { margin: 32px 0 14px; font-size: 24px; font-weight: 800; color: #4b4b4b; }
+
+.profile-banner { position: relative; height: 225px; border-radius: 16px; background: var(--banner, #ababab); overflow: hidden; }
+.profile-banner-avatar { position: absolute; inset: auto 0 0; display: grid; place-items: end center; }
+.profile-banner-avatar .garden-illustration { width: 170px; height: 170px; object-fit: contain; }
+.profile-edit { position: absolute; top: 14px; right: 14px; display: grid; place-items: center; width: 40px; height: 40px; padding: 0; border-radius: 12px; }
+.profile-edit img { width: 22px; height: 22px; }
+
+.profile-editor { margin-top: 16px; padding: 4px 16px 16px; border: 2px solid #e5e5e5; border-radius: 16px; }
+.profile-editor h2 { margin: 12px 0; font-size: 20px; }
+.profile-editor .avatar-options { justify-content: flex-start; }
+.profile-level { margin: 14px 0 0; color: #777; font-weight: 700; }
+#profile-status { min-height: 18px; margin: 8px 0 0; color: #ad253b; font-weight: 700; }
+
+.profile-name-block { margin-top: 24px; }
+.profile-name-block h1 { margin: 0; font-size: 29px; font-weight: 800; color: #3c3c3c; line-height: 1.2; overflow-wrap: anywhere; }
+.profile-username { margin: 4px 0 0; color: #afafaf; font-size: 15px; font-weight: 700; }
+.profile-joined { margin: 12px 0 0; color: #afafaf; font-size: 15px; }
+
+.profile-page .profile-statistics { margin: 0; }
+.profile-page .profile-stat-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.profile-page .profile-stat-box { align-items: center; gap: 12px; min-height: 80px; padding: 14px 16px; border: 2px solid #e5e5e5; border-radius: 16px; text-align: start; }
+.profile-page .profile-stat-box .garden-illustration { flex: none; width: 28px; height: 28px; }
+.profile-page .profile-stat-box.is-zero .garden-illustration { filter: grayscale(1); opacity: .45; }
+.profile-page .profile-stat-box strong { display: block; font-size: 24px; font-weight: 800; line-height: 1.15; color: #3c3c3c; }
+.profile-page .profile-stat-box small { display: block; margin-top: 2px; font-size: 14px; color: #afafaf; }
+.profile-signout { display: block; margin-top: 32px; text-align: center; text-decoration: none; }
+
+.profile-side { display: grid; gap: 16px; align-content: start; }
+.profile-topbar { display: flex; align-items: center; justify-content: space-between; gap: 10px; min-height: 56px; }
+.profile-topbar .profile-lang { padding: 6px 12px; border-radius: 999px; font-size: 13px; white-space: nowrap; }
+.top-stat { display: inline-flex; align-items: center; gap: 6px; font-size: 18px; font-weight: 800; }
+.top-stat .garden-illustration { width: 28px; height: 28px; }
+.top-streak b { color: #ff9600; }
+.top-xp b { color: #ffc800; }
+.top-stat.is-zero b { color: #afafaf; }
+.top-stat.is-zero .garden-illustration { filter: grayscale(1); opacity: .45; }
+.profile-card-box { padding: 16px; border: 2px solid #e5e5e5; border-radius: 16px; }
+.profile-page .profile-card-box h2 { margin: 0 0 12px; font-size: 20px; }
+.goal-label { margin: 0 0 10px; font-weight: 700; color: #777; }
+.goal-meter { background: #e5e5e5; }
+.goal-meter > span { transition: width .3s ease-out; }
+.profile-soon { margin: 0; color: #afafaf; font-weight: 700; }
+
+/* Նեղ էկրաններ. մեկ սյունակ (աջ վահանակի քարտերը մնում են ներքևում, վերևի շարքը թաքնվում է) */
+@media (max-width: 1240px) {
+  .profile-page { grid-template-columns: minmax(0, 1fr); max-width: 592px; margin-inline: auto; }
+  .profile-topbar { display: none; }
+}
+@media (max-width: 700px) {
+  .profile-banner { height: 160px; }
+  .profile-banner-avatar .garden-illustration { width: 122px; height: 122px; }
+  .profile-name-block h1 { font-size: 25px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .goal-meter > span { transition: none; }
+}

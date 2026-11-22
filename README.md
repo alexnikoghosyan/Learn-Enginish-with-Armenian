@@ -40,6 +40,14 @@ History-API routing in `dist/routes.js` (the worker serves `index.html` for unkn
   grammar practice (`state.grammarRetry`), word review (`state.cumulativeReview.retry`) and sounds.
 - The reward card after a grammar, word, review or sounds lesson shows XP, accuracy (when the lesson had checked answers) and streak.
 
+## Profile page
+
+`profile()` in `dist/account.js` (Duolingo-style): centre column (banner with large avatar + pencil button that opens the
+avatar picker, name / username / "Գրանցվել է՝ month year", one 2x2 "Վիճակագրություն" grid, sign out) and a right column
+(language badge, streak, XP, "Օրվա նպատակ" bar, "Ձեռքբերումներ" placeholder). Below 1240px it becomes one column and the
+top stats row is hidden. Sidebar is 255px with uppercase nav labels on desktop only (mobile bottom nav unchanged).
+Avatar banner colours: `profileBannerColors`.
+
 ## Next steps
 
 - Password reset ("Մոռացե՞լ ես գաղտնաբառը") – needs an email sender (e.g. Cloudflare Email / Resend) and a reset-token table.

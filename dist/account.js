@@ -447,26 +447,54 @@ function currentStudyStreak(now = new Date()) {
   return streak;
 }
 
-function profileStatistics() {
+// Ավատարի գույնը պրոֆիլի վահանակում (ըստ ավատարի). լռելյայն՝ #ababab
+const profileBannerColors = { bear: '#d9c8fb', fox: '#ffd3a6', frog: '#c9ef9d', cat: '#ffe28f', rabbit: '#ffcadf', owl: '#ace0f8' };
+let profileEditorOpen = false;
+const profileMonths = ['հունվար', 'փետրվար', 'մարտ', 'ապրիլ', 'մայիս', 'հունիս', 'հուլիս', 'օգոստոս', 'սեպտեմբեր', 'հոկտեմբեր', 'նոյեմբեր', 'դեկտեմբեր'];
+
+function profileCounts() {
   const words = Object.values(state.wordLessons).filter(item => item.done).length;
-  const streak = currentStudyStreak();
-  const xp = 10 * (words + state.lessons.length) + state.soundXp;
-  const flame = gardenIllustration('flame');
-  const lightning = gardenIllustration('lightning');
+  const grammar = state.lessons.length;
+  return { words, grammar, streak: currentStudyStreak(), xp: 10 * (words + grammar) + state.soundXp };
+}
+
+function profileStatCard(icon, value, label) {
+  return '<div class="profile-stat-box' + (value ? '' : ' is-zero') + '">' + icon +
+    '<div><strong>' + value.toLocaleString('hy-AM') + '</strong><small>' + label + '</small></div></div>';
+}
+
+// Մեկ բաժին՝ 2×2 քարտեր. շարք, XP, սովորած բառեր, քերականական դասեր
+function profileStatistics() {
+  const c = profileCounts();
   return '<section class="profile-statistics"><h2>Վիճակագրություն</h2><div class="profile-stat-grid">' +
-    '<div class="profile-stat-box ' + (streak ? 'has-streak' : '') + '">' + flame +
-    '<div><strong>' + streak + '</strong><small>Օրերի շարք</small></div></div>' +
-    '<div class="profile-stat-box profile-xp">' + lightning +
-    '<div><strong>' + xp.toLocaleString('hy-AM') + '</strong><small>Փորձի միավորներ</small></div></div></div></section>';
+    profileStatCard(gardenIllustration('flame'), c.streak, 'Օրերի շարք') +
+    profileStatCard(gardenIllustration('lightning'), c.xp, 'Փորձի միավորներ') +
+    profileStatCard(gardenIllustration('books'), c.words, 'Սովորած բառեր') +
+    profileStatCard(gardenIllustration('workbook'), c.grammar, 'Քերականական դասեր') + '</div></section>';
 }
 
 function dailyGoalMarkup() {
   const goal = account.profile.daily_goal || 10;
   const seconds = state.studyTime?.[studyDayKey(new Date())] || 0;
   const minutes = Math.floor(seconds / 60);
-  return '<section class="profile-statistics"><h2>Օրվա նպատակ</h2><p>' + minutes + ' / ' + goal +
-    ' րոպե այսօր</p><progress class="daily-goal-progress" aria-label="Օրվա նպատակ" value="' +
-    Math.min(seconds, goal * 60) + '" max="' + goal * 60 + '"></progress></section>';
+  const percent = Math.min(100, 100 * seconds / (goal * 60));
+  return '<section class="profile-card-box"><h2>Օրվա նպատակ</h2><p class="goal-label">' + minutes + ' / ' + goal +
+    ' րոպե այսօր</p><div class="lesson-meter goal-meter" role="progressbar" aria-label="Օրվա նպատակ" aria-valuemin="0" aria-valuemax="' +
+    goal + '" aria-valuenow="' + Math.min(minutes, goal) + '"><span style="width:' + percent + '%"></span></div></section>';
+}
+
+function profileTopBar(c) {
+  return '<div class="profile-topbar"><span class="profile profile-lang">Հայերեն → English</span>' +
+    '<span class="top-stat top-streak' + (c.streak ? '' : ' is-zero') + '" title="Օրերի շարք">' + gardenIllustration('flame') + '<b>' + c.streak + '</b></span>' +
+    '<span class="top-stat top-xp' + (c.xp ? '' : ' is-zero') + '" title="Փորձի միավորներ">' + gardenIllustration('lightning') + '<b>' + c.xp.toLocaleString('hy-AM') + '</b></span></div>';
+}
+
+function toggleAvatarEditor() {
+  profileEditorOpen = !profileEditorOpen;
+  const panel = document.getElementById('avatar-editor');
+  if (!panel) return;
+  panel.hidden = !profileEditorOpen;
+  document.querySelector('.profile-edit')?.setAttribute('aria-expanded', String(profileEditorOpen));
 }
 
 function studyTimerTick() {
@@ -503,15 +531,25 @@ function profile() {
       '<button class="primary" onclick="showAccountWelcome()">Գրանցվել կամ մուտք գործել</button>') + '</div>';
     return;
   }
-  app.innerHTML = '<section class="account-flow profile-card"><div class="profile-avatar">' + profileAvatars[user.avatar] +
-    '</div><h1>' + esc(user.name) + '</h1><p>@' + esc(user.username) + '</p>' +
-    '<p>' + esc(levelOptions[user.level]) + '</p><div class="profile-stats"><span><strong>' +
-    Object.values(state.wordLessons).filter(item => item.done).length + '</strong> բառ</span><span><strong>' +
-    state.lessons.length + '</strong> քերականական դաս</span></div>' + profileStatistics() + dailyGoalMarkup() +
-    '<h2>Ընտրիր ավատար</h2><div class="avatar-options">' + Object.entries(profileAvatars).map(([key, icon]) =>
+  const c = profileCounts();
+  const created = user.created_at ? new Date(String(user.created_at).replace(' ', 'T') + 'Z') : null;
+  const joined = created && !isNaN(created) ? profileMonths[created.getMonth()] + ' ' + created.getFullYear() : '';
+  app.innerHTML = '<div class="profile-page"><div class="profile-column">' +
+    '<section class="profile-banner" style="--banner:' + (profileBannerColors[user.avatar] || '#ababab') + '">' +
+    '<div class="profile-banner-avatar">' + profileAvatars[user.avatar] + '</div>' +
+    '<button type="button" class="icon-btn profile-edit" aria-label="Փոխել ավատարը" aria-expanded="' + profileEditorOpen +
+    '" aria-controls="avatar-editor" onclick="toggleAvatarEditor()">' + gardenIllustration('pencil') + '</button></section>' +
+    '<section id="avatar-editor" class="profile-editor"' + (profileEditorOpen ? '' : ' hidden') + '><h2>Ընտրիր ավատար</h2>' +
+    '<div class="avatar-options">' + Object.entries(profileAvatars).map(([key, icon]) =>
       '<button class="secondary" aria-label="' + key + '" aria-pressed="' + (key === user.avatar) +
       '" onclick="saveAvatar(\'' + key + '\')">' + icon + '</button>').join('') + '</div>' +
-    '<p id="profile-status" role="status"></p><a class="secondary" href="/auth/signout" target="_top">Դուրս գալ հաշվից</a></section>';
+    '<p class="profile-level">Մակարդակ՝ ' + esc(levelOptions[user.level]) + '</p><p id="profile-status" role="status"></p></section>' +
+    '<div class="profile-name-block"><h1>' + esc(user.name) + '</h1><p class="profile-username">' + esc(user.username) + '</p>' +
+    (joined ? '<p class="profile-joined">Գրանցվել է՝ ' + esc(joined) + '</p>' : '') + '</div>' +
+    profileStatistics() +
+    '<a class="secondary profile-signout" href="/auth/signout" target="_top">Դուրս գալ հաշվից</a></div>' +
+    '<div class="profile-side">' + profileTopBar(c) + dailyGoalMarkup() +
+    '<section class="profile-card-box"><h2>Ձեռքբերումներ</h2><p class="profile-soon">Շուտով</p></section></div></div>';
 }
 
 async function saveAvatar(avatar) {
