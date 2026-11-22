@@ -34,7 +34,7 @@ h1 { font-weight: 800; }
   font-weight: 800;
   transition: background .15s, transform .15s, box-shadow .15s;
 }
-.primary { background: var(--accent); color: #163600; box-shadow: 0 4px #3a9400; }
+.primary { background: var(--accent); color: #fff; box-shadow: 0 4px #3a9400; }
 .primary:hover { background: #68da16; }
 .secondary, .icon-btn { background: #fff; color: #00638e; border-color: var(--line); box-shadow: 0 3px #e4e6ee; }
 .secondary:hover, .icon-btn:hover { background: #f2faff; border-color: #bde9ff; }
@@ -1075,3 +1075,6 @@ aside nav button.active { box-shadow: none; }
   :is(.secondary, .icon-btn, .lesson-card):not(:disabled):not(.account-options *):hover { box-shadow: 0 3px #84d8ff; }
   :is(.secondary, .icon-btn):not(:disabled):active { box-shadow: none; }
 }
+/* Կանաչ ֆոնի վրա տեքստը սպիտակ է */
+.path-unit:not([data-color]) .path-node:is(.path-current, .path-done),
+.path-unit:is([data-color="0"], [data-color="5"]) .path-node:is(.path-current, .path-done) { color: #fff; }
