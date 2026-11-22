@@ -1005,11 +1005,18 @@ body:has(.account-flow):not(:has(nav button)) main { margin: auto; padding: 26px
 #review-mode .garden-illustration { width: 20px; height: 20px; display: inline-block; vertical-align: middle; margin-right: 6px; }
 
 aside nav button:active i { transform: none; }
-:is(.avatar-options button, .review-bank button, .review-grid .picture-tile, .sound-tile, .sound-options .option)[aria-pressed="true"]:not(.correct),
-aside nav button.active {
+:is(.avatar-options button, .review-bank button, .review-grid .picture-tile, .sound-tile, .sound-options .option)[aria-pressed="true"]:not(.correct) {
   background: #ddf4ff;
   border-color: #8ad8ff;
   box-shadow: 0 4px #84d8ff;
+}
+/* Կողային մենյուի ընտրված կոճակը՝ հավասար 2px եզր բոլոր կողմերից, առանց ներքևի շերտի՝ ցանկացած վիճակում */
+aside nav button.active,
+aside nav button.active:is(:hover, :active, :focus-visible) {
+  background: #ddf4ff;
+  border: 2px solid #8ad8ff;
+  box-shadow: none;
+  transform: none;
 }
 :is(.avatar-options button, .review-bank button, .review-grid .picture-tile, .sound-tile, .sound-options .option)[aria-pressed="true"]:not(:disabled):active {
   box-shadow: 0 1px #84d8ff;
@@ -1068,13 +1075,73 @@ aside nav button.active {
   overflow-wrap: anywhere;
 }
 
-/* Կողային մենյուի ընտրված կոճակը՝ առանց ներքևի մուգ կապույտ եզրի */
-aside nav button.active { box-shadow: none; }
-/* Մկնիկը պահելիս կապույտ եզրով կոճակների ներքևի շողքը նույնպես կապույտ է (#84d8ff) */
+/* Մկնիկը պահելիս նավիգացիոն հղումների (դասընթացի հղում, էջերի սլաքներ) ներքևի շողքը կապույտ է (#84d8ff) */
 @media (hover: hover) {
-  :is(.secondary, .icon-btn, .lesson-card):not(:disabled):not(.account-options *):hover { box-shadow: 0 3px #84d8ff; }
-  :is(.secondary, .icon-btn):not(:disabled):active { box-shadow: none; }
+  :is(.course-link, .path-previous, .path-next, .lesson-card):not(:disabled):hover { box-shadow: 0 3px #84d8ff; }
 }
 /* Կանաչ ֆոնի վրա տեքստը սպիտակ է */
 .path-unit:not([data-color]) .path-node:is(.path-current, .path-done),
 .path-unit:is([data-color="0"], [data-color="5"]) .path-node:is(.path-current, .path-done) { color: #fff; }
+
+/* ===== Սպիտակ կոճակներ. մոխրագույն hover և իրական 3D սեղմում =====
+   Ամեն կոճակի հիմքը (ներքևի «հաստությունը») box-shadow է՝ կողային եզրերը հավասար են։
+   Սեղմելիս դեմքը իջնում է ճիշտ հիմքի չափով, իսկ հիմքը նույնքան փոքրանում է,
+   ուստի կոճակի ներքևի եզրը տեղից չի շարժվում, և հարևանները չեն ցատկում։ */
+
+/* Սալիկներ (.option, .picture-tile). նախկին 4px border-bottom-ը = 2px եզր + 2px հիմք */
+:is(.option, .picture-tile, .review-grid .picture-tile) { border-width: 2px; box-shadow: 0 2px #e5e6ee; }
+:is(.option, .picture-tile, .review-grid .picture-tile)[aria-pressed="true"] { box-shadow: 0 2px #78cbf6; }
+:is(.option, .picture-tile, .review-grid .picture-tile).correct { box-shadow: 0 2px #8ed649; }
+:is(.option, .picture-tile, .review-grid .picture-tile).wrong { box-shadow: 0 2px #f49caa; }
+
+/* Մոխրագույն hover՝ ինչպես հնչյունների սալիկը (#f5f5f5, եզր #e2e2e2).
+   Բացառություններ՝ ընտրված/սեղմված, ճիշտ/սխալ, անջատված, կանաչ .primary,
+   ինչպես նաև նավիգացիոն հղումները, որոնք մնում են կապույտ։ */
+@media (hover: hover) {
+  :is(.secondary, .icon-btn, .option, .picture-tile, .sound-tile):not(:disabled, [aria-pressed="true"], .active, .correct, .wrong):not(.course-link, .path-previous, .path-next, .sound-play, [id="sound-skip"]):hover {
+    background: #f5f5f5;
+    border-color: #e2e2e2;
+    transform: none;
+  }
+  :is(.secondary, .icon-btn, .sound-tile):not(:disabled, [aria-pressed="true"], .active, .correct, .wrong):not(.course-link, .path-previous, .path-next, .sound-play, [id="sound-skip"]):hover {
+    box-shadow: 0 3px #e2e2e2;
+  }
+  :is(.option, .picture-tile):not(:disabled, [aria-pressed="true"], .active, .correct, .wrong):not(.course-link, .path-previous, .path-next, .sound-play, [id="sound-skip"]):hover {
+    box-shadow: 0 2px #e2e2e2;
+  }
+}
+
+/* Սեղմում. 3px հիմքով կոճակներ */
+:is(.secondary, .icon-btn, .sound-tile):not(:disabled, [aria-pressed="true"], .correct, .wrong):not(.sound-play, [id="sound-skip"]):active {
+  transform: translateY(3px);
+  box-shadow: 0 0 #e2e2e2;
+}
+/* Ընտրված կոճակներ՝ 4px կապույտ հիմքով, որը սեղմելիս դառնում է 1px (տես վերևի կանոնները) */
+:is(.secondary, .icon-btn, .sound-tile)[aria-pressed="true"]:not(:disabled):not(.sound-play):active {
+  transform: translateY(3px);
+}
+/* Սեղմում. 2px հիմքով սալիկներ */
+:is(.option, .picture-tile, .review-grid .picture-tile):not(:disabled, [aria-pressed="true"], .correct, .wrong):active,
+:is(.option, .picture-tile, .review-grid .picture-tile)[aria-pressed="true"]:not(:disabled):active {
+  transform: translateY(2px);
+  box-shadow: 0 0 #e2e2e2;
+}
+/* Ընտրված սալիկներ՝ 4px կապույտ հիմքով. դեմքը իջնում է 3px, հիմքը դառնում է 1px */
+:is(.review-grid .picture-tile, .sound-options .option)[aria-pressed="true"]:not(:disabled):not(.correct):active {
+  transform: translateY(3px);
+  box-shadow: 0 1px #84d8ff;
+}
+/* Կանաչ .primary. հիմքը 0 4px է, ուստի իջնում է 4px */
+.primary:not(:disabled):active {
+  transform: translateY(4px);
+  box-shadow: 0 0 #3a9400;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  :is(.primary, .secondary, .icon-btn, .option, .picture-tile, .sound-tile):not(.sound-play, [id="sound-skip"]) {
+    transition: transform 90ms ease-out, box-shadow 90ms ease-out, background-color .15s, border-color .15s, color .15s;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  :is(.primary, .secondary, .icon-btn, .option, .picture-tile, .sound-tile) { transition: none; }
+}
