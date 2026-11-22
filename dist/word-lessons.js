@@ -526,7 +526,6 @@ function drawWordLesson(justCompleted = false) {
   const example = curatedExamples[word.en] ?? (hint?.[1] ? [hint[1], ''] : null);
   const meaning = hy(word) || word.mt;
   const machine = !state.notes[word.en] && !word.hy && Boolean(word.mt);
-  const lookup = 'https://translate.google.com/?sl=en&tl=hy&text=' + encodeURIComponent(word.en) + '&op=translate';
   const exampleBlock = example ? '<blockquote><span lang="en">' + esc(example[0]) + '</span>' +
     (example[1] ? '<small>' + esc(example[1]) + '</small>' : '') + '</blockquote>' : '';
   let content = '';
@@ -536,8 +535,7 @@ function drawWordLesson(justCompleted = false) {
       (meaning ? '<h2>' + esc(meaning) + '</h2>' : '') +
       (machine ? '<small>Ավտոմատ թարգմանություն · ստուգիր իմաստը համատեքստում</small>' : '') +
       (typeof WORD_HINTS_HY !== 'undefined' && WORD_HINTS_HY[word.en] ? '<p>' + esc(WORD_HINTS_HY[word.en]) + '</p>' : '') +
-      (exampleBlock ? '<h3>Օրինակ</h3>' + exampleBlock : '') +
-      '<p><a href="' + lookup + '" target="_blank" rel="noopener">Դիտել թարգմանության տարբերակները ' + actionIcon('external') + '</a></p></div>';
+      (exampleBlock ? '<h3>Օրինակ</h3>' + exampleBlock : '') + '</div>';
   } else if (entry.step === 1) {
     content = '<h2>Ի՞նչ է նշանակում <span lang="en">' + esc(word.en) + '</span>։</h2>' +
       '<p>Գրիր հայերենով, ինչպես կբացատրեիր ընկերոջդ։ Կարող ես նշել նաև, թե երբ է այն օգտագործվում։</p>' +
