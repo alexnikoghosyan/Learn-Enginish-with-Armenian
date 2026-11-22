@@ -3,6 +3,30 @@ const sources = ['Facebook / Instagram', 'YouTube / Google', 'Instagram', 'Faceb
 const reasons = ['people', 'fun', 'education', 'time', 'career', 'travel', 'other'];
 const ages = ['13–17', '18–24', '25–34', '35–44', '45–54', '55+'];
 
+// Ավատարի կոնստրուկտորի տարբերակների քանակը. նույնն է, ինչ dist/avatar-config.js-ի AVATAR_RANGES-ը
+const avatarRanges = { skin: 15, body: 6, eyeColor: 13, expression: 12, hairColor: 16, hair: 10, glassesColor: 8, glasses: 5,
+  features: 5, earrings: 5, nosePiercing: 3, facialHair: 6, hatColor: 9, hat: 6, clothesColor: 9, bgColor: 24 };
+
+// Վավերացնում է կազմաձևը (ամբողջ թվեր՝ թույլատրելի միջակայքում, ≤600 բայթ) և վերադարձնում JSON տող (կամ null)
+function parseAvatarConfig(config) {
+  if (!config || typeof config !== 'object' || Array.isArray(config) || config.v !== 1) return null;
+  const clean = { v: 1 };
+  for (const [key, count] of Object.entries(avatarRanges)) {
+    const value = config[key];
+    if (!Number.isInteger(value) || value < 0 || value >= count) return null;
+    clean[key] = value;
+  }
+  const text = JSON.stringify(clean);
+  return text.length <= 600 ? text : null;
+}
+
+function shapeProfile(row) {
+  if (!row) return row;
+  let config = null;
+  try { config = row.avatar_config ? JSON.parse(row.avatar_config) : null; } catch {}
+  return { ...row, avatar_config: config };
+}
+
 function json(value, status = 200) {
   return Response.json(value, { status, headers: { 'Cache-Control': 'no-store' } });
 }
@@ -44,9 +68,9 @@ export async function accountRequest(request, env, pathname, userId = request.he
     return json({ authenticated: false, profile: null });
   }
   if (!id) return json({ error: 'sign_in_required' }, 401);
-  const readProfile = () => env.DB.prepare(
-    'SELECT name, username, level, avatar, created_at, daily_goal, reminders FROM profiles WHERE account_id = ?'
-  ).bind(id).first();
+  const readProfile = async () => shapeProfile(await env.DB.prepare(
+    'SELECT name, username, level, avatar, avatar_config, created_at, daily_goal, reminders FROM profiles WHERE account_id = ?'
+  ).bind(id).first());
   if (pathname === '/api/account' && request.method === 'GET') {
     return json({ authenticated: true, profile: await readProfile() });
   }
@@ -64,9 +88,16 @@ export async function accountRequest(request, env, pathname, userId = request.he
     return profile ? json({ profile }, 201) : json({ error: 'username_taken' }, 409);
   }
   if (pathname === '/api/account/avatar' && request.method === 'PUT') {
-    const { avatar } = (await request.json().catch(() => null)) || {};
-    if (!avatars.includes(avatar)) return json({ error: 'invalid' }, 400);
-    await env.DB.prepare('UPDATE profiles SET avatar = ? WHERE account_id = ?').bind(avatar, id).run();
+    if (Number(request.headers.get('Content-Length')) > 4096) return json({ error: 'invalid' }, 413);
+    const body = (await request.json().catch(() => null)) || {};
+    if (body.config !== undefined) {
+      const text = parseAvatarConfig(body.config);
+      if (!text) return json({ error: 'invalid' }, 400);
+      await env.DB.prepare('UPDATE profiles SET avatar_config = ? WHERE account_id = ?').bind(text, id).run();
+    } else {
+      if (!avatars.includes(body.avatar)) return json({ error: 'invalid' }, 400);
+      await env.DB.prepare('UPDATE profiles SET avatar = ? WHERE account_id = ?').bind(body.avatar, id).run();
+    }
     const profile = await readProfile();
     return profile ? json({ profile }) : json({ error: 'missing_profile' }, 404);
   }

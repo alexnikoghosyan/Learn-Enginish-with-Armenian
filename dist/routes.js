@@ -32,7 +32,7 @@ function routeTitle(path) {
     words: kind === 'unit' ? (WORDS[currentWordIndex]?.en || 'Դաս') + ' — Բառեր' :
       ({ dictionary: 'Բառարան', cards: 'Բառաքարտեր', pictures: 'Նկարներ' })[kind] || 'Բառեր',
     review: 'Կրկնություն', sounds: kind === 'practice' ? 'Վարժություն — Հնչյուններ' : 'Հնչյուններ',
-    journal: 'Իմ գրառումները', profile: 'Պրոֆիլ', signup: 'Գրանցում', signin: 'Մուտք'
+    journal: 'Իմ գրառումները', profile: kind === 'avatar' ? 'Փոխել ավատարը' : 'Պրոֆիլ', signup: 'Գրանցում', signin: 'Մուտք'
   };
   const title = section ? titles[section] : 'Սովորել';
   return title ? title + ' — English Garden' : 'English Garden — Անգլերեն քայլ առ քայլ';
@@ -84,6 +84,7 @@ routeHook('sounds', () => '/sounds');
 routeHook('startSoundRound', () => '/sounds/practice');
 routeHook('journal', () => '/journal');
 routeHook('profile', () => '/profile');
+routeHook('openAvatarBuilder', () => '/profile/avatar');
 routeHook('showAccountWelcome', () => '/welcome');
 routeHook('drawSignup', () => '/signup');
 routeHook('showSignin', error => '/signin' + (error ? '?error=' + encodeURIComponent(error) : ''));
@@ -144,6 +145,7 @@ function applyRoute({ parts, query }) {
     if (kind === 'practice') startSoundRound();
     return;
   }
+  if (section === 'profile' && kind === 'avatar') return openAvatarBuilder();
   if (section === 'journal' || section === 'profile') return go(section);
   return go('home');
 }

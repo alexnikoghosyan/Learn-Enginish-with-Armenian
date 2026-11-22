@@ -28,3 +28,6 @@ CREATE TABLE IF NOT EXISTS auth_attempts (
   at INTEGER NOT NULL
 );
 CREATE INDEX IF NOT EXISTS auth_attempts_key_at ON auth_attempts (attempt_key, at);
+
+-- Avatar builder configuration (JSON)
+ALTER TABLE profiles ADD COLUMN avatar_config TEXT;

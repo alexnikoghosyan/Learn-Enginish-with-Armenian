@@ -449,7 +449,6 @@ function currentStudyStreak(now = new Date()) {
 
 // Ավատարի գույնը պրոֆիլի վահանակում (ըստ ավատարի). լռելյայն՝ #ababab
 const profileBannerColors = { bear: '#d9c8fb', fox: '#ffd3a6', frog: '#c9ef9d', cat: '#ffe28f', rabbit: '#ffcadf', owl: '#ace0f8' };
-let profileEditorOpen = false;
 const profileMonths = ['հունվար', 'փետրվար', 'մարտ', 'ապրիլ', 'մայիս', 'հունիս', 'հուլիս', 'օգոստոս', 'սեպտեմբեր', 'հոկտեմբեր', 'նոյեմբեր', 'դեկտեմբեր'];
 
 function profileCounts() {
@@ -489,14 +488,6 @@ function profileTopBar(c) {
     '<span class="top-stat top-xp' + (c.xp ? '' : ' is-zero') + '" title="Փորձի միավորներ">' + gardenIllustration('lightning') + '<b>' + c.xp.toLocaleString('hy-AM') + '</b></span></div>';
 }
 
-function toggleAvatarEditor() {
-  profileEditorOpen = !profileEditorOpen;
-  const panel = document.getElementById('avatar-editor');
-  if (!panel) return;
-  panel.hidden = !profileEditorOpen;
-  document.querySelector('.profile-edit')?.setAttribute('aria-expanded', String(profileEditorOpen));
-}
-
 function studyTimerTick() {
   if (!account.profile || document.visibilityState !== 'visible') return;
   const now = new Date();
@@ -532,39 +523,22 @@ function profile() {
     return;
   }
   const c = profileCounts();
+  const avatarConfig = currentAvatarConfig();
+  const bannerColor = avatarConfig ? AVATAR_PALETTES.bgColor[avatarConfig.bgColor] : (profileBannerColors[user.avatar] || '#ababab');
+  const bannerArt = avatarConfig ? renderAvatarSVG(avatarConfig, { crop: 'bust', bg: false }) : profileAvatars[user.avatar];
   const created = user.created_at ? new Date(String(user.created_at).replace(' ', 'T') + 'Z') : null;
   const joined = created && !isNaN(created) ? profileMonths[created.getMonth()] + ' ' + created.getFullYear() : '';
   app.innerHTML = '<div class="profile-page"><div class="profile-column">' +
-    '<section class="profile-banner" style="--banner:' + (profileBannerColors[user.avatar] || '#ababab') + '">' +
-    '<div class="profile-banner-avatar">' + profileAvatars[user.avatar] + '</div>' +
-    '<button type="button" class="icon-btn profile-edit" aria-label="Փոխել ավատարը" aria-expanded="' + profileEditorOpen +
-    '" aria-controls="avatar-editor" onclick="toggleAvatarEditor()">' + gardenIllustration('pencil') + '</button></section>' +
-    '<section id="avatar-editor" class="profile-editor"' + (profileEditorOpen ? '' : ' hidden') + '><h2>Ընտրիր ավատար</h2>' +
-    '<div class="avatar-options">' + Object.entries(profileAvatars).map(([key, icon]) =>
-      '<button class="secondary" aria-label="' + key + '" aria-pressed="' + (key === user.avatar) +
-      '" onclick="saveAvatar(\'' + key + '\')">' + icon + '</button>').join('') + '</div>' +
-    '<p class="profile-level">Մակարդակ՝ ' + esc(levelOptions[user.level]) + '</p><p id="profile-status" role="status"></p></section>' +
+    '<section class="profile-banner" style="--banner:' + bannerColor + '">' +
+    '<div class="profile-banner-avatar">' + bannerArt + '</div>' +
+    '<button type="button" class="icon-btn profile-edit" aria-label="Փոխել ավատարը" onclick="openAvatarBuilder()">' + gardenIllustration('pencil') + '</button></section>' +
     '<div class="profile-name-block"><h1>' + esc(user.name) + '</h1><p class="profile-username">' + esc(user.username) + '</p>' +
     (joined ? '<p class="profile-joined">Գրանցվել է՝ ' + esc(joined) + '</p>' : '') + '</div>' +
     profileStatistics() +
     '<a class="secondary profile-signout" href="/auth/signout" target="_top">Դուրս գալ հաշվից</a></div>' +
     '<div class="profile-side">' + profileTopBar(c) + dailyGoalMarkup() +
+    '<section class="profile-card-box"><h2>Մակարդակ</h2><p class="profile-level">' + esc(levelOptions[user.level]) + '</p></section>' +
     '<section class="profile-card-box"><h2>Ձեռքբերումներ</h2><p class="profile-soon">Շուտով</p></section></div></div>';
-}
-
-async function saveAvatar(avatar) {
-  if (accountBusy) return;
-  accountBusy = true;
-  try {
-    const response = await fetch('/api/account/avatar', { method: 'PUT', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ avatar }) });
-    if (!response.ok) throw new Error('avatar');
-    account.profile = (await response.json()).profile;
-    if (view === 'profile') profile();
-  } catch {
-    const status = document.getElementById('profile-status');
-    if (status) status.textContent = 'Ավատարը չպահպանվեց։ Փորձիր կրկին։';
-  } finally { accountBusy = false; }
 }
 
 function offerMobileProgress() {

@@ -53,7 +53,7 @@ function renderNavigation() {
   document.getElementById('nav').innerHTML = links.map(([id, name]) =>
     '<button ' + (activeView === id ? 'class="active" aria-current="page" ' : '') +
     'onclick="go(\'' + id + '\')"><i aria-hidden="true">' +
-    (id === 'home' || id === 'sounds' ? referenceIcon(id) : '<svg viewBox="0 0 32 32" focusable="false">' + (navigationIcons[id] || '<circle cx="16" cy="10" r="6" fill="#9b73dc"/><path d="M5 28c0-8 5-12 11-12s11 4 11 12z" fill="#9b73dc"/>') + '</svg>') +
+    (id === 'home' || id === 'sounds' ? referenceIcon(id) : id === 'profile' && typeof avatarNavIcon === 'function' && avatarNavIcon() ? avatarNavIcon() : '<svg viewBox="0 0 32 32" focusable="false">' + (navigationIcons[id] || '<circle cx="16" cy="10" r="6" fill="#9b73dc"/><path d="M5 28c0-8 5-12 11-12s11 4 11 12z" fill="#9b73dc"/>') + '</svg>') +
     '</i>' + name + '</button>'
   ).join('');
 }

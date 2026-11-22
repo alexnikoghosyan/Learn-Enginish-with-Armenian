@@ -48,6 +48,18 @@ avatar picker, name / username / "Գրանցվել է՝ month year", one 2x2 "Վ
 top stats row is hidden. Sidebar is 255px with uppercase nav labels on desktop only (mobile bottom nav unchanged).
 Avatar banner colours: `profileBannerColors`.
 
+## Avatar builder
+
+`/profile/avatar` (pencil on the profile banner). Original layered-SVG character art, no canvas or libraries:
+- `dist/avatar-config.js` - `AVATAR_DEFAULT`, `AVATAR_RANGES`, palettes, part libraries and `renderAvatarSVG(config, {crop|viewBox, bg, animate, body})`.
+- `dist/avatar-builder.js` - the page: 9 tabs, swatch and thumbnail panels (radiogroups, roving tabindex), camera and body-morph tweens,
+  idle blink / look / breathing (off for `prefers-reduced-motion`), save.
+- Storage: `state.avatarConfig` (localStorage, anonymous) and `profiles.avatar_config` (JSON, D1) via `PUT /api/account/avatar {config}`.
+  The worker validates integer ranges (`avatarRanges` in `worker/account.mjs` must match `AVATAR_RANGES`) and size (<= 600 bytes).
+  The old `avatar` key (animals) still works and is shown until the builder is used.
+- Migration `drizzle/0003_avatar_config.sql` (run on the remote D1 before deploying).
+- To add parts: append to the arrays in `avatar-config.js` and raise the matching number in both range tables.
+
 ## Next steps
 
 - Password reset ("Մոռացե՞լ ես գաղտնաբառը") – needs an email sender (e.g. Cloudflare Email / Resend) and a reset-token table.

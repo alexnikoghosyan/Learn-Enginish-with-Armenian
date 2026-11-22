@@ -1274,3 +1274,91 @@ body:has(.profile-page) .top { display: none; }
 @media (prefers-reduced-motion: reduce) {
   .goal-meter > span { transition: none; }
 }
+
+/* ===== Ավատարի կոնստրուկտոր (/profile/avatar) ===== */
+body:has(.avatar-builder) .top { display: none; }
+.avatar-builder { max-width: clamp(560px, calc((100vh - 190px) * 1.4657), 900px); margin-inline: auto; }
+.avatar-head { display: flex; align-items: center; gap: 14px; margin-bottom: 18px; }
+.avatar-head h1 { margin: 0; font-size: 17px; font-weight: 700; color: #afafaf; letter-spacing: 0; }
+.avatar-back { display: grid; place-items: center; width: 40px; height: 40px; padding: 0; border-radius: 12px; color: #afafaf; }
+.avatar-back svg { width: 22px; height: 22px; }
+
+.avatar-card { display: grid; grid-template-columns: 1fr 1fr; border: 2px solid #e5e5e5; border-radius: 16px; overflow: hidden; background: #fff; }
+.avatar-preview { aspect-ratio: 502 / 685; min-width: 0; }
+.avatar-preview svg { display: block; width: 100%; height: 100%; }
+.avatar-editor { display: flex; flex-direction: column; min-width: 0; contain: size; }
+
+.avatar-tabs { display: flex; flex: none; border-bottom: 2px solid #e5e5e5; }
+.av-tab {
+  position: relative; flex: 1 1 0; display: grid; place-items: center; height: 54px; margin-bottom: -2px; padding: 0;
+  border: 0; border-bottom: 2px solid transparent; background: none; color: #afafaf; cursor: pointer;
+}
+.av-tab svg { width: 22px; height: 22px; }
+.av-tab:hover { color: #8a8a8a; }
+.av-tab[aria-selected="true"] { color: #1cb0f6; border-bottom-color: #1cb0f6; }
+.av-tab::after {
+  content: attr(data-tip); position: absolute; z-index: 5; top: calc(100% + 8px); left: 50%; transform: translateX(-50%);
+  padding: 6px 10px; border-radius: 8px; background: #3c3c3c; color: #fff; font-size: 12px; font-weight: 700; white-space: nowrap;
+  opacity: 0; pointer-events: none; transition: opacity .1s;
+}
+.av-tab:hover::after, .av-tab:focus-visible::after { opacity: 1; transition-delay: .15s; }
+.av-tab:focus-visible, .av-cell:focus-visible, .avatar-done:focus-visible { outline: 3px solid #1cb0f6; outline-offset: -3px; }
+
+.avatar-panel { flex: 1 1 0; min-height: 0; overflow-y: auto; padding: 4px 18px 28px; scrollbar-width: thin; scrollbar-color: #e5e5e5 transparent; }
+.avatar-panel::-webkit-scrollbar { width: 4px; }
+.avatar-panel::-webkit-scrollbar-thumb { background: #e5e5e5; border-radius: 999px; }
+.av-section h2 { margin: 24px 0 12px; font-size: 17px; font-weight: 800; color: #3c3c3c; letter-spacing: 0; }
+.av-section:first-child h2 { margin-top: 16px; }
+.av-grid { display: grid; gap: 10px; }
+.av-grid.cols-6 { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+.av-grid.cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.av-cell {
+  display: grid; place-items: center; aspect-ratio: 1; padding: 0; overflow: hidden; border: 2px solid #e5e5e5; border-radius: 12px;
+  background: #fff; cursor: pointer;
+}
+.av-cell:hover { background: #f7f7f7; }
+.av-cell[aria-checked="true"] { background: #ddf4ff; border-color: #84d8ff; }
+.av-cell.swatch i { display: block; width: 64%; height: 64%; border-radius: 10px; box-shadow: inset 0 0 0 1px #0000001a; }
+.av-cell.thumb svg { display: block; width: 100%; height: 100%; }
+.av-cell.thumb { animation: avCellIn .22s ease-out both; animation-delay: calc(var(--row, 0) * 40ms); }
+@keyframes avCellIn { from { opacity: 0; } to { opacity: 1; } }
+
+.avatar-actions { display: flex; align-items: center; justify-content: flex-end; gap: 16px; margin-top: 20px; }
+#avatar-status { margin: 0; min-height: 18px; color: #ad253b; font-weight: 700; }
+.avatar-done {
+  min-height: 52px; padding: 0 34px; border: 0; border-radius: 14px; background: #1cb0f6; color: #fff; cursor: pointer;
+  font-size: 15px; font-weight: 800; text-transform: uppercase; letter-spacing: .05em; box-shadow: 0 4px #1899d6;
+  transition: transform 90ms ease-out, box-shadow 90ms ease-out, background-color .15s;
+}
+.avatar-done:hover:not(:disabled) { background: #35bbf8; }
+.avatar-done:active:not(:disabled) { transform: translateY(4px); box-shadow: 0 0 #1899d6; }
+.avatar-done:disabled { background: #e5e5e5; color: #afafaf; box-shadow: none; cursor: default; }
+
+/* Ավատարի անգործուն անիմացիա (JS-ը թարթում ու հայացք է անում, CSS-ը՝ շնչառություն) */
+.av-animate .av-torso { animation: avBreathe 3s ease-in-out infinite alternate; }
+@keyframes avBreathe { to { transform: translateY(-1.6px); } }
+.av-animate .av-eyes { transform-box: fill-box; transform-origin: center; transition: transform .05s; }
+.av-animate .av-iris { transition: transform .1s ease-out; }
+
+aside nav button i svg.av-nav { width: 30px; height: 30px; border-radius: 50%; }
+.profile-banner-avatar > svg { display: block; width: 225px; height: 225px; }
+.profile-level { margin: 0; color: #777; font-weight: 700; }
+
+@media (max-width: 700px) {
+  .avatar-builder { max-width: none; }
+  .avatar-card { grid-template-columns: minmax(0, 1fr); }
+  .avatar-preview { aspect-ratio: 1 / 1; max-height: 340px; width: 100%; }
+  .avatar-editor { contain: none; height: 430px; }
+  .avatar-tabs { overflow-x: auto; scrollbar-width: none; }
+  .av-tab { flex: 0 0 56px; }
+  .av-tab::after { display: none; }
+  .profile-banner-avatar > svg { width: 160px; height: 160px; }
+  .avatar-done { width: 100%; }
+}
+@media (hover: none) { .av-tab::after { display: none; } }
+@media (prefers-reduced-motion: reduce) {
+  .av-cell.thumb { animation: none; }
+  .av-animate .av-torso { animation: none; }
+  .av-animate .av-eyes, .av-animate .av-iris { transition: none; }
+  .avatar-done { transition: none; }
+}
