@@ -1077,7 +1077,7 @@ aside nav button.active:is(:hover, :active, :focus-visible) {
 
 /* Մկնիկը պահելիս նավիգացիոն հղումների (դասընթացի հղում, էջերի սլաքներ) ներքևի շողքը կապույտ է (#84d8ff) */
 @media (hover: hover) {
-  :is(.course-link, .path-previous, .path-next, .lesson-card):not(:disabled):hover { box-shadow: 0 3px #84d8ff; }
+  :is(.path-previous, .path-next, .lesson-card):not(:disabled):hover { box-shadow: 0 3px #84d8ff; }
 }
 /* Կանաչ ֆոնի վրա տեքստը սպիտակ է */
 .path-unit:not([data-color]) .path-node:is(.path-current, .path-done),
@@ -1098,12 +1098,12 @@ aside nav button.active:is(:hover, :active, :focus-visible) {
    Բացառություններ՝ ընտրված/սեղմված, ճիշտ/սխալ, անջատված, կանաչ .primary,
    ինչպես նաև նավիգացիոն հղումները, որոնք մնում են կապույտ։ */
 @media (hover: hover) {
-  :is(.secondary, .icon-btn, .option, .picture-tile, .sound-tile):not(:disabled, [aria-pressed="true"], .active, .correct, .wrong):not(.course-link, .path-previous, .path-next, .sound-play, [id="sound-skip"]):hover {
+  :is(.secondary, .icon-btn, .option, .picture-tile, .sound-tile):not(:disabled, [aria-pressed="true"], .active, .correct, .wrong):not(.path-previous, .path-next, .sound-play, [id="sound-skip"]):hover {
     background: #f5f5f5;
     border-color: #e2e2e2;
     transform: none;
   }
-  :is(.secondary, .icon-btn, .sound-tile):not(:disabled, [aria-pressed="true"], .active, .correct, .wrong):not(.course-link, .path-previous, .path-next, .sound-play, [id="sound-skip"]):hover {
+  :is(.secondary, .icon-btn, .sound-tile):not(:disabled, [aria-pressed="true"], .active, .correct, .wrong):not(.path-previous, .path-next, .sound-play, [id="sound-skip"]):hover {
     box-shadow: 0 3px #e2e2e2;
   }
   :is(.option, .picture-tile):not(:disabled, [aria-pressed="true"], .active, .correct, .wrong):not(.course-link, .path-previous, .path-next, .sound-play, [id="sound-skip"]):hover {
@@ -1185,3 +1185,20 @@ aside nav button.active:is(:hover, :active, :focus-visible) {
 .signin-notice .text-button { display: inline-block; margin-top: 10px; text-decoration: none; }
 .signin-page .account-actions { margin-bottom: 8px; }
 .signin-page > .text-button { display: block; margin: 4px auto 0; }
+
+.reward-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+.reward-chips b { padding: 4px 10px; border-radius: 999px; font-size: 13px; color: #fff; }
+.reward-chips .chip-xp { background: #58cc02; box-shadow: 0 2px #46a302; }
+.reward-chips .chip-streak { background: #ff9600; box-shadow: 0 2px #cc7800; }
+
+/* Սխալ/ճիշտ պատասխանի հաղորդագրություն և «Կրկնենք սխալը» նշան */
+#grammar-feedback.answer-wrong, #review-feedback.answer-wrong {
+  padding: 12px 14px; border-radius: 14px; background: #ffdfe0; color: #c62b2b; font-weight: 700;
+}
+#grammar-feedback.answer-wrong small, #review-feedback.answer-wrong small { display: block; margin-top: 4px; color: #a33; font-weight: 600; }
+#review-feedback.answer-right { color: #46a302; font-weight: 800; }
+.retry-label { display: inline-block; color: #ff9600; font-weight: 800; text-transform: uppercase; letter-spacing: .04em; }
+
+/* Արդյունքների չիպեր (ճշտություն) */
+.reward-chips b { display: inline-flex; align-items: center; gap: 4px; }
+.reward-chips .chip-accuracy { background: #1cb0f6; box-shadow: 0 2px #1899d6; }

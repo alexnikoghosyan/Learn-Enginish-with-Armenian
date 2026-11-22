@@ -111,6 +111,7 @@ function lesson(index, resume = true) {
   }
   view = 'grammar';
   renderNavigation();
+  beginLessonCounters('grammar:' + index);
   const topic = LESSONS[index];
   app.innerHTML = '<section class="lesson-body">' + focusLessonHeader(0, 1 + grammarPracticeKinds(grammarExercises[index]).length, 'grammar', { showInitialFill: true }) +
     '<p class="muted">Դաս ' + (index + 1) + ' / ' + LESSONS.length + '</p><h1>' + esc(topic.title) +
@@ -136,8 +137,10 @@ function openGrammarPractice(index) {
   grammarTopic = index;
   view = 'grammar';
   renderNavigation();
+  beginLessonCounters('grammar:' + index);
   if (state.lessons.includes(index) && state.grammarPractice[index] === undefined) {
     state.grammarPractice[index] = 0;
+    delete grammarRetryStore()[index];
   }
   drawGrammarPractice();
   window.scrollTo(0, 0);
@@ -151,11 +154,35 @@ function grammarTokens(sentence) {
   return sentence.replace(/[,.?!]/g, '').split(/\s+/);
 }
 
+// Սխալ պատասխանված վարժությունները (քայլերի համարները)՝ դասի վերջում կրկնելու համար։
+// Պահվում է առաջընթացի մեջ, որ էջը թարմացնելիս չկորչի։
+function grammarRetryStore() {
+  return state.grammarRetry ??= {};
+}
+
+function grammarRetryList(topic = grammarTopic) {
+  return grammarRetryStore()[topic] ??= [];
+}
+
+// Ընթացիկ վարժությունը. նախ հերթով բոլորը, հետո՝ սխալ պատասխանվածները, մինչև ճիշտ պատասխանվեն։
+function currentGrammarStep() {
+  const steps = grammarPracticeKinds(grammarExercises[grammarTopic]);
+  const step = state.grammarPractice[grammarTopic];
+  if (step < steps.length) return { index: step, retry: false };
+  const retry = grammarRetryList();
+  return retry.length ? { index: retry[0], retry: true } : null;
+}
+
+let grammarAwaitingContinue = false;
+
 function drawGrammarPractice() {
   const task = grammarExercises[grammarTopic];
   const steps = grammarPracticeKinds(task);
+  const current = currentGrammarStep();
+  if (!current) { finishGrammarPractice(); return; }
+  grammarAwaitingContinue = false;
   const step = state.grammarPractice[grammarTopic];
-  const kind = steps[step];
+  const kind = steps[current.index];
   const input = '<label for="grammar-answer">Քո պատասխանը</label><input id="grammar-answer" lang="en" autocomplete="off" spellcheck="false">';
   let body;
   if (kind === 'write') {
@@ -179,11 +206,12 @@ function drawGrammarPractice() {
       '<div id="arranged-words" class="grammar-tiles grammar-output" aria-label="Քո նախադասությունը"></div>' +
       '<div id="available-words" class="grammar-tiles" aria-label="Խառնված բառերը"></div>';
   }
-  app.innerHTML = '<section class="lesson-body">' + focusLessonHeader(step + 1, steps.length + 1, 'grammar') +
-    '<div class="panel grammar-practice"><small>Վարժություն ' + (step + 1) + ' / ' + steps.length +
-    '</small>' +
+  const label = current.retry ? '<small class="retry-label">Կրկնենք սխալը</small>' :
+    '<small>Վարժություն ' + (step + 1) + ' / ' + steps.length + '</small>';
+  app.innerHTML = '<section class="lesson-body">' + focusLessonHeader(Math.min(step, steps.length) + 1, steps.length + 1, 'grammar') +
+    '<div class="panel grammar-practice">' + label +
     '<form onsubmit="event.preventDefault();checkGrammarPractice()">' + body +
-    '<p id="grammar-feedback" role="status"></p><div class="tools lesson-controls"><button class="primary">Ստուգել</button>' +
+    '<p id="grammar-feedback" role="status"></p><div class="tools lesson-controls"><button class="primary" id="grammar-check">Ստուգել</button>' +
     '<button class="secondary" type="button" onclick="lesson(grammarTopic, false)">Տեսնել կանոնը</button>' +
     '</div></form></div></section>';
   if (kind === 'arrange') drawGrammarTiles();
@@ -198,6 +226,7 @@ function drawGrammarTiles() {
 }
 
 function toggleGrammarTile(index) {
+  if (grammarAwaitingContinue) return;
   if (arrangedWords.includes(index)) arrangedWords = arrangedWords.filter(value => value !== index);
   else arrangedWords.push(index);
   drawGrammarTiles();
@@ -209,32 +238,64 @@ function normalizeGrammar(value) {
 
 function checkGrammarPractice() {
   if (lessonTransitionRunning) return;
+  if (grammarAwaitingContinue) { advanceGrammarPractice(); return; }
   const task = grammarExercises[grammarTopic];
   const steps = grammarPracticeKinds(task);
-  const step = state.grammarPractice[grammarTopic];
-  const kind = steps[step];
+  const current = currentGrammarStep();
+  if (!current) { finishGrammarPractice(); return; }
+  const kind = steps[current.index];
   const value = kind === 'arrange' ? arrangedWords.map(index => arrangementTiles[index]).join(' ') :
     document.getElementById('grammar-answer').value;
+  const feedback = document.getElementById('grammar-feedback');
+  if (!normalizeGrammar(value)) {
+    feedback.textContent = kind === 'arrange' ? 'Նախ ընտրիր բառերը։' : 'Նախ գրիր պատասխանդ։';
+    return;
+  }
   const expected = kind === 'write' ? task.sentence : kind === 'form' ? task.form : task.arrangement;
+  const retry = grammarRetryList();
   if (normalizeGrammar(value) !== normalizeGrammar(expected)) {
-    document.getElementById('grammar-feedback').textContent = 'Դեռ ճիշտ չէ։ Ստուգիր բառերի ձևը և հերթականությունը ու նորից փորձիր։';
-    return;
-  }
-  if (step + 1 < steps.length) {
-    state.grammarPractice[grammarTopic]++;
+    // Սխալ է. ցույց ենք տալիս ճիշտ պատասխանը, անցնում առաջ, իսկ այս վարժությունը կրկնվում է վերջում։
+    recordLessonAnswer(false);
+    if (current.retry) retry.push(retry.shift());
+    else if (!retry.includes(current.index)) retry.push(current.index);
     save();
-    transitionLesson(drawGrammarPractice);
+    feedback.className = 'answer-wrong';
+    feedback.innerHTML = '<strong>Ճիշտ չէ։</strong> Ճիշտ պատասխանը՝ <span lang="en">' + esc(expected) + '</span>' +
+      '<small>Այս վարժությունը կկրկնենք դասի վերջում։</small>';
+    grammarAwaitingContinue = true;
+    const input = document.getElementById('grammar-answer');
+    if (input) input.readOnly = true;
+    document.getElementById('grammar-check').textContent = 'Շարունակել →';
     return;
   }
+  recordLessonAnswer(true);
+  if (current.retry) {
+    retry.shift();
+    save();
+  }
+  advanceGrammarPractice();
+}
+
+function advanceGrammarPractice() {
+  grammarAwaitingContinue = false;
+  const steps = grammarPracticeKinds(grammarExercises[grammarTopic]);
+  if (state.grammarPractice[grammarTopic] < steps.length) state.grammarPractice[grammarTopic]++;
+  save();
+  if (currentGrammarStep()) transitionLesson(drawGrammarPractice);
+  else finishGrammarPractice();
+}
+
+function finishGrammarPractice() {
   if (!state.lessons.includes(grammarTopic)) state.lessons.push(grammarTopic);
   recordStudyDay();
   delete state.grammarPractice[grammarTopic];
+  delete grammarRetryStore()[grammarTopic];
   save();
   const next = nextGrammarTopic();
   app.innerHTML = '<section class="lesson-body panel"><div class="lesson-reward is-new" role="status">' +
     '<span class="reward-medal" aria-hidden="true">' + gardenIllustration('medal') + '</span><div><strong>Վարժությունն ավարտված է։</strong>' +
     '<small>' + (next >= 0 ? 'Հաջորդ քերականական դասը բացվել է։' : 'Ավարտել ես քերականության ճանապարհը։') +
-    '</small></div></div><div class="tools">' +
+    '</small>' + rewardChips(true, finishLessonCounters()) + '</div></div><div class="tools">' +
     (next >= 0 ? '<button class="primary" onclick="lesson(' + next + ')">Հաջորդ դասը →</button>' : '') +
     '<button class="secondary" onclick="go(\'grammar\')">Վերադառնալ ճանապարհին</button></div></section>';
   if (Object.values(state.wordLessons).filter(item => item.done).length + state.lessons.length === 1 && !state.soundXp) offerMobileProgress();

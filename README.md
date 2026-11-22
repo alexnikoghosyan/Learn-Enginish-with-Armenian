@@ -33,8 +33,17 @@ History-API routing in `dist/routes.js` (the worker serves `index.html` for unkn
 - Rate limit: 5 failed sign-ins per IP + email and 5 sign-ups per IP per 10 minutes (`auth_attempts`).
 - Secrets (set in Cloudflare, never committed): `GOOGLE_CLIENT_SECRET`, optional `SESSION_SECRET`.
 
+## Mistakes and lesson results
+
+- No hearts: a wrong answer shows "Ճիշտ չէ" with the correct answer, then the lesson moves on.
+- Wrongly answered questions come back at the end (marked "Կրկնենք սխալը") until answered correctly:
+  grammar practice (`state.grammarRetry`), word review (`state.cumulativeReview.retry`) and sounds.
+- The reward card after a grammar, word, review or sounds lesson shows XP, accuracy (when the lesson had checked answers) and streak.
+
 ## Next steps
 
 - Password reset ("Մոռացե՞լ ես գաղտնաբառը") – needs an email sender (e.g. Cloudflare Email / Resend) and a reset-token table.
 - Server-side progress sync (progress is still only in `localStorage`).
-- More word illustrations, gamification (XP, hearts, streak), CEFR-sorted and re-checked translations.
+- More word illustrations (Google Flow, style rules in the ArmDuo project README).
+- Translation cleanup + CEFR levels.
+- Gamification follow-ups: achievements, daily quests (XP, streak and the lesson results screen are done).

@@ -68,6 +68,7 @@ function makeReviewQuestions(indices) {
 
 function startCumulativeReview() {
   lessonAnswerStreak = 0;
+  beginLessonCounters('review');
   const saved = state.cumulativeReview;
   if (!saved) {
     showLearningPath(pathPage);
@@ -79,6 +80,11 @@ function startCumulativeReview() {
   if (activeReview !== saved) {
     activeReview = saved;
     reviewQuestions = makeReviewQuestions(saved.words);
+    reviewQuestions.forEach((question, index) => { question.base = index; });
+    // Սխալ պատասխանված հարցերը կրկնվում են վերջում (պահված են, որ էջը թարմացնելիս չկորչեն)
+    for (const index of saved.retry || []) {
+      if (reviewQuestions[index]) reviewQuestions.push({ ...reviewQuestions[index], retry: true });
+    }
   }
   drawReviewQuestion();
   window.scrollTo(0, 0);
@@ -96,7 +102,7 @@ function drawReviewQuestion(mode = 'typing') {
     activeReview = null;
     app.innerHTML = '<h1>Կրկնություն</h1><section class="panel word-lesson-panel"><div class="lesson-reward is-new">' +
       '<span class="reward-medal" aria-hidden="true">' + gardenIllustration('medal') + '</span><div><strong>Կրկնությունն ավարտված է։</strong>' +
-      '<small>Կրկնեցիր անցած բոլոր բառերը։</small></div></div><div class="tools">' +
+      '<small>Կրկնեցիր անցած բոլոր բառերը։</small>' + rewardChips(false, finishLessonCounters()) + '</div></div><div class="tools">' +
       '<button class="primary" onclick="continueAfterReview()">' +
       (nextCourseWord() !== undefined ? 'Հաջորդ բառը →' : 'Վերադառնալ ճանապարհին →') +
       '</button></div></section>';
@@ -150,7 +156,7 @@ function drawReviewQuestion(mode = 'typing') {
   }
   app.innerHTML = focusLessonHeader(cursor, reviewQuestions.length, 'vocabulary') +
     '<h1>Կրկնություն</h1><section class="panel word-lesson-panel review-panel">' +
-    '<small>Հարց ' + (cursor + 1) + ' / ' + reviewQuestions.length + ' · ' + activeReview.words.length + ' բառ</small>' +
+    '<small' + (question.retry ? ' class="retry-label">Կրկնենք սխալը · ' : '>') + 'Հարց ' + (cursor + 1) + ' / ' + reviewQuestions.length + ' · ' + activeReview.words.length + ' բառ</small>' +
     '<h2>' + (mode === 'sentence' ? 'Գրիր ամբողջ նախադասությունն անգլերենով' : labels[question.type]) + '</h2><div class="review-prompt' +
     (question.type === 'to-hy' || mode === 'sentence' ? ' with-bear' : '') + '" lang="' + (question.type === 'to-en' ? 'hy' : 'en') + '">' +
     (question.type === 'to-hy' || question.type === 'picture' ?
@@ -215,21 +221,35 @@ function checkReviewAnswer() {
     recordLessonAnswer(true);
     finishReviewQuestion('Ճիշտ է։ ✓');
   } else {
-    recordLessonAnswer(false);
-    feedback.textContent = 'Փորձիր ևս մեկ անգամ։';
-    document.getElementById('review-reveal').classList.remove('hidden');
+    markReviewWrong();
   }
 }
 
-function revealReviewAnswer() {
+// Սխալ պատասխան կամ «Բաց թողնել». ցույց ենք տալիս ճիշտ պատասխանը, անցնում ենք առաջ,
+// իսկ հարցը կրկին կտրվի կրկնության վերջում (մինչև ճիշտ պատասխանվի)։
+function markReviewWrong() {
   recordLessonAnswer(false);
   const question = reviewQuestions[activeReview.cursor];
-  finishReviewQuestion('Ճիշտ պատասխանը՝ ' + (reviewInputMode === 'sentence' ? question.sentence[0] : question.answer));
+  if (pictureSelectionIndex !== null) app.querySelectorAll('.review-grid button')[pictureSelectionIndex]?.classList.add('wrong');
+  (activeReview.retry ??= []).push(question.base);
+  reviewQuestions.push({ ...question, retry: true });
+  save();
+  const answer = reviewInputMode === 'sentence' ? question.sentence[0] : question.answer;
+  finishReviewQuestion('', '<strong>Ճիշտ չէ։</strong> Ճիշտ պատասխանը՝ <span lang="' + (question.type === 'to-hy' ? 'hy' : 'en') + '">' +
+    esc(answer) + '</span><small>Այս հարցը կկրկնենք վերջում։</small>');
 }
 
-function finishReviewQuestion(message) {
+function revealReviewAnswer() {
+  if (reviewChecked) return;
+  markReviewWrong();
+}
+
+function finishReviewQuestion(message, html = '') {
   reviewChecked = true;
-  document.getElementById('review-feedback').textContent = message;
+  const feedback = document.getElementById('review-feedback');
+  feedback.className = html ? 'answer-wrong' : 'answer-right';
+  if (html) feedback.innerHTML = html;
+  else feedback.textContent = message;
   document.getElementById('review-check').textContent = 'Շարունակել →';
   document.getElementById('review-check').disabled = false;
   document.getElementById('review-reveal').classList.add('hidden');

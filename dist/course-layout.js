@@ -28,6 +28,25 @@ function courseMilestone(complete) {
 }
 
 let lessonAnswerStreak = 0;
+// Ընթացիկ դասի հաշվիչները (արդյունքների էկրանի համար)։ Բանալին փոխվելիս զրոյացվում են,
+// ուստի «Տեսնել կանոնը» → վարժություն անցումը չի ջնջում արդեն տված պատասխանները։
+let lessonCorrectAnswers = 0;
+let lessonTotalAnswers = 0;
+let lessonCounterKey = '';
+
+function beginLessonCounters(key) {
+  if (lessonCounterKey === key) return;
+  lessonCounterKey = key;
+  lessonCorrectAnswers = 0;
+  lessonTotalAnswers = 0;
+  lessonAnswerStreak = 0;
+}
+
+function finishLessonCounters() {
+  const result = { correct: lessonCorrectAnswers, total: lessonTotalAnswers };
+  lessonCounterKey = '';
+  return result;
+}
 
 function paintLessonAnswerStreak() {
   const label = app.querySelector('.lesson-answer-streak');
@@ -36,6 +55,8 @@ function paintLessonAnswerStreak() {
 
 function recordLessonAnswer(correct) {
   lessonAnswerStreak = correct ? lessonAnswerStreak + 1 : 0;
+  lessonTotalAnswers++;
+  if (correct) lessonCorrectAnswers++;
   paintLessonAnswerStreak();
 }
 
@@ -120,4 +141,15 @@ async function transitionLesson(render, direction = 1) {
   } finally {
     lessonTransitionRunning = false;
   }
+}
+
+// Արդյունքների չիպեր. XP, ճշտություն (եթե դասում ստուգվող պատասխաններ կային), օրերի շարք։
+// results-ը finishLessonCounters()-ից է. առանց դրա ցույց են տրվում միայն XP-ն ու շարքը (հին վարքը)։
+function rewardChips(fresh, results = null, xp = fresh ? 10 : 0) {
+  const streak = typeof currentStudyStreak === 'function' ? currentStudyStreak() : 0;
+  const accuracy = results && results.total ? Math.round(100 * results.correct / results.total) : null;
+  return '<span class="reward-chips">' + (xp ? '<b class="chip-xp">+' + xp + ' XP</b>' : '') +
+    (accuracy !== null ? '<b class="chip-accuracy" title="' + results.correct + ' / ' + results.total + ' ճիշտ">' +
+      accuracy + '% ճշտություն</b>' : '') +
+    (streak ? '<b class="chip-streak">' + streak + ' օր անընդմեջ</b>' : '') + '</span>';
 }

@@ -495,6 +495,7 @@ function openWordLesson(index = firstUnfinishedWord()) {
   }
   if (!state.wordLessons[index]?.done) index = firstUnfinishedWord();
   currentWordIndex = index;
+  beginLessonCounters('word:' + index);
   view = 'vocabulary';
   pictureTab = 'pictures';
   drawWordLesson();
@@ -551,7 +552,7 @@ function drawWordLesson(justCompleted = false) {
       (exampleBlock ? '<h3>Համեմատիր օրինակի հետ</h3>' + exampleBlock : '') +
       (entry.done ? '<div role="status" class="lesson-reward' + (justCompleted ? ' is-new' : '') +
         '"><span class="reward-medal" aria-hidden="true">' + gardenIllustration('medal') + '</span><div><strong>Դասն ավարտված է։</strong>' +
-        '<small>Գրածդ պահպանվել է «Իմ գրառումները» բաժնում։</small></div></div>' : '');
+        '<small>Գրածդ պահպանվել է «Իմ գրառումները» բաժնում։</small>' + rewardChips(justCompleted, justCompleted ? finishLessonCounters() : null) + '</div></div>' : '');
   }
   app.innerHTML = focusLessonHeader(entry.step, wordLessonStepCount, 'vocabulary', { showInitialFill: true }) + '<h1>Բառեր</h1>'  +
     '<section class="panel word-lesson-panel">' + content +
