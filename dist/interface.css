@@ -1070,3 +1070,8 @@ aside nav button.active {
 
 /* Կողային մենյուի ընտրված կոճակը՝ առանց ներքևի մուգ կապույտ եզրի */
 aside nav button.active { box-shadow: none; }
+/* Մկնիկը պահելիս կապույտ եզրով կոճակների ներքևի շողքը նույնպես կապույտ է (#84d8ff) */
+@media (hover: hover) {
+  :is(.secondary, .icon-btn, .lesson-card):not(:disabled):not(.account-options *):hover { box-shadow: 0 3px #84d8ff; }
+  :is(.secondary, .icon-btn):not(:disabled):active { box-shadow: none; }
+}
