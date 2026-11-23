@@ -67,6 +67,8 @@ function useAccountProgress(importGuest = false) {
   state.grammarPractice ??= {};
   state.soundProgress ??= {};
   state.soundXp ??= 0;
+  state.physics ??= { done: {}, at: {} };
+  state.physicsXp ??= 0;
   save();
 }
 

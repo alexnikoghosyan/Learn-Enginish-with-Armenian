@@ -56,16 +56,18 @@ function physLoop(frame) {
   };
 }
 
-// Սանդղակի գծիկներ [from, to] միջակայքում. x(cm)՝ կոորդինատ, long/mid/short՝ գծիկի երկարությունները
-function physTicks(from, to, step, x, y, { long = 30, mid = 21, short = 14, labels = true, size = 18 } = {}) {
+// Սանդղակի գծիկներ [from, to] միջակայքում. x(value)՝ կոորդինատ, long/mid/short՝ գծիկի երկարությունները,
+// major՝ երկար գծիկների քայլը (1՝ սմ/մլ-ի համար, 10՝ մմ-ի համար), hot(value)՝ ընդգծված գծիկ (գույն կամ null)
+function physTicks(from, to, step, x, y, { long = 30, mid = 21, short = 14, labels = true, size = 18, major = 1, hot = () => null } = {}) {
   let out = '';
   for (let i = Math.ceil(from / step - 1e-9); i * step <= to + 1e-9; i++) {
     const value = Number((i * step).toFixed(4));
-    const whole = Math.abs(value - Math.round(value)) < 1e-6;
-    const half = Math.abs(value * 2 - Math.round(value * 2)) < 1e-6;
+    const whole = Math.abs(value / major - Math.round(value / major)) < 1e-6;
+    const half = Math.abs(value * 2 / major - Math.round(value * 2 / major)) < 1e-6;
     const length = whole ? long : half ? mid : short;
-    out += '<line x1="' + x(value) + '" x2="' + x(value) + '" y1="' + y + '" y2="' + (y + length) + '" stroke="#5a4600" stroke-width="' + (whole ? 2.4 : 1.6) + '"/>';
-    if (whole && labels) out += '<text x="' + x(value) + '" y="' + (y + long + size + 3) + '" text-anchor="middle" font-size="' + size + '" font-weight="700" fill="#5a4600">' + Math.round(value) + '</text>';
+    const color = hot(value) || '#5a4600';
+    out += '<line x1="' + x(value) + '" x2="' + x(value) + '" y1="' + y + '" y2="' + (y + length) + '" stroke="' + color + '" stroke-width="' + (whole ? 2.4 : 1.6) + '"/>';
+    if (whole && labels) out += '<text x="' + x(value) + '" y="' + (y + long + size + 3) + '" text-anchor="middle" font-size="' + size + '" font-weight="700" fill="' + (hot(value) || '#5a4600') + '">' + Math.round(value) + '</text>';
   }
   return out;
 }

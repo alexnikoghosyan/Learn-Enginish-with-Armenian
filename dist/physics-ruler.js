@@ -22,8 +22,7 @@ PHYS_MEASURE.ruler = {
     let base = start;
 
     el.innerHTML = '<svg class="phys-svg" viewBox="0 36 560 164" role="img" aria-label="Չափաքանոն և առարկա">' +
-      '<rect x="24" y="112" width="512" height="78" rx="8" fill="#ffe08a" stroke="#e0a800" stroke-width="2"/>' +
-      '<g>' + physTicks(min, max, step, x, 112) + '</g>' +
+      '<g transform="translate(24 104)">' + PHYS_ART.ruler.group({ from: min, to: max, step, width: 472, x0: 20, bodyWidth: 512 }) + '</g>' +
       '<text x="522" y="188" text-anchor="end" font-size="18" font-weight="700" fill="#5a4600">' + unit + '</text>' +
       '<g class="r-guides" stroke="#1cb0f6" stroke-width="2" stroke-dasharray="5 4"><line y1="88" y2="112"/><line y1="88" y2="112"/></g>' +
       '<g class="r-obj phys-drag"><rect class="r-body" y="56" height="32" rx="6" fill="#1cb0f6"/>' +

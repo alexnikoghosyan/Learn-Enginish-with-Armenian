@@ -1,7 +1,8 @@
 // Դասի քայլերի տեսակները (տե՛ս PLAN.md). Ամեն տեսակ՝ { html(step), mount?(step), check?(step) → bool, graded?, once?, reveal?(step, ok) }
 // check չունեցող տեսակները միայն ցուցադրվում են («Շարունակել»)։ once՝ կանխատեսում, ստուգվում է մեկ անգամ և չի գնահատվում։
+// Տեքստի օգնականները (given/find/steps, physRich, hero)՝ physics-text.js-ում։
 const physOptions = step => '<div class="phys-options" role="group" aria-label="Պատասխանի տարբերակներ">' + step.options.map((option, index) =>
-  '<button type="button" class="option phys-choice" aria-pressed="false" onclick="pickPhysicsOption(' + index + ')">' + esc(option) + '</button>').join('') + '</div>';
+  '<button type="button" class="option phys-choice" aria-pressed="false" onclick="pickPhysicsOption(' + index + ')">' + physFormula(option) + '</button>').join('') + '</div>';
 
 function pickPhysicsOption(index) {
   physLesson.picked = index;
@@ -25,37 +26,51 @@ function physCellValue(cell) {
   return cell.calc ? physCalc(cell.calc) : cell.ans;
 }
 
+// Հարցի վերնագիրը՝ q/task + «Տրված է / Գտնել / Լուծում»
+const physQuestion = step => '<p class="phys-task">' + physRich(step.q ?? step.task) + '</p>' + physGivenHtml(step);
+
+function mountPhysicsAnim(step) {
+  if (step.anim) physLesson.tool = physAnimPlayer(app.querySelector('.phys-anim'), step.anim, step.params || {}, { loop: step.loop !== false });
+}
+
 const PHYS_STEPS = {
-  explain: { html: step => '<p class="phys-text">' + esc(step.text) + '</p>' },
-  recap: { html: step => '<h2>Դասի ամփոփում</h2><ul class="phys-recap">' + step.points.map(point => '<li>' + esc(point) + '</li>').join('') + '</ul>' },
+  explain: {
+    html: step => physHeroHtml(step) + '<p class="phys-text">' + physRich(step.text) + '</p>' + physGivenHtml(step),
+    mount: mountPhysicsAnim
+  },
+  watch: {
+    html: step => physHeroHtml(step) + (step.text ? '<p class="phys-text">' + physRich(step.text) + '</p>' : ''),
+    mount: mountPhysicsAnim
+  },
+  recap: { html: step => '<h2>Դասի ամփոփում</h2><ul class="phys-recap">' + step.points.map(point => '<li>' + physFormula(point) + '</li>').join('') + '</ul>' },
   sim: {
     graded: true,
-    html: step => '<p class="phys-task">' + esc(step.task) + '</p><div class="phys-tool"></div>',
+    html: step => physQuestion(step) + '<div class="phys-tool"></div>',
     mount(step) { physLesson.tool = PHYS_TOOLS[step.tool].mount(app.querySelector('.phys-tool'), step.params, () => {}); },
     check: step => physGoalMet(step.goal, physLesson.tool.value())
   },
   scrub: {
-    html: step => '<p class="phys-task">' + esc(step.caption) + '</p><div class="phys-tool"></div>',
+    html: step => '<p class="phys-task">' + physRich(step.caption) + '</p><div class="phys-tool"></div>',
     mount(step) { physLesson.tool = PHYS_TOOLS.frames.mount(app.querySelector('.phys-tool'), { media: step.media, label: step.label }, () => {}); }
   },
   choice: {
     graded: true,
-    html: step => '<p class="phys-task">' + esc(step.q) + '</p>' + physOptions(step),
+    html: step => physQuestion(step) + physOptions(step),
     mount() { app.querySelector('#phys-main').disabled = true; },
     check: step => physLesson.picked === step.answer,
     reveal: revealPhysicsOptions
   },
   predict: {
     once: true,
-    html: step => '<p class="phys-task">' + esc(step.q) + '</p>' + physOptions(step),
+    html: step => physQuestion(step) + physOptions(step),
     mount() { app.querySelector('#phys-main').disabled = true; },
     check: step => physLesson.picked === step.answer,
     reveal: revealPhysicsOptions
   },
   numeric: {
     graded: true,
-    html: step => '<p class="phys-task">' + esc(step.q) + '</p><div class="phys-numeric">' + physInput('Պատասխան') +
-      (step.units ? '<select class="phys-unit" aria-label="Միավոր">' + step.units.map(unit => '<option>' + esc(unit) + '</option>').join('') + '</select>' : '') + '</div>',
+    html: step => physQuestion(step) + '<div class="phys-numeric">' + physInput('Պատասխան') +
+      (step.units ? '<select class="phys-unit" aria-label="Միավոր">' + step.units.map(unit => '<option>' + physEsc(unit) + '</option>').join('') + '</select>' : '') + '</div>',
     check(step) {
       const expected = step.calc ? physCalc(step.calc) : step.answer;
       const unit = app.querySelector('.phys-unit');
@@ -64,10 +79,10 @@ const PHYS_STEPS = {
   },
   table: {
     graded: true,
-    html: step => '<p class="phys-task">' + esc(step.q) + '</p><div class="phys-table-wrap"><table class="phys-table"><thead><tr>' +
-      step.columns.map(column => '<th scope="col">' + esc(column) + '</th>').join('') + '</tr></thead><tbody>' +
+    html: step => physQuestion(step) + '<div class="phys-table-wrap"><table class="phys-table"><thead><tr>' +
+      step.columns.map(column => '<th scope="col">' + physFormula(column) + '</th>').join('') + '</tr></thead><tbody>' +
       step.rows.map((row, r) => '<tr>' + row.map((cell, c) => '<td>' + (typeof cell === 'object' ?
-        physInput(esc(step.columns[c]), ' data-cell="' + r + ':' + c + '" size="5"') : esc(cell)) + '</td>').join('') + '</tr>').join('') + '</tbody></table></div>',
+        physInput(physEsc(step.columns[c]), ' data-cell="' + r + ':' + c + '" size="5"') : physFormula(cell)) + '</td>').join('') + '</tr>').join('') + '</tbody></table></div>',
     check: step => [...app.querySelectorAll('[data-cell]')].every(input => {
       const [r, c] = input.dataset.cell.split(':').map(Number);
       const cell = step.rows[r][c];

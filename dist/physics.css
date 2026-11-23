@@ -28,14 +28,36 @@
 .phys-hint { flex: 1 1 200px; color: #777; font-size: 14px; }
 .phys-live { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
 
-.phys-feedback { margin-top: 16px; padding: 14px 16px; border-radius: 14px; line-height: 1.5; }
+/* Ներքևի ամրացված շերտ (Duolingo). ստուգելուց հետո ամբողջությամբ գունավորվում է */
+.phys-content { padding-bottom: 8px; }
+.phys-bar { position: sticky; bottom: 0; z-index: 4; margin: 24px -12px 0; padding: 12px; background: #fff; border-top: 2px solid #e5e5e5; }
+.phys-bar.is-correct { background: #d7ffb8; border-top-color: #b8e986; color: #3d7a00; }
+.phys-bar.is-wrong { background: #ffdfe0; border-top-color: #f5b5b8; color: #c02a2a; }
+.phys-bar.is-neutral { background: #ddf4ff; border-top-color: #a8dcf7; color: #1470a0; }
+.phys-feedback { margin: 0 0 12px; line-height: 1.5; }
 .phys-feedback[hidden] { display: none; }
-.phys-feedback.is-correct { background: #d7ffb8; color: #3d7a00; }
-.phys-feedback.is-wrong { background: #ffdfe0; color: #c02a2a; }
-.phys-actions { display: flex; flex-wrap: wrap; gap: 12px; justify-content: flex-end; margin-top: 18px; }
+.phys-actions { display: flex; flex-wrap: wrap; gap: 12px; justify-content: flex-end; }
 .phys-actions .primary, .phys-actions .secondary { min-height: 48px; }
+.phys-bar.is-wrong .primary { background: #ff4b4b; box-shadow: 0 4px #c92a2a; color: #fff; }
 
-.phys-feedback.is-neutral { background: #ddf4ff; color: #1470a0; }
+/* Բացատրության էկրանի նկար (hero), «Տրված է / Գտնել / Լուծում», ցուցակներ */
+.phys-hero { position: relative; margin: 18px auto 6px; max-width: 260px; padding: 14px; background: #f7f7f7; border: 2px solid #e5e5e5; border-bottom-width: 5px; border-radius: 20px; animation: phys-pop .2s ease-out; }
+.phys-hero:has(.phys-anim) { max-width: 560px; padding: 10px; }
+.phys-img, .phys-fig svg { display: block; width: 100%; height: auto; }
+.phys-hero-label { position: absolute; transform: translate(-50%, -50%); font-weight: 800; font-size: 18px; color: #3c3c3c; text-align: center; paint-order: stroke; -webkit-text-stroke: 4px #f7f7f7; }
+.phys-lines, .phys-solution { margin: 8px 0; padding-left: 24px; font-size: 18px; line-height: 1.7; }
+.phys-lines { list-style: disc; }
+.phys-solution li::marker { font-weight: 800; color: #1899d6; }
+.phys-given { display: grid; grid-template-columns: max-content 1fr; gap: 4px 14px; margin: 10px 0; padding: 12px 14px; background: #f5f5f5; border-radius: 14px; font-size: 18px; }
+.phys-given dt { font-weight: 800; color: #1899d6; }
+.phys-given dd { margin: 0; }
+.phys-given .phys-lines { margin: 0; }
+.phys-label { margin: 10px 0 0; font-weight: 800; color: #1899d6; }
+.phys-soon { display: block; margin-top: 2px; font-size: 11px; font-weight: 800; color: #1899d6; text-transform: uppercase; letter-spacing: .04em; }
+@keyframes phys-pop { from { opacity: 0; transform: scale(.96); } to { opacity: 1; transform: scale(1); } }
+@media (min-width: 731px) { .phys-hero { max-width: 320px; } .phys-hero:has(.phys-anim) { max-width: 560px; } }
+@media (prefers-reduced-motion: reduce) { .phys-hero { animation: none; } }
+
 .phys-group { display: flex; flex-wrap: wrap; gap: 8px; }
 .phys-group .secondary { min-height: 44px; }
 .phys-group [aria-pressed="true"] { background: #ddf4ff; color: #1899d6; box-shadow: 0 4px #84d8ff; }
@@ -61,6 +83,8 @@
   .phys-value { min-width: 0; flex: 1; }
   .phys-readout { flex: 1 1 100%; }
   .phys-actions > * { flex: 1 1 100%; }
+  .phys-bar { margin-inline: -8px; }
+  .phys-lines, .phys-solution, .phys-given { font-size: 17px; }
 }
 
 .phys-canvas { display: block; margin: 0 auto; width: 100%; max-width: 300px; height: auto; }

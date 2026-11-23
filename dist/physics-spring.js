@@ -10,10 +10,9 @@ PHYS_TOOLS.spring = {
     const step = params.step ?? 0.1;
     const maxCount = Math.round((params.maxLoad ?? 0.5) / step);
     const X0 = 180;
-    const Y0 = 22;
-    const L0 = 56;
+    const SC = 0.6;
     const S = 12;
-    const REST = Y0 + L0;
+    const REST = SC * (16 + 80);
     let count = 0;
     let pos = 0;
     let speed = 0;
@@ -21,11 +20,6 @@ PHYS_TOOLS.spring = {
 
     const force = () => Number((count * step * g).toFixed(3));
     const stretch = () => Number((force() / k * 100).toFixed(2));
-    const coil = length => {
-      let points = X0 + ',' + Y0;
-      for (let i = 1; i < 14; i++) points += ' ' + (X0 + (i % 2 ? 15 : -15)) + ',' + (Y0 + 6 + (length - 12) * i / 14);
-      return points + ' ' + X0 + ',' + (Y0 + length);
-    };
     let strip = '';
     if (mode === 'hooke') {
       for (let cm = 0; cm <= 12; cm++) strip += '<line x1="252" x2="' + (cm % 2 ? 262 : 270) + '" y1="' + (REST + cm * S) + '" y2="' + (REST + cm * S) + '" stroke="#555" stroke-width="2"/>' +
@@ -42,8 +36,7 @@ PHYS_TOOLS.spring = {
     }
 
     el.innerHTML = '<svg class="phys-svg" viewBox="0 0 560 300" role="img" aria-label="Զսպանակ և բեռներ">' +
-      '<rect x="120" y="10" width="120" height="12" rx="4" fill="#9a9a9a"/><polyline class="k-coil" fill="none" stroke="#8a8a8a" stroke-width="4" stroke-linejoin="round"/>' +
-      '<g class="k-load"></g><path class="k-pointer" fill="#ff4b4b"/>' + strip + '<g class="k-marks"></g>' + graph + '</svg>' +
+      '<g class="k-art" transform="translate(120 0) scale(' + SC + ')"></g><path class="k-pointer" fill="#ff4b4b"/>' + strip + '<g class="k-marks"></g>' + graph + '</svg>' +
       '<div class="phys-controls"><div class="phys-readout"><button type="button" class="secondary phys-step" data-dir="-1" aria-label="Հանել բեռը">−</button>' +
       '<output class="phys-value" aria-live="polite"></output><button type="button" class="secondary phys-step" data-dir="1" aria-label="Ավելացնել բեռը">+</button></div>' +
       '<button type="button" class="secondary phys-save">' + (mode === 'hooke' ? 'Գրանցել' : 'Նշել') + '</button></div>';
@@ -58,10 +51,8 @@ PHYS_TOOLS.spring = {
 
     function paint() {
       const end = REST + pos * S;
-      q('.k-coil').setAttribute('points', coil(end - Y0));
+      q('.k-art').innerHTML = PHYS_ART.spring.group({ length: 80 + pos * S / SC, loads: count });
       q('.k-pointer').setAttribute('d', 'M236 ' + (end - 8) + 'L248 ' + end + 'L236 ' + (end + 8) + 'Z');
-      q('.k-load').innerHTML = '<line x1="' + X0 + '" x2="' + X0 + '" y1="' + end + '" y2="' + (end + 10) + '" stroke="#777" stroke-width="3"/>' +
-        Array.from({ length: count }, (_, i) => '<rect x="' + (X0 - 24) + '" y="' + (end + 10 + i * 15) + '" width="48" height="13" rx="4" fill="' + (i % 2 ? '#ff9600' : '#ffc800') + '" stroke="rgba(0,0,0,.25)" stroke-width="2"/>').join('');
       q('output').textContent = 'Բեռ՝ ' + physFormat(count * step, step) + ' կգ · F = ' + String(force()).replace('.', ',') + ' Ն';
       save.disabled = count === 0 || !settled();
       q('.k-marks').innerHTML = marks.map(mark => '<line x1="250" x2="280" y1="' + (REST + mark.x * S) + '" y2="' + (REST + mark.x * S) + '" stroke="#1cb0f6" stroke-width="3"/>' +

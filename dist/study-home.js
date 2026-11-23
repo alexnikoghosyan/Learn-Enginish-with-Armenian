@@ -35,13 +35,14 @@ function studyHome() {
 
 function physicsCard() {
   const { done, total } = physicsProgress();
-  const next = physicsSections().find(section => physicsReady(section.id) && !state.physics.done[section.id]);
+  const next = physicsNext();
+  const ready = next && physicsReady(next.id);
   return `<section class="panel study-card">
           <h2>Ֆիզիկա 7</h2>
           <p>${done} / ${total} դաս ավարտված</p>
           <progress max="${total}" value="${done}" aria-label="Ֆիզիկայի առաջընթաց"></progress>
-          <p class="study-next">${next ? '§' + next.n + '. ' + esc(next.title) : 'Բոլոր դասերն ավարտված են։'}</p>
-          <button class="primary" onclick="${next ? "openPhysicsLesson('" + next.id + "')" : "go('physics')"}">${next ? 'Շարունակել →' : 'Բացել ճանապարհը'}</button>
+          <p class="study-next">${next ? '§' + next.n + '. ' + esc(next.title) : 'Բոլոր դասերն ավարտված են։'}${next && !ready ? ' <small class="phys-soon">Շուտով</small>' : ''}</p>
+          <button class="primary" onclick="${ready ? "openPhysicsLesson('" + next.id + "')" : "go('physics')"}">${ready ? 'Շարունակել →' : 'Բացել ճանապարհը'}</button>
           <button class="secondary" onclick="go('physics')">Ուսուցման ճանապարհ</button>
         </section>`;
 }

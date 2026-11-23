@@ -9,3 +9,4 @@ const PHYSICS_MEDIA = {
     "h": 400
   }
 };
+const PHYSICS_IMAGES = {};

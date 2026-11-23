@@ -8,7 +8,7 @@ PHYS_MEASURE.scale = {
     const items = params.items.map(item => ({ ...item }));
     const unit = params.unit ?? 'գ';
     const capacity = params.capacity ?? 1000;
-    const SIZES = { round: [72, 72], flat: [84, 52], tall: [60, 84] };
+    const SIZES = { round: [72, 72], flat: [88, 48], tall: [56, 92], cube: [72, 72] };
     const PAN_TOP = 176;
     const trayX = index => items.length > 1 ? 70 + index * 420 / (items.length - 1) : 280;
     const TRAY_Y = 70;
@@ -18,24 +18,19 @@ PHYS_MEASURE.scale = {
     let dragging = -1;
     let cutCount = 0;
 
-    const shape = (item, w, h) => item.shape === 'round'
-      ? '<circle r="' + w / 2 + '" fill="' + item.color + '" stroke="rgba(0,0,0,.25)" stroke-width="3"/>'
-      : '<rect x="' + -w / 2 + '" y="' + -h / 2 + '" width="' + w + '" height="' + h + '" rx="12" fill="' + item.color + '" stroke="rgba(0,0,0,.25)" stroke-width="3"/>';
+    // Մարմինները՝ PHYS_ART.cube-ով (սկզբնակետը ներքևի կենտրոնում), կենտրոնը՝ (0, 0)
+    const shape = item => '<g transform="translate(0 ' + (item.h + 6) / 2 + ')">' + PHYS_ART.cube.group({ color: item.color, shape: item.shape }) + '</g>';
     const body = items.map((item, index) => {
       item.shape = SIZES[item.shape] ? item.shape : 'round';
       const [w, h] = SIZES[item.shape];
       Object.assign(item, { w, h, on: false, x: trayX(index), y: TRAY_Y, slot: 0, m0: item.m, V0: item.V, cuts: 0, s: 1 });
       return '<g class="s-item phys-drag" tabindex="0" role="button" aria-pressed="false" aria-label="' + item.name + '">' +
-        shape(item, w, h) + '<text class="s-name" y="' + (h / 2 + 22) + '" text-anchor="middle" font-size="18" font-weight="700" fill="#4b4b4b">' + item.name + '</text></g>';
+        shape(item) + '<text class="s-name" y="' + ((h + 6) / 2 + 22) + '" text-anchor="middle" font-size="18" font-weight="700" fill="#4b4b4b">' + item.name + '</text></g>';
     }).join('');
 
     el.innerHTML = '<svg class="phys-svg" viewBox="0 0 560 300" role="img" aria-label="Թվային կշեռք">' +
-      '<rect x="110" y="206" width="340" height="76" rx="18" fill="#e5e5e5" stroke="#c9c9c9" stroke-width="3"/>' +
-      '<rect x="170" y="222" width="220" height="44" rx="8" fill="#263238"/>' +
-      '<text class="s-display" x="372" y="256" text-anchor="end" font-size="32" font-weight="800" fill="#58cc02" font-family="monospace">0</text>' +
-      '<text x="136" y="250" font-size="18" font-weight="700" fill="#777">' + unit + '</text>' +
-      '<rect x="270" y="190" width="20" height="18" fill="#afafaf"/>' +
-      '<rect class="s-pan" x="140" y="' + PAN_TOP + '" width="280" height="14" rx="7" fill="#afafaf"/>' + body + '</svg>' +
+      '<g class="s-art" transform="translate(110 124)"></g>' +
+      '<text x="150" y="266" font-size="18" font-weight="700" fill="#777">' + unit + '</text>' + body + '</svg>' +
       '<div class="phys-controls"><span class="phys-hint">Քաշիր մարմինները նժարին կամ սեղմիր Enter</span>' +
       (params.cut ? '<button type="button" class="secondary phys-cut">Կտրել</button>' : '') +
       '<button type="button" class="secondary phys-clear">Մաքրել նժարը</button></div>' +
@@ -43,8 +38,7 @@ PHYS_MEASURE.scale = {
     const density = el.querySelector('.phys-density');
 
     const svg = el.querySelector('svg');
-    const display = el.querySelector('.s-display');
-    const pan = el.querySelector('.s-pan');
+    const art = el.querySelector('.s-art');
     const live = el.querySelector('.phys-live');
     el.querySelectorAll('.s-item').forEach(node => nodes.push(node));
 
@@ -60,13 +54,12 @@ PHYS_MEASURE.scale = {
     function targets() {
       const placed = items.filter(item => item.on);
       const gap = Math.min(92, 250 / Math.max(1, placed.length));
-      placed.forEach((item, slot) => { item.slot = slot; item.tx = 280 + (slot - (placed.length - 1) / 2) * gap; item.ty = PAN_TOP + sink - item.h * item.s / 2; });
+      placed.forEach((item, slot) => { item.slot = slot; item.tx = 280 + (slot - (placed.length - 1) / 2) * gap; item.ty = PAN_TOP + sink - (item.h + 6) * item.s / 2; });
       items.forEach((item, index) => { if (!item.on) { item.tx = trayX(index); item.ty = TRAY_Y; } });
     }
 
     function paint() {
-      pan.setAttribute('y', PAN_TOP + sink);
-      display.textContent = Math.round(shown);
+      art.innerHTML = PHYS_ART.scale.group({ sink, text: String(Math.round(shown)) });
       items.forEach((item, index) => {
         nodes[index].setAttribute('transform', 'translate(' + item.x + ' ' + item.y + ') scale(' + item.s + ')');
         nodes[index].setAttribute('aria-pressed', item.on);

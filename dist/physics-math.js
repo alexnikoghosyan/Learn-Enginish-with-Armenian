@@ -57,3 +57,26 @@ function physGoalMet(goal, current) {
   return goal.every(({ key, value, tol }) =>
     tol === undefined ? current[key] === value : Math.abs(current[key] - value) <= tol + 1e-9);
 }
+
+// ---------- Անիմացիաների օգնականներ (ժամանակի մաքուր ֆունկցիաներ) ----------
+const physClamp = (value, low = 0, high = 1) => Math.min(high, Math.max(low, value));
+const physPhase = (t, t0, t1) => physClamp((t - t0) / (t1 - t0));
+const physEase = {
+  linear: k => k,
+  inOut: k => (k < 0.5 ? 2 * k * k : 1 - Math.pow(-2 * k + 2, 2) / 2),
+  out: k => 1 - Math.pow(1 - k, 3),
+  back: k => 1 + 2.70158 * Math.pow(k - 1, 3) + 1.70158 * Math.pow(k - 1, 2)
+};
+const physTween = (t, t0, t1, from, to, ease = physEase.inOut) => from + (to - from) * ease(physPhase(t, t0, t1));
+
+function physLerpColor(a, b, k) {
+  const part = (hex, i) => parseInt(hex.slice(1 + 2 * i, 3 + 2 * i), 16);
+  return '#' + [0, 1, 2].map(i => Math.round(part(a, i) + (part(b, i) - part(a, i)) * physClamp(k)).toString(16).padStart(2, '0')).join('');
+}
+
+// Զսպանակաձև (մարող տատանում) շարժում t վայրկյանում. 0-ից սկսվում է, անցնում է 1-ից, տատանվում և կանգնում 1-ի վրա
+function physSpring(t, { freq = 2.2, damping = 0.18 } = {}) {
+  if (t <= 0) return 0;
+  const omega = 2 * Math.PI * freq;
+  return 1 - Math.exp(-damping * omega * t) * Math.cos(omega * Math.sqrt(1 - damping * damping) * t);
+}
