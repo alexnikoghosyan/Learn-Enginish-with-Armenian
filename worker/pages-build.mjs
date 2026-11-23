@@ -22,7 +22,8 @@ const strip = text => text.replace(/^export /gm, '');
 const account = strip(await readFile(root + 'worker/account.mjs', 'utf8'));
 const auth = strip(await readFile(root + 'worker/google-auth.mjs', 'utf8'));
 const emailAuth = strip(await readFile(root + 'worker/email-auth.mjs', 'utf8'));
-await writeFile(out + '_worker.js', account + '\n' + auth + '\n' + emailAuth + `
+const leagues = strip(await readFile(root + 'worker/leaderboard.mjs', 'utf8'));
+await writeFile(out + '_worker.js', account + '\n' + auth + '\n' + emailAuth + '\n' + leagues + `
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
@@ -33,7 +34,11 @@ export default {
         return friendlyPage('Մուտքը ժամանակավորապես հասանելի չէ', 'Ինչ-որ բան սխալ գնաց։ Քո առաջընթացը պահպանվում է այս սարքում։', '/', 503); }
     }
     if (url.pathname.startsWith('/api/')) {
-      try { return await accountRequest(request, env, url.pathname, await sessionUserId(request, env)); }
+      try {
+        const userId = await sessionUserId(request, env);
+        if (url.pathname === '/api/xp' || url.pathname.startsWith('/api/leaderboard')) return await leaderboardRequest(request, env, url.pathname, userId);
+        return await accountRequest(request, env, url.pathname, userId);
+      }
       catch { return json({ error: 'unavailable' }, 503); }
     }
     const response = await env.ASSETS.fetch(request);

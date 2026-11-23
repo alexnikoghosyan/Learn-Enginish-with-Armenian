@@ -28,12 +28,12 @@ const navigationIcons = {
   journal: '<rect x="5" y="6" width="22" height="23" rx="4" fill="#ffca3a"/><path fill="#fff0b5" d="M10 10h14v15H10z"/><path d="M10 4v6m11-6v6" stroke="#af7314" stroke-width="3" stroke-linecap="round"/><path fill="#f39318" d="m12 20 10-9 3 3-10 9-4 1z"/>'
 };
 
-const studySectionNames = ['home', 'grammar', 'vocabulary', 'sounds', 'journal', 'profile'];
+const studySectionNames = ['home', 'grammar', 'vocabulary', 'sounds', 'leaderboard', 'journal', 'profile'];
 
 function lastStudySection() {
   try {
     const saved = localStorage.getItem('eg-section');
-    if (['home', 'grammar', 'vocabulary', 'sounds', 'journal', 'profile'].includes(saved)) return saved;
+    if (['home', 'grammar', 'vocabulary', 'sounds', 'leaderboard', 'journal', 'profile'].includes(saved)) return saved;
   } catch {}
   return 'vocabulary';
 }
@@ -43,23 +43,24 @@ function renderNavigation() {
   if (studySectionNames.includes(section)) {
     try { localStorage.setItem('eg-section', section); } catch {}
   }
-  const activeView = ['journal', 'sounds', 'profile'].includes(view) ? view : 'home';
+  const activeView = ['journal', 'sounds', 'leaderboard', 'profile'].includes(view) ? view : 'home';
   const links = [
     ['home', 'Սովորել'],
     ['sounds', 'Հնչյուններ'],
+    ['leaderboard', 'Վարկանիշ'],
     ['journal', 'Իմ գրառումները'],
     ['profile', 'Պրոֆիլ']
   ];
   document.getElementById('nav').innerHTML = links.map(([id, name]) =>
     '<button ' + (activeView === id ? 'class="active" aria-current="page" ' : '') +
     'onclick="go(\'' + id + '\')"><i aria-hidden="true">' +
-    (id === 'home' || id === 'sounds' ? referenceIcon(id) : id === 'profile' && typeof avatarNavIcon === 'function' && avatarNavIcon() ? avatarNavIcon() : '<svg viewBox="0 0 32 32" focusable="false">' + (navigationIcons[id] || '<circle cx="16" cy="10" r="6" fill="#9b73dc"/><path d="M5 28c0-8 5-12 11-12s11 4 11 12z" fill="#9b73dc"/>') + '</svg>') +
+    (id === 'home' || id === 'sounds' ? referenceIcon(id) : id === 'leaderboard' ? '<img class="reference-icon" src="' + LEADERBOARD_ART.navLeaderboard + '" alt="" aria-hidden="true" draggable="false">' : id === 'profile' && typeof avatarNavIcon === 'function' && avatarNavIcon() ? avatarNavIcon() : '<svg viewBox="0 0 32 32" focusable="false">' + (navigationIcons[id] || '<circle cx="16" cy="10" r="6" fill="#9b73dc"/><path d="M5 28c0-8 5-12 11-12s11 4 11 12z" fill="#9b73dc"/>') + '</svg>') +
     '</i>' + name + '</button>'
   ).join('');
 }
 function render() {
   renderNavigation();
-  const pages = { home: studyHome, grammar, vocabulary, quiz, journal, sounds, profile };
+  const pages = { home: studyHome, grammar, vocabulary, quiz, journal, sounds, leaderboard, profile };
   (pages[view] ?? studyHome)();
 }
 function filtered(){return WORDS.filter(w=>(!query||w.en.toLowerCase().includes(query.toLowerCase())||hy(w).toLowerCase().includes(query.toLowerCase()))&&(!letter||w.en[0].toUpperCase()===letter)&&(filter==='all'||filter==='translated'&&hy(w)||filter==='known'&&known(w.en)||filter==='new'&&!known(w.en)))}

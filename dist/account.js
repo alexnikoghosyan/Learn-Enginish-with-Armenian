@@ -490,6 +490,7 @@ function profileTopBar(c) {
 
 function studyTimerTick() {
   if (!account.profile || document.visibilityState !== 'visible') return;
+  if (typeof syncLeaderboardXp === 'function') syncLeaderboardXp();
   const now = new Date();
   const day = studyDayKey(now);
   if (app.querySelector('.focus-lesson-header')) {

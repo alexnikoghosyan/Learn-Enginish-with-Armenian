@@ -31,3 +31,21 @@ CREATE INDEX IF NOT EXISTS auth_attempts_key_at ON auth_attempts (attempt_key, a
 
 -- Avatar builder configuration (JSON)
 ALTER TABLE profiles ADD COLUMN avatar_config TEXT;
+
+-- Լիգաներ (drizzle/0004_leagues.sql)
+ALTER TABLE profiles ADD COLUMN xp_total INTEGER;
+ALTER TABLE profiles ADD COLUMN lb_status INTEGER;
+CREATE TABLE IF NOT EXISTS league_members (
+  account_id TEXT PRIMARY KEY NOT NULL,
+  league INTEGER NOT NULL DEFAULT 0,
+  group_id INTEGER NOT NULL,
+  week INTEGER NOT NULL,
+  xp INTEGER NOT NULL DEFAULT 0,
+  seen_at INTEGER NOT NULL DEFAULT 0
+);
+CREATE INDEX IF NOT EXISTS league_members_group ON league_members (group_id, week);
+CREATE INDEX IF NOT EXISTS league_members_week ON league_members (week, league);
+CREATE TABLE IF NOT EXISTS league_meta (
+  key TEXT PRIMARY KEY NOT NULL,
+  value INTEGER NOT NULL
+);
