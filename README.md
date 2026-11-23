@@ -58,6 +58,12 @@ Avatar banner colours: `profileBannerColors`.
   The worker validates integer ranges (`avatarRanges` in `worker/account.mjs` must match `AVATAR_RANGES`) and size (<= 600 bytes).
   The old `avatar` key (animals) still works and is shown until the builder is used.
 - Migration `drizzle/0003_avatar_config.sql` (run on the remote D1 before deploying).
+- Config version 2 (`v: 2`): 12 hair styles (incl. top bun, side ponytail, headwrap, hooded long, oval with parting, round puff), 5 hats + none
+  (beanie, ribbed beanie, durag, panel-seam cap, English Garden cap), 6 morphable bodies, 15 skin tones. Old `v: 1` configs are migrated
+  on load (`AVATAR_V1_HAIR` / `AVATAR_V1_HAT`); the worker accepts v 1 and v 2.
+- Art style (TASK-3): chunky flat "chibi" - squircle head (55% of the frame), plain white eyes with dark pupils, pink nose, small mouth, no neck, no shading,
+  tapered dark torso with a hem band. Defaults: skin #7d4a3f, background #afafaf, clothes #424242, cap #575757, pupil #3d3d3d.
+- Hats hide the hair's `front` (top) part; only `back` and `extras` (sides, tails) stay visible, so hair never pokes through.
 - To add parts: append to the arrays in `avatar-config.js` and raise the matching number in both range tables.
 
 ## Next steps

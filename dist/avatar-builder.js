@@ -7,24 +7,24 @@ const AVATAR_TABS = [
   { label: 'Մաշկ', cam: 'medium', icon: avIcon('<path d="M12 3C8 8 6 11 6 14a6 6 0 0 0 12 0c0-3-2-6-6-11Z"/>'),
     sections: [{ title: 'Մաշկի գույն', field: 'skin', type: 'swatch', cols: 6 }] },
   { label: 'Մարմին', cam: 'body', icon: avIcon('<circle cx="12" cy="8" r="3.5"/><path d="M5 21c0-4.5 3-7 7-7s7 2.5 7 7"/>'),
-    sections: [{ title: 'Մարմին', field: 'body', type: 'thumb', cols: 3, crop: [30, 235, 340, 340] }] },
+    sections: [{ title: 'Մարմին', field: 'body', type: 'thumb', cols: 3, crop: [0, 60, 400, 400] }] },
   { label: 'Դեմք', cam: 'face', icon: avIcon('<circle cx="12" cy="12" r="9"/><path d="M8.5 14.5Q12 18 15.5 14.5"/><path d="M9 10h.01M15 10h.01"/>'),
     sections: [{ title: 'Աչքերի գույն', field: 'eyeColor', type: 'swatch', cols: 6 },
-      { title: 'Դեմքի արտահայտություն', field: 'expression', type: 'thumb', cols: 3, crop: [100, 110, 200, 200] }] },
+      { title: 'Դեմքի արտահայտություն', field: 'expression', type: 'thumb', cols: 3, crop: [90, 150, 220, 220] }] },
   { label: 'Մազեր', cam: 'face', icon: avIcon('<path d="M5 14C5 7 9 4 12 4s7 3 7 10c-2-3-4-4.5-7-4.5S7 11 5 14Z"/><path d="M5 14v4M19 14v4"/>'),
     sections: [{ title: 'Մազերի գույն', field: 'hairColor', type: 'swatch', cols: 6 },
-      { title: 'Սանրվածք', field: 'hair', type: 'thumb', cols: 3, crop: [70, 30, 260, 260] }] },
+      { title: 'Սանրվածք', field: 'hair', type: 'thumb', cols: 3, crop: [40, 30, 320, 320] }] },
   { label: 'Ակնոց և այլն', cam: 'face', icon: avIcon('<circle cx="7.5" cy="13" r="3.5"/><circle cx="16.5" cy="13" r="3.5"/><path d="M11 13h2M4 12 3 9M20 12l1-3"/>'),
     sections: [{ title: 'Ակնոցի գույն', field: 'glassesColor', type: 'swatch', cols: 6 },
-      { title: 'Ակնոց', field: 'glasses', type: 'thumb', cols: 3, crop: [90, 120, 220, 220] },
-      { title: 'Դեմքի առանձնահատկություններ', field: 'features', type: 'thumb', cols: 3, crop: [90, 100, 220, 220] },
-      { title: 'Ականջօղեր', field: 'earrings', type: 'thumb', cols: 3, crop: [80, 140, 240, 240] },
-      { title: 'Քթի օղ', field: 'nosePiercing', type: 'thumb', cols: 3, crop: [130, 160, 140, 140] }] },
+      { title: 'Ակնոց', field: 'glasses', type: 'thumb', cols: 3, crop: [80, 140, 240, 240] },
+      { title: 'Դեմքի առանձնահատկություններ', field: 'features', type: 'thumb', cols: 3, crop: [80, 130, 240, 240] },
+      { title: 'Ականջօղեր', field: 'earrings', type: 'thumb', cols: 3, crop: [70, 150, 260, 260] },
+      { title: 'Քթի օղ', field: 'nosePiercing', type: 'thumb', cols: 3, crop: [150, 200, 100, 100] }] },
   { label: 'Մորուք', cam: 'face', icon: avIcon('<path d="M3 11c4-3 7-1 9 0 2-1 5-3 9 0-3 4-7 1-9 2-2-1-6 2-9-2Z"/>'),
-    sections: [{ title: 'Մորուք և բեղ', field: 'facialHair', type: 'thumb', cols: 3, crop: [100, 150, 200, 200] }] },
+    sections: [{ title: 'Մորուք և բեղ', field: 'facialHair', type: 'thumb', cols: 3, crop: [80, 190, 240, 240] }] },
   { label: 'Գլխարկ', cam: 'face', icon: avIcon('<path d="M5 15c0-7 4-10 8-10s6 3 6 10Z"/><path d="M3 15h19"/>'),
     sections: [{ title: 'Գլխարկի գույն', field: 'hatColor', type: 'swatch', cols: 6 },
-      { title: 'Գլխարկ', field: 'hat', type: 'thumb', cols: 3, crop: [60, 20, 280, 280] }] },
+      { title: 'Գլխարկ', field: 'hat', type: 'thumb', cols: 3, crop: [40, 30, 320, 320] }] },
   { label: 'Հագուստ', cam: 'medium', icon: avIcon('<path d="M8 4 3 8l2.5 3L8 9.5V20h8V9.5l2.5 1.5L21 8l-5-4c-1 2-7 2-8 0Z"/>'),
     sections: [{ title: 'Հագուստի գույն', field: 'clothesColor', type: 'swatch', cols: 6 }] },
   { label: 'Ֆոն', cam: 'medium', icon: avIcon('<rect x="3" y="4" width="18" height="16" rx="3"/><path d="m3 16 6-6 5 5 3-3 4 4"/><circle cx="16" cy="8.5" r="1.3"/>'),
@@ -207,14 +207,11 @@ function morphAvatarBody(from, to) {
   const start = performance.now();
   const step = now => {
     const t = Math.min(1, (now - start) / 320), k = avatarEase(t);
-    const p = { sw: from.sw + (to.sw - from.sw) * k, ty: from.ty + (to.ty - from.ty) * k, nw: from.nw + (to.nw - from.nw) * k };
+    const p = { sw: from.sw + (to.sw - from.sw) * k, bw: from.bw + (to.bw - from.bw) * k, ty: from.ty + (to.ty - from.ty) * k };
     const svg = document.querySelector('#avatar-preview svg');
     if (!svg) return;
     const attrs = avatarBodyAttrs(p);
     svg.querySelectorAll('.av-clothes').forEach(el => el.setAttribute('d', attrs.clothes));
-    svg.querySelector('.av-neck')?.setAttribute('d', attrs.neck);
-    const chest = svg.querySelector('.av-chest');
-    if (chest) { chest.setAttribute('cy', attrs.chestY); chest.setAttribute('rx', attrs.chestRx); }
     if (t < 1) avatarBodyRaf = requestAnimationFrame(step);
   };
   avatarBodyRaf = requestAnimationFrame(step);
@@ -267,7 +264,7 @@ function startAvatarIdle() {
   const look = () => {
     if (!document.getElementById('avatar-preview')) return;
     if (alive()) {
-      const dx = (Math.random() * 2 - 1) * 5;
+      const dx = (Math.random() * 2 - 1) * 8;
       document.querySelectorAll('#avatar-preview .av-iris').forEach(iris => { iris.style.transform = 'translateX(' + dx.toFixed(1) + 'px)'; });
     }
     later(look, 1500, 3000);

@@ -4,13 +4,13 @@ const reasons = ['people', 'fun', 'education', 'time', 'career', 'travel', 'othe
 const ages = ['13–17', '18–24', '25–34', '35–44', '45–54', '55+'];
 
 // Ավատարի կոնստրուկտորի տարբերակների քանակը. նույնն է, ինչ dist/avatar-config.js-ի AVATAR_RANGES-ը
-const avatarRanges = { skin: 15, body: 6, eyeColor: 13, expression: 12, hairColor: 16, hair: 10, glassesColor: 8, glasses: 5,
+const avatarRanges = { skin: 15, body: 6, eyeColor: 13, expression: 12, hairColor: 16, hair: 12, glassesColor: 8, glasses: 5,
   features: 5, earrings: 5, nosePiercing: 3, facialHair: 6, hatColor: 9, hat: 6, clothesColor: 9, bgColor: 24 };
 
 // Վավերացնում է կազմաձևը (ամբողջ թվեր՝ թույլատրելի միջակայքում, ≤600 բայթ) և վերադարձնում JSON տող (կամ null)
 function parseAvatarConfig(config) {
-  if (!config || typeof config !== 'object' || Array.isArray(config) || config.v !== 1) return null;
-  const clean = { v: 1 };
+  if (!config || typeof config !== 'object' || Array.isArray(config) || (config.v !== 1 && config.v !== 2)) return null;
+  const clean = { v: config.v };
   for (const [key, count] of Object.entries(avatarRanges)) {
     const value = config[key];
     if (!Number.isInteger(value) || value < 0 || value >= count) return null;
