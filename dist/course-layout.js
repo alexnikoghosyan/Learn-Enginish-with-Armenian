@@ -7,9 +7,10 @@ function switchCourse(destination) {
 function courseLayout(track, course) {
   const grammarDone = state.lessons.length;
   const wordsDone = Object.values(state.wordLessons).filter(item => item.done).length;
-  const total = course === 'grammar' ? LESSONS.length : WORDS.length;
-  const complete = course === 'grammar' ? grammarDone : wordsDone;
-  const label = course === 'grammar' ? 'Քերականական թեմաներ' : 'Սովորած բառեր';
+  const physics = physicsProgress();
+  const total = course === 'grammar' ? LESSONS.length : course === 'physics' ? physics.total : WORDS.length;
+  const complete = course === 'grammar' ? grammarDone : course === 'physics' ? physics.done : wordsDone;
+  const label = course === 'grammar' ? 'Քերականական թեմաներ' : course === 'physics' ? 'Ֆիզիկայի դասեր' : 'Սովորած բառեր';
   return '<div class="course-layout"><div class="course-track">' + track + '<button class="icon-btn path-jump" hidden onclick="jumpToCurrentLesson()" aria-label="Գնալ ընթացիկ դասին">' +
     '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20V4m-6 6 6-6 6 6" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>' +
     '<div class="course-rail"><section class="panel course-progress"><h2>Քո առաջընթացը</h2>' +
@@ -18,7 +19,8 @@ function courseLayout(track, course) {
     '<progress value="' + complete + '" max="' + total + '" aria-label="' + esc(label) + '"></progress></section>' +
     '<section class="panel course-progress"><h2>' + referenceIcon('goal') + 'Քո դասերը</h2>' +
     '<button class="secondary course-link"' + (course === 'grammar' ? ' aria-current="page"' : '') + ' onclick="switchCourse(\'grammar\')">' + referenceIcon('grammar') + 'Քերականություն <strong>' + grammarDone +
-    '</strong></button><button class="secondary course-link"' + (course === 'grammar' ? '' : ' aria-current="page"') + ' onclick="switchCourse(\'vocabulary\')">' + referenceIcon('words') + 'Բառեր <strong>' + wordsDone +
+    '</strong></button><button class="secondary course-link"' + (course === 'grammar' || course === 'physics' ? '' : ' aria-current="page"') + ' onclick="switchCourse(\'vocabulary\')">' + referenceIcon('words') + 'Բառեր <strong>' + wordsDone +
+    '</strong></button><button class="secondary course-link"' + (course === 'physics' ? ' aria-current="page"' : '') + ' onclick="switchCourse(\'physics\')">' + referenceIcon('goal') + 'Ֆիզիկա <strong>' + physics.done +
     '</strong></button></section></div></div>';
 }
 
@@ -44,6 +46,11 @@ function beginLessonCounters(key) {
 
 function finishLessonCounters() {
   const result = { correct: lessonCorrectAnswers, total: lessonTotalAnswers };
+  if (lessonCounterKey && result.total && result.correct === result.total && typeof recordPerfectLesson === 'function') {
+    recordPerfectLesson();
+    syncQuests();
+    save();
+  }
   lessonCounterKey = '';
   return result;
 }

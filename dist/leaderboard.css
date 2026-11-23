@@ -137,7 +137,7 @@ body:has(.leaderboard-page) main{ padding-top: 0; }
   .lb-row{ border-radius: 0; }
 }
 @media (max-width: 730px){
-  aside nav{ grid-template-columns: repeat(5, minmax(0, 1fr)); }
+  aside nav{ grid-template-columns: repeat(3, minmax(0, 1fr)); }
 }
 @media (prefers-reduced-motion: reduce){
   .lb-badge-big.is-set{ animation: none; }

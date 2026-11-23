@@ -286,7 +286,7 @@ function advanceGrammarPractice() {
 }
 
 function finishGrammarPractice() {
-  if (!state.lessons.includes(grammarTopic)) state.lessons.push(grammarTopic);
+  if (!state.lessons.includes(grammarTopic)) { state.lessons.push(grammarTopic); logXp(10); }
   recordStudyDay();
   delete state.grammarPractice[grammarTopic];
   delete grammarRetryStore()[grammarTopic];

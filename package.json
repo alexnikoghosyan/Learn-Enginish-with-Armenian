@@ -1,0 +1,8 @@
+{
+  "name": "armduo",
+  "private": true,
+  "scripts": {
+    "build": "node worker/pages-build.mjs",
+    "test": "node --test worker/leaderboard.test.mjs worker/physics.test.mjs"
+  }
+}

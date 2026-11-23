@@ -190,6 +190,7 @@ async function leaderboard() {
       const data = await response.json();
       if (request !== leaderboardRequestId || view !== 'leaderboard') return;
       leaderboardData = data;
+      if (!Number.isInteger(state.bestLeague) || data.league > state.bestLeague) { state.bestLeague = data.league; save(); }
       leaderboardState = 'ready';
       return leaderboardRender(false);
     } catch {

@@ -52,14 +52,14 @@ t('concurrent requests: all wait and succeed', res.every(x=>x.status===200), res
 const z0 = ['u60','u61','u62'].filter(id=>!sqlite.prepare('SELECT 1 FROM league_members WHERE account_id=?').get(id));
 for (const id of ids) await get(id); // նորից բոլորը
 const after = Object.fromEntries(sqlite.prepare('SELECT account_id,league,group_id,xp,week FROM league_members').all().map(r=>[r.account_id,conv(r)]));
-// սպասվող. խումբ 1 (30 հոգի)՝ top 11 xp>0 բարձրանում է, վերջին 5-ը՝ Բրոնզում մնում է (իջնելու տեղ չկա)
+// սպասվող. խումբ 1 (30 հոգի)՝ top 20 (67%) xp>0 բարձրանում է, վերջին 5-ը՝ Բրոնզում մնում է (իջնելու տեղ չկա)
 const expectGroup = gid => { const rows = Object.values(before).filter(r=>r.group_id===gid).sort((a,b)=>b.xp-a.xp||(a.account_id<b.account_id?-1:1)); return rows; };
-let up=0, wrong=0; for (const gid of [1,2]) { const rows = expectGroup(gid); rows.forEach((r,i)=>{ const should = i<11 && r.xp>0 ? 1 : 0; if ((after[r.account_id]?.league ?? -1) !== should) wrong++; if(should) up++ }); }
-t('groups 1,2: top 11 promoted exactly', wrong===0 && up===22, `up=${up} wrong=${wrong}`);
+let up=0, wrong=0; for (const gid of [1,2]) { const rows = expectGroup(gid); rows.forEach((r,i)=>{ const should = i<20 && r.xp>0 ? 1 : 0; if ((after[r.account_id]?.league ?? -1) !== should) wrong++; if(should) up++ }); }
+t('groups 1,2: top 20 (67%) promoted exactly', wrong===0 && up===40, `up=${up} wrong=${wrong}`);
 const g3 = expectGroup(3); const z = g3.filter(r=>r.xp===0).map(r=>r.account_id);
-t('group 3 (10 users): promote=ceil(10*11/30)=4 → top 4 with xp>0', g3.slice(0,4).every(r=>r.xp===0 || after[r.account_id].league===1), '');
+t('group 3 (10 users): promote=round(10*.67)=7 → top 7 with xp>0', g3.slice(0,7).every(r=>r.xp===0 || after[r.account_id].league===1), '');
 t('zero-xp bronze members dropped from table (before they view again)', z0.length===3, z0.join(','));
-t('all remaining have week=current & xp reset', Object.values(after).every(r=>r.week===Math.floor((env.__now-4*86400000)/(7*86400000)) && r.xp===0));
+t('all remaining have week=current & xp reset', Object.values(after).every(r=>r.week===Math.floor((env.__now-(4*86400000-4*3600000))/(7*86400000)) && r.xp===0));
 const sizes = sqlite.prepare('SELECT league, group_id, COUNT(*) c FROM league_members GROUP BY league, group_id').all().map(r=>n(r.c)); t('no group > 30', sizes.every(c=>c<=30), sizes.join(','));
 // dropped user rejoins on view
 const dropped = z[0]; if (dropped) { const rv = await get(dropped); t('dropped user rejoins league 0', rv.league===0 && rv.members.some(m=>m.me)); }

@@ -1,0 +1,66 @@
+/* Ֆիզիկա 7. գործիքներ և դասի քայլեր (ճանապարհի ոճերը վերցված են interface.css-ից) */
+.phys-path .path-stop > span { max-width: 190px; }
+.phys-path .path-stop > span strong { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; line-clamp: 2; overflow: hidden; font-size: 13px; line-height: 1.35; font-weight: 700; }
+
+.study-card:nth-child(3) { border-top: 5px solid #1cb0f6; }
+.study-card:nth-child(3) progress { accent-color: #1cb0f6; }
+@media (min-width: 1100px) { .study-cards { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+
+.phys-lesson { max-width: 640px; margin-inline: auto; }
+.phys-text, .phys-task { font-size: 20px; line-height: 1.6; margin: 24px 0 16px; color: #3c3c3c; }
+.phys-recap { padding-left: 22px; font-size: 18px; line-height: 1.7; }
+
+.phys-tool { max-width: 560px; margin: 12px auto; padding: 12px; background: #fff; border: 2px solid #e5e5e5; border-radius: 16px; }
+.phys-svg { display: block; width: 100%; height: auto; user-select: none; -webkit-user-select: none; }
+.phys-drag { cursor: grab; touch-action: none; }
+.phys-drag:active { cursor: grabbing; }
+.t-label { paint-order: stroke; stroke: #fff; stroke-width: 5px; stroke-linejoin: round; }
+.s-item:focus-visible { outline: 3px solid #1a61a8; outline-offset: 4px; }
+
+.phys-controls { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; justify-content: space-between; margin-top: 10px; }
+.phys-range { display: grid; gap: 2px; flex: 1 1 200px; font-weight: 700; color: #4b4b4b; }
+.phys-range input { width: 100%; min-height: 44px; accent-color: #1cb0f6; }
+.phys-readout { display: flex; align-items: center; gap: 8px; }
+.phys-step { min-width: 48px; min-height: 48px; font-size: 22px; padding: 0; }
+.phys-value { min-width: 150px; text-align: center; font-weight: 800; font-size: 17px; color: #3c3c3c; }
+.phys-zoom, .phys-clear { min-height: 48px; }
+.phys-zoom[aria-pressed="true"] { background: #ddf4ff; color: #1899d6; box-shadow: 0 4px #84d8ff; }
+.phys-hint { flex: 1 1 200px; color: #777; font-size: 14px; }
+.phys-live { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+
+.phys-feedback { margin-top: 16px; padding: 14px 16px; border-radius: 14px; line-height: 1.5; }
+.phys-feedback[hidden] { display: none; }
+.phys-feedback.is-correct { background: #d7ffb8; color: #3d7a00; }
+.phys-feedback.is-wrong { background: #ffdfe0; color: #c02a2a; }
+.phys-actions { display: flex; flex-wrap: wrap; gap: 12px; justify-content: flex-end; margin-top: 18px; }
+.phys-actions .primary, .phys-actions .secondary { min-height: 48px; }
+
+.phys-feedback.is-neutral { background: #ddf4ff; color: #1470a0; }
+.phys-group { display: flex; flex-wrap: wrap; gap: 8px; }
+.phys-group .secondary { min-height: 44px; }
+.phys-group [aria-pressed="true"] { background: #ddf4ff; color: #1899d6; box-shadow: 0 4px #84d8ff; }
+.phys-density { display: block; margin-top: 10px; padding: 10px 12px; border-radius: 12px; background: #f5f5f5; font-weight: 700; color: #3c3c3c; line-height: 1.5; }
+.phys-density:empty { display: none; }
+
+.phys-options { display: grid; gap: 10px; margin: 8px 0; }
+.phys-choice { min-height: 52px; text-align: left; font-size: 17px; }
+.phys-choice[aria-pressed="true"] { border-color: #84d8ff; background: #ddf4ff; }
+.phys-numeric { display: flex; flex-wrap: wrap; gap: 10px; margin: 8px 0; }
+.phys-input { min-height: 48px; width: 140px; padding: 0 12px; border: 2px solid #e5e5e5; border-radius: 12px; font-size: 18px; font-weight: 700; text-align: center; background: #fff; }
+.phys-input:focus-visible, .phys-unit:focus-visible { outline: 3px solid #1a61a8; outline-offset: 2px; }
+.phys-unit { min-height: 48px; padding: 0 10px; border: 2px solid #e5e5e5; border-radius: 12px; font-size: 17px; background: #fff; }
+.phys-table-wrap { max-width: 100%; overflow-x: auto; margin: 8px 0; }
+.phys-table { border-collapse: collapse; width: 100%; font-size: 16px; }
+.phys-table th, .phys-table td { padding: 8px 10px; border: 2px solid #e5e5e5; text-align: center; }
+.phys-table th { background: #f5f5f5; font-size: 14px; }
+.phys-table .phys-input { width: 90px; }
+
+@media (max-width: 480px) {
+  .phys-tool { padding: 8px; border-radius: 12px; }
+  .phys-text, .phys-task { font-size: 18px; }
+  .phys-value { min-width: 0; flex: 1; }
+  .phys-readout { flex: 1 1 100%; }
+  .phys-actions > * { flex: 1 1 100%; }
+}
+
+.phys-canvas { display: block; margin: 0 auto; width: 100%; max-width: 300px; height: auto; }

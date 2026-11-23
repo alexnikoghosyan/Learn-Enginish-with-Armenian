@@ -433,15 +433,20 @@ function recordStudyDay() {
   const day = studyDayKey(new Date());
   state.studyDays ??= [];
   if (!state.studyDays.includes(day)) state.studyDays.push(day);
+  if (typeof awardStreakFreeze === 'function') awardStreakFreeze(currentStudyStreak());
+  if (typeof syncQuests === 'function') syncQuests();
 }
 
 function currentStudyStreak(now = new Date()) {
   const days = new Set(state.studyDays || []);
+  const frozen = new Set(state.frozenDays || []);
   const day = new Date(now);
-  if (!days.has(studyDayKey(day))) day.setDate(day.getDate() - 1);
+  if (!days.has(studyDayKey(day)) && !frozen.has(studyDayKey(day))) day.setDate(day.getDate() - 1);
   let streak = 0;
-  while (days.has(studyDayKey(day))) {
-    streak++;
+  for (;;) {
+    const key = studyDayKey(day);
+    if (days.has(key)) streak++;
+    else if (!frozen.has(key)) break;
     day.setDate(day.getDate() - 1);
   }
   return streak;
@@ -454,7 +459,7 @@ const profileMonths = ['հունվար', 'փետրվար', 'մարտ', 'ապրի
 function profileCounts() {
   const words = Object.values(state.wordLessons).filter(item => item.done).length;
   const grammar = state.lessons.length;
-  return { words, grammar, streak: currentStudyStreak(), xp: 10 * (words + grammar) + state.soundXp };
+  return { words, grammar, streak: currentStudyStreak(), xp: 10 * (words + grammar) + state.soundXp + (state.practiceXp || 0) + (state.physicsXp || 0) };
 }
 
 function profileStatCard(icon, value, label) {
@@ -514,6 +519,7 @@ function studyTimerTick() {
 }
 
 window.setInterval(studyTimerTick, 30000);
+setTimeout(() => { if (typeof applyStreakFreeze === 'function') applyStreakFreeze(); }, 0);
 
 function profile() {
   const user = account.profile;
@@ -539,7 +545,7 @@ function profile() {
     '<a class="secondary profile-signout" href="/auth/signout" target="_top">Դուրս գալ հաշվից</a></div>' +
     '<div class="profile-side">' + profileTopBar(c) + dailyGoalMarkup() +
     '<section class="profile-card-box"><h2>Մակարդակ</h2><p class="profile-level">' + esc(levelOptions[user.level]) + '</p></section>' +
-    '<section class="profile-card-box"><h2>Ձեռքբերումներ</h2><p class="profile-soon">Շուտով</p></section></div></div>';
+    (typeof achievementsMarkup === 'function' ? achievementsMarkup() : '') + '</div></div>';
 }
 
 function offerMobileProgress() {

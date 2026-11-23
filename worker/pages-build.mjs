@@ -1,5 +1,5 @@
 // Պատրաստում է deploy/ թղթապանակը Cloudflare Pages-ի համար (Direct Upload, advanced mode)։
-import { readFile, readdir, mkdir, writeFile, copyFile } from 'node:fs/promises';
+import { readFile, readdir, mkdir, writeFile, copyFile, cp } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import { createHash } from 'node:crypto';
 
@@ -10,6 +10,8 @@ await mkdir(out, { recursive: true });
 for (const file of await readdir(dist, { withFileTypes: true })) {
   if (file.isFile()) await copyFile(dist + file.name, out + file.name);
 }
+// dist/physics/ (Blender կադրերի թերթեր, ֆայլերի անուններում hash կա) պատճենվում է ռեկուրսիվ
+await cp(dist + 'physics', out + 'physics', { recursive: true }).catch(() => {});
 // Cache-busting. index.html-ի տեղական CSS/JS հղումները ստանում են ?v=<բովանդակության hash>,
 // ուստի ամեն deploy-ից հետո դիտարկիչը բեռնում է նոր ֆայլերը, ոչ թե հին պահված պատճենը։
 const hash = async name => createHash('sha1').update(await readFile(dist + name)).digest('hex').slice(0, 10);
@@ -53,5 +55,6 @@ export default {
 };
 `);
 await writeFile(out + '_headers', '/*\n  X-Content-Type-Options: nosniff\n  Referrer-Policy: strict-origin-when-cross-origin\n' +
-  ['/', '/*.html', '/*.css', '/*.js'].map(path => path + '\n  Cache-Control: no-cache\n').join(''));
+  ['/', '/*.html', '/*.css', '/*.js'].map(path => path + '\n  Cache-Control: no-cache\n').join('') +
+  '/physics/*\n  Cache-Control: public, max-age=31536000, immutable\n');
 console.log('deploy ready');

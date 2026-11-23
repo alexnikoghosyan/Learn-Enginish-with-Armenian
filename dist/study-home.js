@@ -9,7 +9,7 @@ function studyHome() {
     <div class="study-home">
       <header class="study-welcome">
         <h1>Սովորել</h1>
-        <p>Ընտրիր քերականության կամ բառերի հաջորդ դասը։</p>
+        <p>Ընտրիր քերականության, բառերի կամ ֆիզիկայի հաջորդ դասը։</p>
       </header>
       <div class="study-cards">
         <section class="panel study-card">
@@ -28,8 +28,22 @@ function studyHome() {
           <button class="primary" onclick="${wordButton}">${state.cumulativeReview ? 'Շարունակել կրկնությունը →' : nextWord === undefined ? 'Բացել ճանապարհը' : 'Շարունակել →'}</button>
           <button class="secondary" onclick="go('vocabulary')">Ուսուցման ճանապարհ</button>
         </section>
+        ${physicsCard()}
       </div>
     </div>`;
+}
+
+function physicsCard() {
+  const { done, total } = physicsProgress();
+  const next = physicsSections().find(section => physicsReady(section.id) && !state.physics.done[section.id]);
+  return `<section class="panel study-card">
+          <h2>Ֆիզիկա 7</h2>
+          <p>${done} / ${total} դաս ավարտված</p>
+          <progress max="${total}" value="${done}" aria-label="Ֆիզիկայի առաջընթաց"></progress>
+          <p class="study-next">${next ? '§' + next.n + '. ' + esc(next.title) : 'Բոլոր դասերն ավարտված են։'}</p>
+          <button class="primary" onclick="${next ? "openPhysicsLesson('" + next.id + "')" : "go('physics')"}">${next ? 'Շարունակել →' : 'Բացել ճանապարհը'}</button>
+          <button class="secondary" onclick="go('physics')">Ուսուցման ճանապարհ</button>
+        </section>`;
 }
 
 function resumeWordFromHome(index) {

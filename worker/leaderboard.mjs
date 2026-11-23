@@ -14,7 +14,8 @@
 const LEAGUE_COUNT = 10;
 const LEAGUE_SIZE = 30;
 const LEAGUE_WEEK_MS = 7 * 86400000;
-const LEAGUE_EPOCH = 4 * 86400000; // 1970-01-05, երկուշաբթի 00:00 UTC
+// Շաբաթը սկսվում է երկուշաբթի 00:00-ին Երևանի ժամով (UTC+4, առանց ամառային ժամի) = կիրակի 20:00 UTC
+const LEAGUE_EPOCH = 4 * 86400000 - 4 * 3600000;
 const LEAGUE_XP_STEP = 200;
 const LEAGUE_XP_WEEK = 3000;
 const LEAGUE_STATUS_COUNT = 12;
@@ -24,10 +25,14 @@ function leagueWeekOf(now) {
   return Math.floor((now - LEAGUE_EPOCH) / LEAGUE_WEEK_MS);
 }
 
-// Քանի հոգի է բարձրանում և իջնում n հոգանոց խմբում
+// Բարձրացման բաժինը ըստ լիգայի (Duolingo-ի ոչ պաշտոնական թվերից՝ 20/15/10/7/7/7/7/7/5 30-ից), պահվում է որպես
+// բաժին, որ փոքր խմբերում էլ աշխատի։ Իջնում է ներքևի ~23%-ը (Օբսիդիան և Ադամանդ՝ ~17%), Բրոնզեում՝ ոչ ոք։
+const LEAGUE_PROMOTE_SHARE = [0.67, 0.5, 0.33, 0.23, 0.23, 0.23, 0.23, 0.23, 0.17, 0];
+
 function leagueZones(size, league) {
-  const promote = league >= LEAGUE_COUNT - 1 ? 0 : Math.min(11, Math.max(1, Math.ceil(size * 11 / 30)));
-  const demote = league > 0 ? Math.floor(size * 5 / 30) : 0;
+  const demote = league > 0 ? Math.floor(size * (league >= LEAGUE_COUNT - 2 ? 5 : 7) / 30) : 0;
+  const share = LEAGUE_PROMOTE_SHARE[league] || 0;
+  const promote = share ? Math.min(Math.max(1, Math.round(size * share)), Math.max(1, size - demote)) : 0;
   return { promote, demote };
 }
 

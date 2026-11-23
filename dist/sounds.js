@@ -165,7 +165,7 @@ function advanceSoundRound() {
   if (soundCursor < soundRound.length) { transitionLesson(drawSoundQuestion); return; }
   const points = soundAttempted ? 10 : 0;
   state.soundXp += points;
-  if (points) recordStudyDay();
+  if (points) { logXp(points); recordStudyDay(); }
   save();
   const results = finishLessonCounters();
   app.innerHTML = '<section class="lesson-body panel"><div class="lesson-reward is-new" role="status">' +

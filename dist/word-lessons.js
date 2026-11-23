@@ -593,6 +593,8 @@ function moveWordLesson(direction) {
         return;
       }
       entry.done = true;
+      srsLearn(currentWordIndex);
+      logXp(10);
       recordStudyDay();
       queueCumulativeReview(currentWordIndex);
       save();

@@ -6,7 +6,8 @@
 //   /words                    բառերի ճանապարհ
 //   /words/unit/2/lesson/4    2-րդ բաժնի 4-րդ բառի դասը
 //   /words/dictionary, /words/cards, /words/pictures
-//   /review, /sounds, /sounds/practice, /leaderboard, /journal, /profile, /signup, /signin, /welcome
+//   /physics, /physics/lesson/s4   Ֆիզիկա 7՝ ճանապարհ և դաս (§ 4)
+//   /review, /practice, /sounds, /sounds/practice, /leaderboard, /journal, /profile, /signup, /signin, /welcome
 const routeUsesHash = location.protocol === 'file:';
 let routeApplying = false;
 let routeCounter = 0;
@@ -31,7 +32,8 @@ function routeTitle(path) {
     grammar: kind === 'lesson' ? (extra === 'practice' ? 'Վարժություն ' + number : 'Դաս ' + number) + ' — Քերականություն' : 'Քերականություն',
     words: kind === 'unit' ? (WORDS[currentWordIndex]?.en || 'Դաս') + ' — Բառեր' :
       ({ dictionary: 'Բառարան', cards: 'Բառաքարտեր', pictures: 'Նկարներ' })[kind] || 'Բառեր',
-    review: 'Կրկնություն', leaderboard: 'Վարկանիշ', sounds: kind === 'practice' ? 'Վարժություն — Հնչյուններ' : 'Հնչյուններ',
+    physics: kind === 'lesson' && /^s\d+$/.test(number) ? '§' + number.slice(1) + ' — Ֆիզիկա' : 'Ֆիզիկա',
+    review: 'Կրկնություն', practice: 'Կրկնություն', leaderboard: 'Վարկանիշ', sounds: kind === 'practice' ? 'Վարժություն — Հնչյուններ' : 'Հնչյուններ',
     journal: 'Իմ գրառումները', profile: kind === 'avatar' ? 'Փոխել ավատարը' : 'Պրոֆիլ', signup: 'Գրանցում', signin: 'Մուտք'
   };
   const title = section ? titles[section] : 'Սովորել';
@@ -76,6 +78,8 @@ routeHook('lesson', index => '/grammar/lesson/' + (index + 1));
 routeHook('openGrammarPractice', index => '/grammar/lesson/' + (index + 1) + '/practice');
 routeHook('drawLearningPath', () => '/words');
 routeHook('drawWordLesson', () => wordLessonPath());
+routeHook('physics', () => '/physics');
+routeHook('openPhysicsLesson', id => '/physics/lesson/' + id);
 routeHook('startCumulativeReview', () => '/review');
 routeHook('words', () => '/words/dictionary');
 routeHook('cards', () => '/words/cards');
@@ -83,6 +87,7 @@ routeHook('picturePage', () => '/words/pictures');
 routeHook('sounds', () => '/sounds');
 routeHook('startSoundRound', () => '/sounds/practice');
 routeHook('leaderboard', () => '/leaderboard');
+routeHook('practice', () => '/practice');
 routeHook('journal', () => '/journal');
 routeHook('profile', () => '/profile');
 routeHook('openAvatarBuilder', () => '/profile/avatar');
@@ -146,8 +151,16 @@ function applyRoute({ parts, query }) {
     if (kind === 'practice') startSoundRound();
     return;
   }
+  if (section === 'physics') {
+    if (kind === 'lesson' && physicsReady(number) && !extra) {
+      const mark = routeCounter;
+      openPhysicsLesson(number);
+      if (routeCounter !== mark) return;
+    }
+    return go('physics');
+  }
   if (section === 'profile' && kind === 'avatar') return openAvatarBuilder();
-  if (section === 'journal' || section === 'profile' || section === 'leaderboard') return go(section);
+  if (section === 'journal' || section === 'profile' || section === 'leaderboard' || section === 'practice') return go(section);
   return go('home');
 }
 

@@ -25,15 +25,16 @@ const LESSONS=[
 let state;try{state=JSON.parse(localStorage.getItem('eg-v1'))||{}}catch{state={}}state.known??=[];state.lessons??=[];state.notes??={};state.review??={};let view=lastStudySection(),page=0,query='',filter='all',letter='',flashIndex=0,flipped=false,quizIndex=0,answered=false,score=0;const app=document.getElementById('app');
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));const save=()=>{try{localStorage.setItem(studyStorageKey(),JSON.stringify(state))}catch{alert('Առաջընթացը հնարավոր չեղավ պահպանել։ Դիտարկիչի պահոցը հասանելի չէ։')}};const hy=w=>state.notes[w.en]||w.hy||w.mt||'';const translated=()=>WORDS.filter(w=>hy(w));const known=w=>state.known.includes(w);const go=v=>{view=v;render();window.scrollTo(0,0)};
 const navigationIcons = {
+  practice: '<circle cx="16" cy="16" r="12" fill="#58cc02"/><path d="M10 16a6 6 0 0 1 10.5-4M22 16a6 6 0 0 1-10.5 4" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round"/><path fill="#fff" d="m21.5 6.5 1.2 6.3-6.3-1.2zM10.5 25.5l-1.2-6.3 6.3 1.2z"/>',
   journal: '<rect x="5" y="6" width="22" height="23" rx="4" fill="#ffca3a"/><path fill="#fff0b5" d="M10 10h14v15H10z"/><path d="M10 4v6m11-6v6" stroke="#af7314" stroke-width="3" stroke-linecap="round"/><path fill="#f39318" d="m12 20 10-9 3 3-10 9-4 1z"/>'
 };
 
-const studySectionNames = ['home', 'grammar', 'vocabulary', 'sounds', 'leaderboard', 'journal', 'profile'];
+const studySectionNames = ['home', 'grammar', 'vocabulary', 'physics', 'practice', 'sounds', 'leaderboard', 'journal', 'profile'];
 
 function lastStudySection() {
   try {
     const saved = localStorage.getItem('eg-section');
-    if (['home', 'grammar', 'vocabulary', 'sounds', 'leaderboard', 'journal', 'profile'].includes(saved)) return saved;
+    if (['home', 'grammar', 'vocabulary', 'physics', 'practice', 'sounds', 'leaderboard', 'journal', 'profile'].includes(saved)) return saved;
   } catch {}
   return 'vocabulary';
 }
@@ -43,9 +44,10 @@ function renderNavigation() {
   if (studySectionNames.includes(section)) {
     try { localStorage.setItem('eg-section', section); } catch {}
   }
-  const activeView = ['journal', 'sounds', 'leaderboard', 'profile'].includes(view) ? view : 'home';
+  const activeView = ['journal', 'practice', 'sounds', 'leaderboard', 'profile'].includes(view) ? view : 'home';
   const links = [
     ['home', 'Սովորել'],
+    ['practice', 'Կրկնություն'],
     ['sounds', 'Հնչյուններ'],
     ['leaderboard', 'Վարկանիշ'],
     ['journal', 'Իմ գրառումները'],
@@ -60,7 +62,7 @@ function renderNavigation() {
 }
 function render() {
   renderNavigation();
-  const pages = { home: studyHome, grammar, vocabulary, quiz, journal, sounds, leaderboard, profile };
+  const pages = { home: studyHome, grammar, vocabulary, physics, quiz, journal, practice, sounds, leaderboard, profile };
   (pages[view] ?? studyHome)();
 }
 function filtered(){return WORDS.filter(w=>(!query||w.en.toLowerCase().includes(query.toLowerCase())||hy(w).toLowerCase().includes(query.toLowerCase()))&&(!letter||w.en[0].toUpperCase()===letter)&&(filter==='all'||filter==='translated'&&hy(w)||filter==='known'&&known(w.en)||filter==='new'&&!known(w.en)))}

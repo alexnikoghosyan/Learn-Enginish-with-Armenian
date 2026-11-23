@@ -51,6 +51,7 @@ function makeReviewQuestions(indices) {
   for (const index of indices) {
     const word = WORDS[index];
     if (!word) continue;
+    const firstOfWord = questions.length;
     const meaning = hy(word) || state.wordLessons[index]?.explanation?.trim() || (typeof WORD_HINTS_HY !== 'undefined' && WORD_HINTS_HY[word.en]) || word.mt || word.en;
     const armenian = /[\u0531-\u0587]/.test(meaning);
     const example = curatedExamples[word.en];
@@ -62,6 +63,7 @@ function makeReviewQuestions(indices) {
     }
     const picture = pictureForReview(word);
     if (picture) questions.push({ type: 'picture', prompt: word.en, answer: word.en, picture });
+    for (let i = firstOfWord; i < questions.length; i++) questions[i].index = index;
   }
   return questions;
 }
@@ -80,6 +82,7 @@ function startCumulativeReview() {
   if (activeReview !== saved) {
     activeReview = saved;
     reviewQuestions = makeReviewQuestions(saved.words);
+    if (saved.practice && typeof practicePick === 'function') reviewQuestions = practicePick(reviewQuestions);
     reviewQuestions.forEach((question, index) => { question.base = index; });
     // Սխալ պատասխանված հարցերը կրկնվում են վերջում (պահված են, որ էջը թարմացնելիս չկորչեն)
     for (const index of saved.retry || []) {
@@ -96,15 +99,20 @@ function drawReviewQuestion(mode = 'typing') {
   const cursor = activeReview.cursor;
   const question = reviewQuestions[cursor];
   if (!question) {
+    reviewWasPractice = !!activeReview.practice;
+    if (reviewWasPractice) {
+      state.practiceXp = (state.practiceXp || 0) + SRS_PRACTICE_XP;
+      logXp(SRS_PRACTICE_XP);
+    }
     delete state.cumulativeReview;
     recordStudyDay();
     save();
     activeReview = null;
     app.innerHTML = '<h1>Կրկնություն</h1><section class="panel word-lesson-panel"><div class="lesson-reward is-new">' +
       '<span class="reward-medal" aria-hidden="true">' + gardenIllustration('medal') + '</span><div><strong>Կրկնությունն ավարտված է։</strong>' +
-      '<small>Կրկնեցիր անցած բոլոր բառերը։</small>' + rewardChips(false, finishLessonCounters()) + '</div></div><div class="tools">' +
+      '<small>' + (reviewWasPractice ? 'Կրկնեցիր քո ամենաթույլ բառերը։' : 'Կրկնեցիր անցած բոլոր բառերը։') + '</small>' + rewardChips(false, finishLessonCounters(), reviewWasPractice ? SRS_PRACTICE_XP : 0) + '</div></div><div class="tools">' +
       '<button class="primary" onclick="continueAfterReview()">' +
-      (nextCourseWord() !== undefined ? 'Հաջորդ բառը →' : 'Վերադառնալ ճանապարհին →') +
+      (reviewWasPractice ? 'Վերադառնալ կրկնությանը →' : nextCourseWord() !== undefined ? 'Հաջորդ բառը →' : 'Վերադառնալ ճանապարհին →') +
       '</button></div></section>';
     return;
   }
@@ -219,6 +227,9 @@ function checkReviewAnswer() {
     [question.answer, ...question.answer.replace(/\([^)]*\)/g, '').split(/[,;،/՝]/)] : [question.answer];
   if (accepted.some(answer => normalizeReviewAnswer(answer) === normalizeReviewAnswer(value))) {
     recordLessonAnswer(true);
+    srsRecord(question.index, true);
+    recordReviewCorrect();
+    syncQuests();
     finishReviewQuestion('Ճիշտ է։ ✓');
   } else {
     markReviewWrong();
@@ -230,6 +241,7 @@ function checkReviewAnswer() {
 function markReviewWrong() {
   recordLessonAnswer(false);
   const question = reviewQuestions[activeReview.cursor];
+  srsRecord(question.index, false);
   if (pictureSelectionIndex !== null) app.querySelectorAll('.review-grid button')[pictureSelectionIndex]?.classList.add('wrong');
   (activeReview.retry ??= []).push(question.base);
   reviewQuestions.push({ ...question, retry: true });
@@ -262,6 +274,7 @@ function finishReviewQuestion(message, html = '') {
 }
 
 function continueAfterReview() {
+  if (reviewWasPractice) { reviewWasPractice = false; go('practice'); return; }
   const index = nextCourseWord();
   if (index === undefined) showLearningPath(pathPage);
   else openWordLesson(index);
