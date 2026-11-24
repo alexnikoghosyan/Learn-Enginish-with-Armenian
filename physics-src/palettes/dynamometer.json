@@ -1,0 +1,35 @@
+{
+  "id": "dynamometer",
+  "colors": [
+    {
+      "hex": "#60c100",
+      "share": 0.263,
+      "saturation": 1.0
+    },
+    {
+      "hex": "#3a8b03",
+      "share": 0.246,
+      "saturation": 0.98
+    },
+    {
+      "hex": "#2d6b06",
+      "share": 0.209,
+      "saturation": 0.94
+    },
+    {
+      "hex": "#bdbebb",
+      "share": 0.192,
+      "saturation": 0.02
+    },
+    {
+      "hex": "#7d9c67",
+      "share": 0.079,
+      "saturation": 0.34
+    },
+    {
+      "hex": "#6cc60f",
+      "share": 0.011,
+      "saturation": 0.92
+    }
+  ]
+}

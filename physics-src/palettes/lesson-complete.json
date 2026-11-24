@@ -1,0 +1,35 @@
+{
+  "id": "lesson-complete",
+  "colors": [
+    {
+      "hex": "#3f9903",
+      "share": 0.407,
+      "saturation": 0.98
+    },
+    {
+      "hex": "#64cb01",
+      "share": 0.358,
+      "saturation": 1.0
+    },
+    {
+      "hex": "#418f02",
+      "share": 0.092,
+      "saturation": 0.99
+    },
+    {
+      "hex": "#62ca00",
+      "share": 0.08,
+      "saturation": 1.0
+    },
+    {
+      "hex": "#bde693",
+      "share": 0.043,
+      "saturation": 0.36
+    },
+    {
+      "hex": "#49a10a",
+      "share": 0.02,
+      "saturation": 0.94
+    }
+  ]
+}

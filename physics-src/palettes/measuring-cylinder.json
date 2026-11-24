@@ -1,0 +1,40 @@
+{
+  "id": "measuring-cylinder",
+  "colors": [
+    {
+      "hex": "#cbcbcb",
+      "share": 0.278,
+      "saturation": 0.0
+    },
+    {
+      "hex": "#9e9e9e",
+      "share": 0.235,
+      "saturation": 0.0
+    },
+    {
+      "hex": "#52a8cf",
+      "share": 0.202,
+      "saturation": 0.6
+    },
+    {
+      "hex": "#605f60",
+      "share": 0.143,
+      "saturation": 0.01
+    },
+    {
+      "hex": "#e4e4e4",
+      "share": 0.086,
+      "saturation": 0.0
+    },
+    {
+      "hex": "#78c0e0",
+      "share": 0.048,
+      "saturation": 0.46
+    },
+    {
+      "hex": "#578cb0",
+      "share": 0.008,
+      "saturation": 0.51
+    }
+  ]
+}

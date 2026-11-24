@@ -1,5 +1,5 @@
 // Պատրաստում է deploy/ թղթապանակը Cloudflare Pages-ի համար (Direct Upload, advanced mode)։
-import { readFile, readdir, mkdir, writeFile, copyFile, cp } from 'node:fs/promises';
+import { readFile, readdir, mkdir, writeFile, copyFile, cp, rm } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import { createHash } from 'node:crypto';
 
@@ -11,6 +11,8 @@ for (const file of await readdir(dist, { withFileTypes: true })) {
   if (file.isFile()) await copyFile(dist + file.name, out + file.name);
 }
 // dist/physics/ (Blender կադրերի թերթեր, ֆայլերի անուններում hash կա) պատճենվում է ռեկուրսիվ
+// Նախ մաքրվում է deploy/physics/, որպեսզի նկարների հին տարբերակները (այլ hash-ով) չբեռնվեն Cloudflare
+await rm(out + 'physics', { recursive: true, force: true });
 await cp(dist + 'physics', out + 'physics', { recursive: true }).catch(() => {});
 // Cache-busting. index.html-ի տեղական CSS/JS հղումները ստանում են ?v=<բովանդակության hash>,
 // ուստի ամեն deploy-ից հետո դիտարկիչը բեռնում է նոր ֆայլերը, ոչ թե հին պահված պատճենը։

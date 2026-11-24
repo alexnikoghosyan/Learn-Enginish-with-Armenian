@@ -8,7 +8,7 @@ import { readFileSync, statSync, existsSync } from 'node:fs';
 const root = new URL('../dist/', import.meta.url);
 const src = new URL('../physics-src/', import.meta.url);
 const files = ['physics-math.js', 'physics-text.js', 'physics-course.js', 'physics-lessons.js', 'physics-lessons-2.js', 'physics-lessons-3.js', 'physics-tools.js',
-  'physics-art.js', 'physics-art-2.js', 'physics-ruler.js', 'physics-scale.js', 'physics-cylinder.js', 'physics-spring.js', 'physics-tank.js', 'physics-frames.js',
+  'physics-art.js', 'physics-art-2.js', 'physics-sprites.js', 'physics-ruler.js', 'physics-scale.js', 'physics-cylinder.js', 'physics-spring.js', 'physics-tank.js', 'physics-frames.js',
   'physics-figs.js', 'physics-anim.js', 'physics-anims.js', 'physics-anims-2.js', 'physics-media.js', 'physics-steps.js'];
 const read = names => names.map(name => readFileSync(new URL(name, root), 'utf8')).join('\n');
 // const/let-ը vm-ում չեն դառնում context-ի հատկություն, ուստի արժեքները հանում ենք ձեռքով
@@ -19,7 +19,7 @@ function load(names, exports, globals = {}) {
 }
 const api = load(files, 'physParseNumber, physClose, physRound, physFormat, physDensity, physConvert, physGoalMet, physCalc, PHYS_G, physPhase, physEase, physTween, physLerpColor, physSpring, ' +
   'physRich, physFormula, physGivenHtml, physLinesHtml, physHeroHtml, PHYSICS_COURSE, PHYSICS_LESSONS, PHYS_TOOLS, PHYS_MEASURE, PHYS_STEPS, PHYS_LIQUIDS, PHYSICS_MEDIA, PHYSICS_IMAGES, ' +
-  'PHYS_FIGS, PHYS_ART, PHYS_ANIMS', { matchMedia: () => ({ matches: false }) });
+  'PHYS_FIGS, PHYS_ART, PHYS_ANIMS, PHYS_LESSON_ART_PLAN, physSprite, physCubeHalvesSvg, PHYS_PENCIL_CUTS', { matchMedia: () => ({ matches: false }) });
 const list = array => Array.from(array);
 const lessons = Object.entries(api.PHYSICS_LESSONS);
 const steps = lessons.flatMap(([id, items]) => items.map((step, index) => ({ id, index, step })));
@@ -227,19 +227,41 @@ test('numeric / table. calc-երը վերջավոր են, միավորը տար�
 });
 
 // ---------- Նկարներ, սխեմաներ, կերպարներ ----------
-test('նկարներ. ամեն img Flow ցուցակում է (alt-ով), առկա ֆայլերը ≤ 25 KB', () => {
+test('նկարներ. ամեն img/pics id կա PHYSICS_IMAGES-ում և Flow ցուցակում', () => {
   const used = new Set();
-  for (const { id, step } of steps.filter(item => item.step.img)) {
-    assert.ok(imageList[step.img], id + ': ' + step.img + ' չկա image-list.json-ում');
-    assert.ok(imageList[step.img].length > 0);
-    used.add(step.img);
+  for (const { id, step } of steps) {
+    const toolImgs = [...(step.params?.items || []), ...(step.params?.bodies || [])].map(item => item.img).filter(Boolean);
+    for (const name of [].concat(step.img || [], step.pics || [], toolImgs, step.params?.img || [])) {
+      assert.ok(api.PHYSICS_IMAGES[name], id + ': ' + name + ' չկա PHYSICS_IMAGES-ում');
+      assert.ok(imageList[name], id + ': ' + name + ' չկա image-list.json-ում');
+      used.add(name);
+    }
   }
-  assert.ok(used.size >= 12, 'քիչ նկար է օգտագործված');
-  for (const [name, entry] of Object.entries(api.PHYSICS_IMAGES)) {
+  assert.ok(used.size >= 20, 'քիչ նկար է օգտագործված');
+});
+
+test('նկարներ. ամեն գրառում՝ .webp, հայերեն alt, ֆայլը կա և ≤ 25 KB', () => {
+  const entries = Object.entries(api.PHYSICS_IMAGES);
+  assert.ok(entries.length >= 34);
+  for (const [name, entry] of entries) {
     assert.ok(imageList[name], name);
-    assert.ok(entry.alt.length > 0, name + ': alt');
-    assert.ok(statSync(new URL(entry.src.slice(1), root)).size <= 25 * 1024, name);
+    assert.ok(entry.src.endsWith('.webp'), name + ': src');
+    assert.ok(/[Ա-֏]/.test(entry.alt), name + ': alt հայերեն չէ');
+    const file = new URL(entry.src.slice(1), root);
+    assert.ok(existsSync(file), name + ': ֆայլը չկա');
+    assert.ok(statSync(file).size <= 25 * 1024, name + ': > 25 KB');
   }
+});
+
+test('նկարներ. 6 գլուխների շապիկները կան, PHYS_LESSON_ART_PLAN-ի id-ները գոյություն ունեն', () => {
+  const chapters = api.PHYSICS_COURSE.chapters;
+  assert.equal(chapters.length, 6);
+  chapters.forEach((chapter, index) => {
+    assert.equal(chapter.cover, 'chapter-' + (index + 1) + '-cover');
+    assert.ok(api.PHYSICS_IMAGES[chapter.cover], chapter.cover);
+  });
+  for (const name of ['home-card', 'lesson-complete']) assert.ok(api.PHYSICS_IMAGES[name], name);
+  for (const name of Object.keys(api.PHYS_LESSON_ART_PLAN)) assert.ok(api.PHYSICS_IMAGES[name], name);
 });
 
 test('hero. նկարի բացակայության դեպքում hero չկա, fig/anim-ի դեպքում կա', () => {
@@ -272,6 +294,7 @@ test('կերպարներ (PHYS_ART). ref-ը Flow ցուցակում է, build()-
     const palette = new URL('palettes/' + art.ref + '.json', src);
     if (existsSync(palette)) {
       const colors = hexColors(built.svg);
+      for (const variant of (art.colors || []).slice(0)) colors.push(...hexColors(art.build({ color: variant }).svg));
       for (const entry of JSON.parse(readFileSync(palette, 'utf8')).colors.filter(item => item.share >= 0.05)) {
         const rgb = [1, 3, 5].map(i => parseInt(entry.hex.slice(i, i + 2), 16));
         assert.ok(colors.some(color => Math.hypot(color[0] - rgb[0], color[1] - rgb[1], color[2] - rgb[2]) < 70), id + ': ' + entry.hex);
@@ -372,4 +395,26 @@ test('ֆայլերի չափը. ոչ մի ֆիզիկայի ֆայլ > 300 տող,
   for (const name of [...files, 'physics-lesson.js', 'physics.js', 'physics.css']) assert.ok(readFileSync(new URL(name, root), 'utf8').split('\n').length <= 300, name);
   const animBytes = ['physics-anim.js', 'physics-anims.js', 'physics-anims-2.js'].reduce((sum, name) => sum + statSync(new URL(name, root)).size, 0);
   assert.ok(animBytes <= 25 * 1024, 'physics-anim*.js ' + animBytes + ' բայթ');
+});
+
+test('սպրայթներ. ամեն նկարի box-ը 512 կտավի մեջ է, physSprite-ը տալիս է նշված լայնությունը, նկար չկա՝ null', () => {
+  for (const [name, entry] of Object.entries(api.PHYSICS_IMAGES)) {
+    const [x0, y0, x1, y1] = entry.box;
+    assert.ok(x0 >= 0 && y0 >= 0 && x1 <= 512 && y1 <= 512 && x1 > x0 && y1 > y0, name + ': box');
+  }
+  const apple = api.physSprite('apple', 80);
+  assert.equal(apple.w, 80);
+  assert.ok(apple.h > 0 && apple.svg.startsWith('<image'));
+  assert.equal(api.physSprite('no-such-image', 80), null);
+  // հավասար չափ. երեք խորանարդները նույն չափի են (±1 px)
+  const boxes = ['cube-wood', 'cube-aluminium', 'cube-steel'].map(id => api.PHYSICS_IMAGES[id].box);
+  for (const box of boxes) assert.ok(Math.abs((box[2] - box[0]) - (boxes[0][2] - boxes[0][0])) <= 2 && Math.abs((box[3] - box[1]) - (boxes[0][3] - boxes[0][1])) <= 2);
+  // չափերը իրար նկատմամբ. գիրք > խնձոր > բանալի (բարձրությամբ)
+  const items = Object.fromEntries(api.PHYSICS_LESSONS.s19[1].params.items.map(item => [item.img, api.physSprite(item.img, item.objW).h]));
+  assert.ok(items.book > items.apple && items.apple > items.key);
+  // մատիտը. բաժանումները աճող են
+  assert.ok(api.PHYS_PENCIL_CUTS[0] > 0 && api.PHYS_PENCIL_CUTS[0] < api.PHYS_PENCIL_CUTS[1] && api.PHYS_PENCIL_CUTS[1] < 1);
+  assert.equal(api.PHYSICS_LESSONS.s20[2].params.items.length, 3);
+  assert.ok(api.PHYSICS_LESSONS.s20[2].params.items.every(item => item.objW === 76), 'խորանարդները նույն չափով');
+  assert.ok((api.physCubeHalvesSvg(60).match(/<polygon/g) || []).length >= 10);
 });

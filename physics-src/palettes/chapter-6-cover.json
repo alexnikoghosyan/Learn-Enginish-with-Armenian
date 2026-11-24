@@ -1,0 +1,35 @@
+{
+  "id": "chapter-6-cover",
+  "colors": [
+    {
+      "hex": "#24a8e9",
+      "share": 0.41,
+      "saturation": 0.85
+    },
+    {
+      "hex": "#ba292a",
+      "share": 0.354,
+      "saturation": 0.78
+    },
+    {
+      "hex": "#abca75",
+      "share": 0.118,
+      "saturation": 0.42
+    },
+    {
+      "hex": "#28aae9",
+      "share": 0.082,
+      "saturation": 0.83
+    },
+    {
+      "hex": "#ae6c81",
+      "share": 0.02,
+      "saturation": 0.38
+    },
+    {
+      "hex": "#39adc7",
+      "share": 0.016,
+      "saturation": 0.71
+    }
+  ]
+}

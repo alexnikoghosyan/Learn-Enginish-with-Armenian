@@ -1,0 +1,20 @@
+{
+  "id": "phenomena-shadow",
+  "colors": [
+    {
+      "hex": "#fdb536",
+      "share": 0.588,
+      "saturation": 0.79
+    },
+    {
+      "hex": "#c28449",
+      "share": 0.361,
+      "saturation": 0.62
+    },
+    {
+      "hex": "#f4f0e3",
+      "share": 0.051,
+      "saturation": 0.07
+    }
+  ]
+}

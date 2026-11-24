@@ -42,3 +42,51 @@ Duolingo-style palette ({COLORS}). No outline, no gloss, no gradient, no face, n
 
 SVG diagrams (no Flow needed): `ruler-ticks`, `fx-graph`, `pressure-arrows`, `formula-card` (see `dist/physics-figs.js`).
 Never generate portraits of real people (the physicists lesson uses observatory/atom pictures only).
+
+## Download method (verified 2026-11-23)
+Flow tile -> open -> download icon (top right) -> "2K" -> file lands in ~/Downloads as <Title>_<hash>_2K.jpg -> copy to physics-src/images/<id>.jpg (originals stay in Downloads; deletion needs permission).
+
+## §1 images (approved)
+- phenomena-ice: ice cube melting, sitting directly on a flat puddle (first try rejected: cube floated above the puddle with a gap).
+- phenomena-echo: two grey cliffs on a green strip, orange waves right, purple return waves left (arcs overlap slightly, accepted).
+- phenomena-shadow: orange block, yellow sun upper-left, grey parallelogram shadow to the right.
+- observe-child (§3): child shading eyes, looking at clouds/sun. Approved.
+- experiment-child (§3): child throwing red ball with dotted arc. Approved.
+- measuring-tape (§6): yellow tape case + blank strip. Approved.
+- chapter-1-cover: blue telescope on tripod. Approved.
+- chapter-3-cover: red toy car + speed lines. Approved.
+- REJECTED chapter-2 water molecule (3 flat discs, looked like a cartoon mouse head, not spheres). Replaced by water drop with 9 particles.
+- chapter-2-cover: blue water drop with 9 white particles. Approved.
+- chapter-4-cover: hand pushing brown box + orange arrow. Approved.
+- chapter-5-cover: pulley with weight. Approved (weight has a small ring, fine).
+- chapter-6-cover: cargo ship floating, water band. Approved.
+- aragats-station (§2): schematic mountain + station, no people. Approved.
+- accelerator (§2, Yerevan Physics Institute schematic): purple ring + 4 blue magnets. Approved.
+- lesson-complete: green atom badge. Approved.
+- Downloaded earlier-approved: observatory, phenomena-rainbow, spring-weight (off-centre, needs centring in physics-media.py), train, lever, balance-scale.
+- NOT yet downloaded (need to be located in Flow grid): phenomena-apple (the version with grey motion lines; the blue-drops version in Downloads Red_apple_falling_from_branch_8154e181_2K.jpg is REJECTED), atom, magnifier, stopwatch, ruler (even ticks), measuring-cylinder, stone-cylinder, kitchen-scale, weight-1kg, three-cubes, aluminium-cube, dynamometer (no outline).
+
+## 2026-11-23 update: all earlier-approved images now downloaded
+phenomena-apple (grey motion lines), measuring-cylinder, stopwatch, magnifier, stone-cylinder (has small side marks; hide/crop in code), aluminium-cube (rounded variant), ruler (even ticks), weight-1kg, kitchen-scale, three-cubes (wood/aluminium/steel, same size), atom.
+dynamometer: regenerated as green tube, blank window, grey coil + hook, no outline (old blue ones had dark outlines -> rejected).
+Note: Flow tile positions shift when new images are generated; always screenshot before clicking.
+
+## 2026-11-24
+- atom (final): orange nucleus centre, 3 closed blue ellipses at 60 deg, 3 red electron dots, no gloss/shadow. Previous versions REJECTED: (a) glossy spheres + offset dark shadows + pointed V artefact in lower orbit; (b) orbits only, nucleus missing.
+- home-card (Ֆիզիկա 7): Erlenmeyer flask, green liquid, 2 bubbles, grey base line, small atom on the right. Approved.
+
+- stone-cylinder REGENERATED 2026-11-24 (the first had side tick marks): v1 too narrow, flat-disc ball instead of stone, separate dark column; v2 (accepted) = wide cylinder, blank glass, lumpy rock, #2E5B82 thickness edge. File: Measuring_cylinder_with_rock_and…_a5b90104_2K.jpg → physics-src/images/stone-cylinder.jpg/png. BLANK_MARKS fix in physics-media.py is now unused.
+
+## 2026-11-24: 9 accepted images for tools and choices (Flow project ae9e3775-206d-42c5-85be-4cd598e1722a, open `.../edit/<id>`, full size 1024 px)
+Sources are kept in `physics-src/images/<id>.png` (git-ignored). Prompts are stored in Flow (open the tile, "prompt" panel); ids:
+- key 8a962b30-bc43-4188-88db-c86d97a49cda (yellow key, round head with a real hole; hole is made transparent in physics-media.py via BG_SEEDS)
+- book c6185c8a-8ff5-40bc-bd9a-dcc2cfb4bb79 (blue book, empty label)
+- apple f6835aa4-a106-4ff5-92c9-697b218ffcda (red apple, no gloss)
+- stone c4c5b85e-e169-4225-a05b-f7d4de10acf3 (bulky grey stone)
+- pencil 6441c8bb-1cab-4ca6-81c8-f460ffc35a5a (prompt starts "Flat vector icon, side view, ONE object only: a single long wooden pencil lying perfectly horizontally"; yellow, pink eraser on the left; split in code into eraser / stretchable body / sharp tip, see PHYS_PENCIL_CUTS)
+- hook-weight 892369f8-26f9-4c65-9c70-ea34684eddf5 (brass cylinder with a ring on top)
+- ice-melting 64e102b3-0212-464e-a2ea-105beffafbef (ice cube on a puddle; replaces phenomena-ice in lessons)
+- table e04ef67b-bef8-473e-9225-04f0adbb5b24 (wooden table)
+- foam-ball 1ad20745-09e0-47e9-b09e-31417fbdd143 (white polystyrene cube + steel ball; the white cube stays opaque)
+- cube-wood / cube-aluminium / cube-steel: cut from three-cubes.png (centred 300x380 crops, equal size within 1 px)
+REJECTED, do not use: a30398d9 (key with an Ethereum logo), df2bafb5 (flat stone), c46fb334 and b146fcdb (cut cube), 00b78cce (foam like cheese).

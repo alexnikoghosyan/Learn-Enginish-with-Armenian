@@ -1,0 +1,30 @@
+{
+  "id": "ruler",
+  "colors": [
+    {
+      "hex": "#ffdb4b",
+      "share": 0.377,
+      "saturation": 0.71
+    },
+    {
+      "hex": "#e0a408",
+      "share": 0.36,
+      "saturation": 0.96
+    },
+    {
+      "hex": "#9c650a",
+      "share": 0.202,
+      "saturation": 0.94
+    },
+    {
+      "hex": "#eec02e",
+      "share": 0.043,
+      "saturation": 0.81
+    },
+    {
+      "hex": "#feea9a",
+      "share": 0.018,
+      "saturation": 0.39
+    }
+  ]
+}

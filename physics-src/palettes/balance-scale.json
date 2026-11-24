@@ -1,0 +1,40 @@
+{
+  "id": "balance-scale",
+  "colors": [
+    {
+      "hex": "#d76b0a",
+      "share": 0.252,
+      "saturation": 0.95
+    },
+    {
+      "hex": "#ebb242",
+      "share": 0.217,
+      "saturation": 0.72
+    },
+    {
+      "hex": "#979797",
+      "share": 0.191,
+      "saturation": 0.0
+    },
+    {
+      "hex": "#e59434",
+      "share": 0.129,
+      "saturation": 0.77
+    },
+    {
+      "hex": "#d6cba4",
+      "share": 0.119,
+      "saturation": 0.23
+    },
+    {
+      "hex": "#7d6e48",
+      "share": 0.08,
+      "saturation": 0.42
+    },
+    {
+      "hex": "#fae491",
+      "share": 0.011,
+      "saturation": 0.42
+    }
+  ]
+}

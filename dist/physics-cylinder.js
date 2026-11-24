@@ -1,5 +1,6 @@
 // measure / cylinder (չափագլան). Մարմինը քաշում ենք չափագլանի մեջ. այն իջնում է, ջրի մակարդակը բարձրանում է մարմնի ծավալով։
-// params՝ { capacity = 100, division = 5, water = 40, labelEvery = 20, unit = 'մլ', bodies: [{ name, V, color, shape: 'round'|'square' }] }
+// params՝ { capacity = 100, division = 5, water = 40, labelEvery = 20, unit = 'մլ', bodies: [{ name, V, color, shape: 'round'|'square', img?, objW? }] }
+// img՝ Flow նկարի id (physics-sprites.js). նկար չկա՝ հին ձևը
 // value()՝ { level, reading, immersed: [անուններ], V }  (V՝ ընկղմված մարմինների ծավալը = level − water)
 PHYS_MEASURE.cylinder = {
   mount(el, params, onChange) {
@@ -19,13 +20,16 @@ PHYS_MEASURE.cylinder = {
     const nodes = [];
 
     // Մարմինները՝ PHYS_ART.cube-ով (սկզբնակետը ներքևի կենտրոնում), կենտրոնը՝ (0, 0)
-    const shape = body => '<g transform="translate(0 ' + (SIZE + 3) / 2 + ')">' + PHYS_ART.cube.group({ color: body.color, shape: body.shape === 'square' ? 'cube' : 'round', size: 0.55 }) + '</g>';
-    bodies.forEach((body, index) => Object.assign(body, { x: trayX(index), y: 150 }));
+    const shape = body => body.sprite ? body.sprite.svg : '<g transform="translate(0 ' + (SIZE + 3) / 2 + ')">' + PHYS_ART.cube.group({ color: body.color, shape: body.shape === 'square' ? 'cube' : 'round', size: 0.55 }) + '</g>';
+    bodies.forEach((body, index) => {
+      body.sprite = body.img ? physSprite(body.img, body.objW ?? 36) : null; // լայնությունը՝ խողովակի ներսում (56)
+      Object.assign(body, { x: trayX(index), y: 150, size: body.sprite ? body.sprite.h : SIZE });
+    });
 
     el.innerHTML = '<svg class="phys-svg" viewBox="0 0 560 300" role="img" aria-label="Չափագլան">' +
       '<g class="c-art" transform="translate(280 0)"></g>' +
       bodies.map(body => '<g class="c-body phys-drag" tabindex="0" role="button" aria-pressed="false" aria-label="' + body.name + '">' + shape(body) +
-        '<text class="c-name" y="' + (SIZE / 2 + 22) + '" text-anchor="middle" font-size="18" font-weight="700" fill="#4b4b4b">' + body.name + '</text></g>').join('') +
+        '<text class="c-name" y="' + (body.size / 2 + 22) + '" text-anchor="middle" font-size="18" font-weight="700" fill="#4b4b4b">' + body.name + '</text></g>').join('') +
       '</svg><div class="phys-controls"><div class="phys-readout">' +
       '<button type="button" class="secondary phys-step" data-dir="-1" aria-label="Նվազեցնել ցուցմունքը">−</button><output class="phys-value" aria-live="polite"></output>' +
       '<button type="button" class="secondary phys-step" data-dir="1" aria-label="Ավելացնել ցուցմունքը">+</button></div>' +
@@ -41,7 +45,7 @@ PHYS_MEASURE.cylinder = {
     function aim() {
       let stacked = 0;
       bodies.forEach((body, index) => {
-        if (body.on) { body.tx = 360; body.ty = BOTTOM - SIZE / 2 - stacked++ * (SIZE + 2); } else { body.tx = trayX(index); body.ty = 150; }
+        if (body.on) { body.tx = 360; body.ty = BOTTOM - body.size / 2 - stacked++ * (body.size + 2); } else { body.tx = trayX(index); body.ty = 150; }
       });
     }
 

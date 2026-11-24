@@ -72,3 +72,9 @@ PHYS_FIGS['formula-card'] = {
     return physFig(560, 136, body, this.label);
   }
 };
+
+// Կիսված ալյումինե խորանարդ (s20). երկու հավասար կես a × a × a/2, ուղիղ ուղղահայաց կտրվածք, փոքր բացվածք (cube-aluminium-ի ոճով)
+PHYS_FIGS['cube-cut'] = {
+  label: 'Կիսված ալյումինե խորանարդ՝ երկու հավասար կես',
+  svg() { return physFig(560, 210, '<g transform="translate(280 200)">' + physCubeHalvesSvg(84) + '</g>', this.label); }
+};

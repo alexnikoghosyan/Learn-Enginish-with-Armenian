@@ -1,0 +1,30 @@
+{
+  "id": "home-card",
+  "colors": [
+    {
+      "hex": "#aac8d5",
+      "share": 0.36,
+      "saturation": 0.2
+    },
+    {
+      "hex": "#239ddf",
+      "share": 0.279,
+      "saturation": 0.84
+    },
+    {
+      "hex": "#799e42",
+      "share": 0.263,
+      "saturation": 0.58
+    },
+    {
+      "hex": "#878a6f",
+      "share": 0.08,
+      "saturation": 0.2
+    },
+    {
+      "hex": "#75cb90",
+      "share": 0.018,
+      "saturation": 0.42
+    }
+  ]
+}

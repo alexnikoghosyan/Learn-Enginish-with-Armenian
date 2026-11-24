@@ -1,8 +1,11 @@
 // Դասի քայլերի տեսակները (տե՛ս PLAN.md). Ամեն տեսակ՝ { html(step), mount?(step), check?(step) → bool, graded?, once?, reveal?(step, ok) }
 // check չունեցող տեսակները միայն ցուցադրվում են («Շարունակել»)։ once՝ կանխատեսում, ստուգվում է մեկ անգամ և չի գնահատվում։
 // Տեքստի օգնականները (given/find/steps, physRich, hero)՝ physics-text.js-ում։
+// pics՝ տարբերակի նկարը (Flow id), եթե կա և հասանելի է. լրացուցիչ՝ տարբերակի տեքստից առաջ
+const physOptionPic = (step, index) => (step.pics && step.pics[index] && physImageReady(step.pics[index]) ? '<span class="phys-opt-pic">' + physImageTag(step.pics[index], 'phys-opt-img') + '</span>' : '');
 const physOptions = step => '<div class="phys-options" role="group" aria-label="Պատասխանի տարբերակներ">' + step.options.map((option, index) =>
-  '<button type="button" class="option phys-choice" aria-pressed="false" onclick="pickPhysicsOption(' + index + ')">' + physFormula(option) + '</button>').join('') + '</div>';
+  '<button type="button" class="option phys-choice' + (physOptionPic(step, index) ? ' has-pic' : '') + '" aria-pressed="false" onclick="pickPhysicsOption(' + index + ')">' +
+  physOptionPic(step, index) + '<span>' + physFormula(option) + '</span></button>').join('') + '</div>';
 
 function pickPhysicsOption(index) {
   physLesson.picked = index;
@@ -27,7 +30,7 @@ function physCellValue(cell) {
 }
 
 // Հարցի վերնագիրը՝ q/task + «Տրված է / Գտնել / Լուծում»
-const physQuestion = step => '<p class="phys-task">' + physRich(step.q ?? step.task) + '</p>' + physGivenHtml(step);
+const physQuestion = step => physHeroHtml(step) + '<p class="phys-task">' + physRich(step.q ?? step.task) + '</p>' + physGivenHtml(step);
 
 function mountPhysicsAnim(step) {
   if (step.anim) physLesson.tool = physAnimPlayer(app.querySelector('.phys-anim'), step.anim, step.params || {}, { loop: step.loop !== false });

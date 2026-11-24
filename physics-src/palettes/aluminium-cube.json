@@ -1,0 +1,30 @@
+{
+  "id": "aluminium-cube",
+  "colors": [
+    {
+      "hex": "#cccccc",
+      "share": 0.306,
+      "saturation": 0.0
+    },
+    {
+      "hex": "#63666c",
+      "share": 0.29,
+      "saturation": 0.08
+    },
+    {
+      "hex": "#a3a2a3",
+      "share": 0.183,
+      "saturation": 0.01
+    },
+    {
+      "hex": "#b4b4b4",
+      "share": 0.164,
+      "saturation": 0.0
+    },
+    {
+      "hex": "#cecfce",
+      "share": 0.058,
+      "saturation": 0.0
+    }
+  ]
+}

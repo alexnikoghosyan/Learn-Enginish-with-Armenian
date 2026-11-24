@@ -22,9 +22,11 @@ function physics() {
         status === 'locked' ? '' : 'openPhysicsLesson(\'' + section.id + '\')', physicsIcons[section.kind]);
       return section === next && !physicsReady(section.id) ? stop.replace('</strong>', '</strong><small class="phys-soon">Շուտով</small>') : stop;
     }).join('');
-    const complete = chapter.sections.every(section => physicsDone(section.id));
-    return '<section class="path-unit" data-color="' + chapter.color % 7 + '"><div class="path-unit-heading"><h3>Գլուխ ' + chapter.n +
-      ' · ' + esc(chapter.title) + '</h3></div><ol>' + stops + '</ol>' + courseMilestone(complete) + '</section>';
+    const done = chapter.sections.filter(section => physicsDone(section.id)).length;
+    const cover = physImageReady(chapter.cover) ? physImageTag(chapter.cover, 'phys-chapter-img') : '';
+    return '<section class="path-unit" data-color="' + chapter.color % 7 + '"><div class="path-unit-heading phys-heading">' + cover + '<div><h3>Գլուխ ' + chapter.n +
+      ' · ' + esc(chapter.title) + '</h3><small>' + done + ' / ' + chapter.sections.length + ' դաս</small></div></div><ol>' + stops + '</ol>' +
+      courseMilestone(done === chapter.sections.length) + '</section>';
   }).join('');
   const progress = physicsProgress();
   app.innerHTML = courseLayout('<div class="learning-path phys-path"><h1>Ֆիզիկա 7</h1><div class="path-intro"><p>' +

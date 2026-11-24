@@ -1,0 +1,40 @@
+{
+  "id": "magnifier",
+  "colors": [
+    {
+      "hex": "#228fd1",
+      "share": 0.336,
+      "saturation": 0.84
+    },
+    {
+      "hex": "#88d3fb",
+      "share": 0.335,
+      "saturation": 0.46
+    },
+    {
+      "hex": "#fa9416",
+      "share": 0.187,
+      "saturation": 0.91
+    },
+    {
+      "hex": "#63c4f7",
+      "share": 0.127,
+      "saturation": 0.6
+    },
+    {
+      "hex": "#728a94",
+      "share": 0.005,
+      "saturation": 0.23
+    },
+    {
+      "hex": "#a6ddfb",
+      "share": 0.005,
+      "saturation": 0.34
+    },
+    {
+      "hex": "#9ecfe5",
+      "share": 0.004,
+      "saturation": 0.31
+    }
+  ]
+}

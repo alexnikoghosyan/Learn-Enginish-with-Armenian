@@ -1,0 +1,40 @@
+{
+  "id": "stone-cylinder",
+  "colors": [
+    {
+      "hex": "#a5c1d2",
+      "share": 0.251,
+      "saturation": 0.21
+    },
+    {
+      "hex": "#21a2e6",
+      "share": 0.238,
+      "saturation": 0.86
+    },
+    {
+      "hex": "#dbecf4",
+      "share": 0.191,
+      "saturation": 0.1
+    },
+    {
+      "hex": "#2e5b82",
+      "share": 0.168,
+      "saturation": 0.65
+    },
+    {
+      "hex": "#6196b8",
+      "share": 0.074,
+      "saturation": 0.47
+    },
+    {
+      "hex": "#95c7e0",
+      "share": 0.054,
+      "saturation": 0.33
+    },
+    {
+      "hex": "#e8f6fa",
+      "share": 0.024,
+      "saturation": 0.07
+    }
+  ]
+}

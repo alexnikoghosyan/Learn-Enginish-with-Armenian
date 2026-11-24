@@ -1,0 +1,20 @@
+{
+  "id": "chapter-4-cover",
+  "colors": [
+    {
+      "hex": "#d48c3b",
+      "share": 0.425,
+      "saturation": 0.72
+    },
+    {
+      "hex": "#a6652c",
+      "share": 0.321,
+      "saturation": 0.73
+    },
+    {
+      "hex": "#e6bb9d",
+      "share": 0.253,
+      "saturation": 0.32
+    }
+  ]
+}

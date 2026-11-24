@@ -1,5 +1,6 @@
 // measure / ruler. Առարկան քաշում ենք այնպես, որ ձախ ծայրը լինի 0-ի վրա, հետո կարդում ենք աջ ծայրի ցուցմունքը։
-// params՝ { objectLength, min = 0, max = 12, division = 0.1, start = 1.6, unit = 'սմ' }
+// params՝ { objectLength, min = 0, max = 12, division = 0.1, start = 1.6, unit = 'սմ', img = 'pencil' }
+// img՝ առարկան նկարվում է Flow նկարով, 3 մասից (ռետին, ձգվող մարմին, սուր ծայր). ձախ ծայրը՝ ճիշտ 0-ի վրա, աջը՝ ճիշտ objectLength-ի։ Նկար չկա՝ կապույտ ուղղանկյուն
 // value()՝ { reading, length, aligned, division }
 PHYS_MEASURE.ruler = {
   mount(el, params, onChange) {
@@ -16,6 +17,8 @@ PHYS_MEASURE.ruler = {
     const ZOOM = 5;
     const CX = 280;
     const clip = 'phys-clip-' + (++physUid);
+    const pencilId = params.img ?? 'pencil';
+    const pencil = physPencilHtml(pencilId);
     let left = start;
     let reading = min;
     let zoomed = false;
@@ -25,8 +28,8 @@ PHYS_MEASURE.ruler = {
       '<g transform="translate(24 104)">' + PHYS_ART.ruler.group({ from: min, to: max, step, width: 472, x0: 20, bodyWidth: 512 }) + '</g>' +
       '<text x="522" y="188" text-anchor="end" font-size="18" font-weight="700" fill="#5a4600">' + unit + '</text>' +
       '<g class="r-guides" stroke="#1cb0f6" stroke-width="2" stroke-dasharray="5 4"><line y1="88" y2="112"/><line y1="88" y2="112"/></g>' +
-      '<g class="r-obj phys-drag"><rect class="r-body" y="56" height="32" rx="6" fill="#1cb0f6"/>' +
-      '<rect class="r-cap-l" y="56" width="5" height="32" fill="#0084bb"/><rect class="r-cap-r" y="56" width="5" height="32" fill="#0084bb"/>' +
+      '<g class="r-obj phys-drag">' + (pencil || '<rect class="r-body" y="56" height="32" rx="6" fill="#1cb0f6"/>' +
+      '<rect class="r-cap-l" y="56" width="5" height="32" fill="#0084bb"/><rect class="r-cap-r" y="56" width="5" height="32" fill="#0084bb"/>') +
       '<rect class="r-grab" y="40" height="60" fill="transparent"/></g>' +
       '<g class="r-lens"><clipPath id="' + clip + '"><rect x="24" y="196" width="512" height="96" rx="10"/></clipPath>' +
       '<rect x="24" y="196" width="512" height="96" rx="10" fill="#ffe08a" stroke="#1cb0f6" stroke-width="3"/>' +
@@ -54,9 +57,12 @@ PHYS_MEASURE.ruler = {
 
     function draw() {
       const right = left + length;
-      set('.r-body', { x: x(left), width: length * k });
-      set('.r-cap-l', { x: x(left) });
-      set('.r-cap-r', { x: x(right) - 5 });
+      if (pencil) physPencilLayout(object, pencilId, x(left), x(right), 56, 32);
+      else {
+        set('.r-body', { x: x(left), width: length * k });
+        set('.r-cap-l', { x: x(left) });
+        set('.r-cap-r', { x: x(right) - 5 });
+      }
       set('.r-grab', { x: x(left), width: length * k });
       guides[0].setAttribute('x1', x(left));
       guides[0].setAttribute('x2', x(left));

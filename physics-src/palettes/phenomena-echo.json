@@ -1,0 +1,15 @@
+{
+  "id": "phenomena-echo",
+  "colors": [
+    {
+      "hex": "#b8c8a6",
+      "share": 0.518,
+      "saturation": 0.17
+    },
+    {
+      "hex": "#ad918d",
+      "share": 0.482,
+      "saturation": 0.18
+    }
+  ]
+}

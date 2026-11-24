@@ -1,6 +1,7 @@
 // measure / scale. Թվային կշեռք. մարմինները քաշում ենք նժարին (կամ Enter/Space-ով դնում ու հանում ենք),
 // ցուցմունքը սահուն հասնում է գումարային զանգվածին, իսկ նժարը իջնում է ըստ զանգվածի (requestAnimationFrame)։
-// params՝ { items: [{ name, m, V?, color, shape: 'round'|'flat'|'tall' }], unit = 'գ', capacity = 1000, cut?: true, density?: true }
+// params՝ { items: [{ name, m, V?, color, shape: 'round'|'flat'|'tall', img?, objW?, halves? }], unit = 'գ', capacity = 1000, cut?: true, density?: true }
+// img՝ Flow նկարի id (physics-sprites.js), objW՝ առարկայի լայնությունը. նկար չկա՝ հին ձևը (PHYS_ART.cube). halves՝ կտրելուց հետո նկարվում է կիսված խորանարդը
 // cut՝ «Կտրել» կոճակը կիսում է նժարի մարմինների m-ը և V-ն (իսկ m/V-ն մնում է նույնը). density՝ ցույց է տալիս m, V, m/V
 // value()՝ { mass, onPan: [անուններ], cut: կտրումների քանակը }
 PHYS_MEASURE.scale = {
@@ -19,13 +20,16 @@ PHYS_MEASURE.scale = {
     let cutCount = 0;
 
     // Մարմինները՝ PHYS_ART.cube-ով (սկզբնակետը ներքևի կենտրոնում), կենտրոնը՝ (0, 0)
-    const shape = item => '<g transform="translate(0 ' + (item.h + 6) / 2 + ')">' + PHYS_ART.cube.group({ color: item.color, shape: item.shape }) + '</g>';
+    const shape = item => item.sprite ? item.sprite.svg : '<g transform="translate(0 ' + (item.h + 6) / 2 + ')">' + PHYS_ART.cube.group({ color: item.color, shape: item.shape }) + '</g>';
+    // Կիսված խորանարդը՝ նույն լայնությամբ, ինչ նկարը (1,836·a = objW)
+    const halves = item => '<g transform="translate(0 ' + (item.h + 6) / 2 + ')">' + physCubeHalvesSvg(item.objW / 1.836) + '</g>';
     const body = items.map((item, index) => {
       item.shape = SIZES[item.shape] ? item.shape : 'round';
-      const [w, h] = SIZES[item.shape];
+      item.sprite = item.img ? physSprite(item.img, item.objW ?? 64) : null;
+      const [w, h] = item.sprite ? [item.sprite.w, item.sprite.h - 6] : SIZES[item.shape];
       Object.assign(item, { w, h, on: false, x: trayX(index), y: TRAY_Y, slot: 0, m0: item.m, V0: item.V, cuts: 0, s: 1 });
-      return '<g class="s-item phys-drag" tabindex="0" role="button" aria-pressed="false" aria-label="' + item.name + '">' +
-        shape(item) + '<text class="s-name" y="' + ((h + 6) / 2 + 22) + '" text-anchor="middle" font-size="18" font-weight="700" fill="#4b4b4b">' + item.name + '</text></g>';
+      return '<g class="s-item phys-drag" tabindex="0" role="button" aria-pressed="false" aria-label="' + item.name + '"><g class="s-shape">' +
+        shape(item) + '</g><text class="s-name" y="' + ((h + 6) / 2 + 22) + '" text-anchor="middle" font-size="18" font-weight="700" fill="#4b4b4b">' + item.name + '</text></g>';
     }).join('');
 
     el.innerHTML = '<svg class="phys-svg" viewBox="0 0 560 300" role="img" aria-label="Թվային կշեռք">' +
@@ -63,6 +67,10 @@ PHYS_MEASURE.scale = {
       items.forEach((item, index) => {
         nodes[index].setAttribute('transform', 'translate(' + item.x + ' ' + item.y + ') scale(' + item.s + ')');
         nodes[index].setAttribute('aria-pressed', item.on);
+        if (item.halves && item.sprite) { // կտրելուց հետո՝ կիսված խորանարդ (SVG), հակառակ դեպքում՝ նկարը
+          const cutNow = item.cuts > 0;
+          if (item.showCut !== cutNow) { item.showCut = cutNow; nodes[index].querySelector('.s-shape').innerHTML = cutNow ? halves(item) : shape(item); }
+        }
         nodes[index].querySelector('.s-name').style.opacity = item.on ? 0 : 1;
       });
     }
@@ -76,7 +84,7 @@ PHYS_MEASURE.scale = {
       targets();
       let moving = shown !== goal;
       items.forEach((item, index) => {
-        const size = Math.pow(0.75, item.cuts);
+        const size = item.halves && item.sprite ? 1 : Math.pow(0.75, item.cuts);
         item.s += (size - item.s) * ease;
         if (Math.abs(size - item.s) < 0.002) item.s = size; else moving = true;
         if (index === dragging) { moving = true; return; }
@@ -89,7 +97,7 @@ PHYS_MEASURE.scale = {
     });
 
     function settle(announce) {
-      items.forEach(item => { item.s = Math.pow(0.75, item.cuts); });
+      items.forEach(item => { item.s = item.halves && item.sprite ? 1 : Math.pow(0.75, item.cuts); });
       if (physReduced()) { shown = mass(); sink = 12 * Math.min(1, shown / capacity); targets(); items.forEach(item => { item.x = item.tx; item.y = item.ty; }); paint(); } else loop.wake();
       showDensity();
       if (announce) live.textContent = 'Կշեռքը ցույց է տալիս ' + mass() + ' ' + unit;

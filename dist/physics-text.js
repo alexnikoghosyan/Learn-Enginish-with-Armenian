@@ -12,7 +12,8 @@ function physRich(text) {
 // Բանաձևի նշանները թեք են (<i>), ինդեքսները՝ <sub>. միայն առանձին լատինատառ/հունատառ նշանները
 function physFormula(text) {
   return physRich(text)
-    .replace(/(?<![A-Za-z])[A-Za-z](?![A-Za-z])|[ρΔ]/g, symbol => '<i>' + symbol + '</i>')
+    .replace(/ \/ /g, ' : ') // բաժանումը՝ «:», որ թեք l-ի հետ չշփոթվի
+    .replace(/(?<![A-Za-z])[A-Za-z](?![A-Za-z])|[ρΔ]/g, symbol => '<i>' + (symbol === 'l' ? 'ℓ' : symbol) + '</i>')
     .replace(/[₀-₉]+/g, digits => '<sub>' + [...digits].map(char => PHYS_SUB[char]).join('') + '</sub>');
 }
 
@@ -37,12 +38,22 @@ const physFileMode = () => typeof location !== 'undefined' && location.protocol 
 const physImageReady = id => typeof PHYSICS_IMAGES !== 'undefined' && Boolean(PHYSICS_IMAGES[id]) && !physFileMode();
 
 // Բացատրության էկրանի նկարը. img (Flow) → ֆայլի բացակայության դեպքում hero-ն չի ցուցադրվում. fig (SVG սխեմա), anim (անիմացիա)
+// Flow նկարի <img>-ը. հայերեն alt (PHYSICS_IMAGES-ից), width/height՝ առանց դասավորության թռիչքի,
+// onerror՝ նկարը հանվում է (wrapper-ը՝ եթե դատարկ է մնում)։ Արտաքին հարցումներ չկան
+function physImageTag(id, className, wrapper = '') {
+  const image = PHYSICS_IMAGES[id];
+  const cleanup = wrapper ? "var h=this.closest('" + wrapper + "');this.remove();if(h&&!h.querySelector('img'))h.remove()" : 'this.remove()';
+  return '<img class="' + className + '" src="' + image.src + '" alt="' + physEsc(image.alt) + '" width="512" height="512" decoding="async" onerror="' + cleanup + '">';
+}
+
+// img-ը՝ Flow նկար (տող կամ երկու նկարի զանգված). ֆայլի բացակայության դեպքում hero-ն չի ցուցադրվում
 function physHeroHtml(step) {
   let media = '';
   if (step.anim) media = '<div class="phys-anim"></div>';
   else if (step.fig && PHYS_FIGS[step.fig]) media = '<div class="phys-fig" role="img" aria-label="' + physEsc(PHYS_FIGS[step.fig].label) + '">' + PHYS_FIGS[step.fig].svg(step.figParams || {}) + '</div>';
-  else if (step.img && physImageReady(step.img)) {
-    media = '<img class="phys-img" src="' + PHYSICS_IMAGES[step.img].src + '" alt="' + physEsc(PHYSICS_IMAGES[step.img].alt) + '" onerror="this.closest(\'.phys-hero\').remove()">';
+  else if (step.img) {
+    const ids = [].concat(step.img).filter(physImageReady);
+    if (ids.length) media = '<div class="phys-imgs' + (ids.length > 1 ? ' is-pair' : '') + '">' + ids.map(id => physImageTag(id, 'phys-img', '.phys-hero')).join('') + '</div>';
   }
   if (!media) return '';
   const labels = (step.labels || []).map(label => '<span class="phys-hero-label" style="left:' + label.x + '%;top:' + label.y + '%">' + physFormula(label.text) + '</span>').join('');

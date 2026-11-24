@@ -34,20 +34,38 @@ _Վերջին թարմացում՝ 2026-11-23_
   - Թեստեր՝ `worker/physics.test.mjs` (31)։
 - Վերականգնվեցին `dist/index.html`, `garden-*.png` (ջնջվել էին 19:04-ին)։ `dist/account.js`-ում ավելացվեց `state.physics` լռելյայն արժեքը (մուտք գործածների դատարկ գլխավոր էջի սխալը, արդեն տեղակայված է)։
 
+- **Նկարների միացում (2026-11-24, CLAUDE-CODE-TASK-4).** 34 Flow նկարները միացված են (չեն փոխվել)։
+  - Ճանապարհ. 6 գլխի շապիկ (`chapter-1..6-cover`) + «ավարտված / ընդամենը դաս»; գլխավոր էջի Ֆիզիկա քարտում `home-card`; ավարտի էկրանում `lesson-complete`։
+  - Դասեր. `img` հիմա կարող է զանգված լինել (զույգ hero՝ `.phys-imgs.is-pair`); `pics`՝ տարբերակների նկարներ։ §1՝ ice/echo/shadow, §2՝ atom/observatory/aragats-station/accelerator/magnifier, §3՝ observe-child/experiment-child (բացատրություն + երկու ընտրություն), §6՝ measuring-tape։
+  - Հայերեն alt՝ `PHYSICS_IMAGES`-ից, `onerror`՝ թաքցնում է, `file:`-ում թաքնված է (`physImageReady`), արտաքին հարցում չկա։ Hero ≤ ~220px (375px-ում), կենտրոնում, `width/height` դրված, սպիտակ ֆոն։
+  - Չօգտագործված (չստիպվեց). `train`, `lever`, `balance-scale`՝ գրանցված են `PHYS_LESSON_ART_PLAN`-ում (`physics-course.js`) և կօգտագործվեն §14/§16, §23/§30, §30 գրելիս։
+  - SVG երկվորյակները համեմատվեցին Flow-ի հետ և ուղղվեցին. spring (L-ամրակ, գլանաձև բեռ), ruler (երկու հորիզոնական շերտ), cube (իզոմետրիկ), scale (էլիպս նժար), cylinder (շրջանակ + հիմք), stopwatch (նարնջագույն դեմք, կապույտ գծիկներ, դեղին կոճակներ)։ Գործիքները և անիմացիաները աշխատում են (անփոփոխ երկրաչափություն)։
+  - `pages-build` հիմա մաքրում է `deploy/physics` պատճենելուց առաջ (հին `.webp`-եր չեն մնում)։
+  - Դիտարկումներ (rule 9). նկարները չեն մերժվել. ներքին սպիտակ տարածքները լուծված են hero-ի սպիտակ ֆոնով, մի քանի լայն նկար թողնում է դատարկ շերտ, echo-ի շուրջ հալո կա (ընդունելի)։
+  - Playwright. 375×812 և 1280, 13 դասի բոլոր էկրանները՝ առանց հորիզոնական scroll-ի, ճանապարհ, գլխավոր քարտ, ավարտի էկրան, գործիքներ; սքրինշոթներ՝ `physics-src/compare/`։ Թեստեր՝ `worker/physics.test.mjs` (33)։
+
+- **Նկարները գործիքներում (2026-11-24).** 9 նոր Flow նկար (key, book, apple, stone, pencil, hook-weight, ice-melting, table, foam-ball) + 3 խորանարդ (cube-wood/aluminium/steel՝ կտրված three-cubes-ից, հավասար չափով). ընդամենը 46 նկար։
+  - Pipeline. `physics-media.py`՝ `BG_SEEDS` (բանալու անցքը թափանցիկ), `DEHALO` (սպիտակ եզրագիծ չի մնում, foam-ball-ի սպիտակ խորանարդը մնում է անթափանց), `box` (առարկայի սահմանները 512 կտավում), `physics-media.js`-ում մեկ նկար՝ մեկ տող։ Հին 34 նկարների hash-երը չեն փոխվել։
+  - Կոդ. նոր `dist/physics-sprites.js`՝ `physSprite`, մատիտի 3 մասը (`physPencilHtml/Layout`, `PHYS_PENCIL_CUTS`), `physCubeHalvesSvg`։ Եթե նկար չկա (`file:`), մնում է հին ձևը։
+  - Կշեռք (s19 ×2, s5, s20, s21). item-ներին `img/objW`. գիրք > խնձոր > բանալի. s20-ի երեք խորանարդը նույն չափով (76), ինչը ուղղում է «նույն ծավալ» սխալը։ Cut (s20). կտրելուց հետո նկարվում է կիսված ալյումինե խորանարդ (SVG, երկու հավասար կես a×a×a/2, բացվածք). նույնը՝ s20-ի հաջորդ հարցի `fig: 'cube-cut'`։ Ուշադրություն. կտրելուց հետո նժարին երևում են երկու կեսերը, իսկ m, V ցույց են տալիս մեկ կեսի արժեքը (գործիքի տրամաբանությունը չփոխվեց)։
+  - Չափագլան (s21). քար → stone։ Քանոն (s3, s4 ×2, s5). կապույտ ուղղանկյան փոխարեն մատիտ. ձախ ծայրը ճշգրիտ 0-ին, աջը՝ objectLength-ին (ստուգված 6,4 / 7,3 / 5,4 / 6,8 սմ-ի համար). պատասխանը չի փոխվել։ Զսպանակ (s25, s26). բեռները hook-weight են, կախվում են իրար տակ։
+  - s1 քայլ 2՝ նկարային տարբերակներ (phenomena-apple, table, book, apple). s19 քայլ 5՝ foam-ball. phenomena-ice → ice-melting։
+  - Playwright 380px և 1280px. s19 (205 գ = խնձոր + բանալի ընդունվում է), s20 (cut), s21, s25, s5, s3/s4 քանոն, s1. Սքրինշոթներ՝ `physics-src/compare/v-*.png`, `v2-*.png`։ Թեստեր՝ 34։
+  - Rule 9. 9 նկարը ընդունվեցին (բանալու անցքը, foam-ball-ի սպիտակ խորանարդը, ice-melting-ի կաթիլները ստուգված). ice-melting-ի կաթիլների փոքր սպիտակ փայլը չեմ մաքրել (նկարը սպիտակ քարտի վրա է)։ Մերժվածները (a30398d9, df2bafb5, c46fb334, b146fcdb, 00b78cce) չեն օգտագործվել։
+
 ### Հետազոտություն
 - Duolingo/Brilliant մեխանիզմների զեկույցը (չաթում)։ Բարձրացման թվերը ոչ պաշտոնական են (Duolingo-ն չի հրապարակում)։
 
 ## Վիճակ
 
-- `npm run build` և `npm test`՝ անցնում են (2026-11-23)։
-- Տեղակայված է Փուլ 1-ը և մուտքի ուղղումը. Փուլ 1.1-ը **դեռ տեղակայված չէ** (commit/push/deploy չեն արվել)։
+- `npm run build` և `npm test`՝ անցնում են (2026-11-24)։
+- Տեղակայված է Փուլ 1-ը և մուտքի ուղղումը. Փուլ 1.1-ը և նկարների միացումը **դեռ տեղակայված չէ** (commit/push/deploy չեն արվել)։
 - Ոչինչ commit/push չի արվել GitHub-ում։
 
 ## Next (Հաջորդ անելիքներ)
 
 0. **Ֆիզիկա.**
-   - **Flow նկարները դեռ չկան** (`physics-src/images/<id>.png`). առաջարկները՝ `physics-src/flow-prompts.md` (15 նկար, 2 «պատրաստ նմուշ»՝ `ruler`, `spring-weight`, որոնք այս պանակում չեն)։ Նկարները դնելուց հետո՝ `python physics-media.py` և `python physics-media.py --palette <id>`։
-   - **Համեմատել Flow նկարի հետ** (Ե2, 24c). SVG կերպարները՝ `spring` (`spring-weight`), `ruler` (`ruler`), `cube` (`three-cubes`), `scale` (`kitchen-scale`), `cylinder` (`stone-cylinder`), `stopwatch` (`stopwatch`)։ SVG ռենդերները արդեն պահված են `physics-src/compare/art-<id>.svg.png`-ում. Flow նկարի կողքին դնել, ուղղել ձևը/համամասնությունը/գույները (`PHYS_ART`-ում), թեստը կստուգի գույները palette-ի հետ։
+   - Նկարներ. `train`/`lever`/`balance-scale`-ը միացնել համապատասխան դասերը գրելիս (`PHYS_LESSON_ART_PLAN`)։
    - Փուլ 2 (գլուխ II, `particles` Canvas գործիք) նոր `/plan`-ով։ Նախ ստուգել դասագրքում՝ `g`, հեղուկների խտությունները, §49։ Քայլերի `run` տեսակը (Coddy ոճ) դեռ չկա. `predict` + `sim` զույգը փոխարինում է դրան։
    - Ուշադրություն. `dist/app.js`-ը արգելում է Tab-ը ամբողջ կայքում (`preventDefault`), ուստի գործիքները Tab → Enter-ով հասանելի չեն։ Որոշել՝ թողնել թե փոխել։
    - `C:\physics-src\` թղթապանակը (Blender-ի առաջին ռենդերից) կարելի է ջնջել ձեռքով։
@@ -57,3 +75,10 @@ _Վերջին թարմացում՝ 2026-11-23_
 4. Չանել (ուզածի դեպքում)՝ followers/friends, friend streak, լիգայի privacy toggle, լիգային միանալ առաջին XP-ից հետո։
 5. `leaderboard.js`-ը նոր տարբերակով բրաուզերում դեռ չի ստուգվել (mock API-ով)։
 6. Մաքրել ժամանակավոր ֆայլերը՝ `deploy-log.txt` (git-ում չմտցնել)։
+
+## Physics images: rejected in Flow (rule 9)
+- chapter-2 water molecule: 3 flat discs, looked like a cartoon mouse head -> replaced by water drop.
+- ice cube v1: floated above puddle with a gap -> regenerated sitting on puddle.
+- atom v1: gloss highlights, offset dark shadows, pointed V artefact; atom v2: nucleus missing -> v3 approved.
+- apple (blue drops), ruler (uneven ticks), scale-as-jar, balance with asymmetric chain, dynamometer with dark outlines, cube with diagonal-split face, spring cropped at top: rejected earlier.
+- Final images: physics-src/images/ (34 files, 2K JPG). Next: run physics-media.py (512x512 WebP <=25 KB, centre spring, --palette), hide side marks on stone-cylinder.

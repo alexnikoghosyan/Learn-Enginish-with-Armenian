@@ -1,0 +1,40 @@
+{
+  "id": "experiment-child",
+  "colors": [
+    {
+      "hex": "#fda171",
+      "share": 0.328,
+      "saturation": 0.55
+    },
+    {
+      "hex": "#84442e",
+      "share": 0.241,
+      "saturation": 0.65
+    },
+    {
+      "hex": "#ec801c",
+      "share": 0.19,
+      "saturation": 0.88
+    },
+    {
+      "hex": "#316ca9",
+      "share": 0.142,
+      "saturation": 0.71
+    },
+    {
+      "hex": "#c1d58f",
+      "share": 0.064,
+      "saturation": 0.33
+    },
+    {
+      "hex": "#fa9646",
+      "share": 0.028,
+      "saturation": 0.72
+    },
+    {
+      "hex": "#554344",
+      "share": 0.008,
+      "saturation": 0.21
+    }
+  ]
+}

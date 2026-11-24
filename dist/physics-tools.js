@@ -65,9 +65,9 @@ function physTicks(from, to, step, x, y, { long = 30, mid = 21, short = 14, labe
     const whole = Math.abs(value / major - Math.round(value / major)) < 1e-6;
     const half = Math.abs(value * 2 / major - Math.round(value * 2 / major)) < 1e-6;
     const length = whole ? long : half ? mid : short;
-    const color = hot(value) || '#5a4600';
+    const color = hot(value) || '#7A5208';
     out += '<line x1="' + x(value) + '" x2="' + x(value) + '" y1="' + y + '" y2="' + (y + length) + '" stroke="' + color + '" stroke-width="' + (whole ? 2.4 : 1.6) + '"/>';
-    if (whole && labels) out += '<text x="' + x(value) + '" y="' + (y + long + size + 3) + '" text-anchor="middle" font-size="' + size + '" font-weight="700" fill="' + (hot(value) || '#5a4600') + '">' + Math.round(value) + '</text>';
+    if (whole && labels) out += '<text x="' + x(value) + '" y="' + (y + long + size + 3) + '" text-anchor="middle" font-size="' + size + '" font-weight="700" fill="' + (hot(value) || '#7A5208') + '">' + Math.round(value) + '</text>';
   }
   return out;
 }

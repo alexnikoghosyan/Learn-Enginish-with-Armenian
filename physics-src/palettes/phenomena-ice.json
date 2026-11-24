@@ -1,0 +1,40 @@
+{
+  "id": "phenomena-ice",
+  "colors": [
+    {
+      "hex": "#29acf4",
+      "share": 0.303,
+      "saturation": 0.83
+    },
+    {
+      "hex": "#28acf5",
+      "share": 0.244,
+      "saturation": 0.84
+    },
+    {
+      "hex": "#8cdafe",
+      "share": 0.176,
+      "saturation": 0.45
+    },
+    {
+      "hex": "#8bdaff",
+      "share": 0.172,
+      "saturation": 0.45
+    },
+    {
+      "hex": "#279fe2",
+      "share": 0.076,
+      "saturation": 0.83
+    },
+    {
+      "hex": "#37b1f3",
+      "share": 0.021,
+      "saturation": 0.77
+    },
+    {
+      "hex": "#daf2fd",
+      "share": 0.008,
+      "saturation": 0.14
+    }
+  ]
+}

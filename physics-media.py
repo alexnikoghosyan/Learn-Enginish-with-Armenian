@@ -62,19 +62,50 @@ def sheet_for(folder):
     return data, len(images), cols, width, height
 
 
+BLANK_MARKS = {}  # (x0, y0, x1, y1, նմուշի x[, src_y]) 1024 px նկարում. պատահական սանդղակի գծիկները լրացնելու համար (այժմ դատարկ)
+
+
+# Նոր (2026-11-24) նկարների լրացուցիչ մշակում. BG_SEEDS՝ փակ «անցքեր» (1024 px նկարի կոորդինատներով), որոնք պետք է թափանցիկ լինեն.
+# DEHALO՝ եզրի բաց (գրեթե սպիտակ) պիքսելները հանվում են (JPEG-ի սպիտակ եզրագիծ չմնա). սպիտակ մասերը (foam-ball խորանարդ) չեն դիպչվում։
+BG_SEEDS = {'key': [(276, 512)]}
+DEHALO = {'key', 'book', 'apple', 'stone', 'pencil', 'hook-weight', 'ice-melting', 'table', 'foam-ball', 'cube-wood', 'cube-aluminium', 'cube-steel'}
+
+
+def dehalo(rgba, passes=2):
+    pixels = rgba.load()
+    for _ in range(passes):
+        kill = []
+        for y in range(1, rgba.height - 1):
+            for x in range(1, rgba.width - 1):
+                r, g, b, a = pixels[x, y]
+                if a and min(r, g, b) >= 228 and 0 in (pixels[x - 1, y][3], pixels[x + 1, y][3], pixels[x, y - 1][3], pixels[x, y + 1][3]):
+                    kill.append((x, y))
+        for x, y in kill:
+            pixels[x, y] = (255, 255, 255, 0)
+
+
 def clean_image(path):
     """White background -> transparent (flood fill from the corners), crop, centre, 512x512."""
     image = Image.open(path).convert('RGB')
+    for box in BLANK_MARKS.get(path.stem, ()):  # նկարի վրա պատահական սանդղակի գծիկներ. լրացնում ենք ձախ կողմի գույնով (դատարկ սանդղակի կանոն)
+        x0, y0, x1, y1, src_x, *src_y = box  # src_x՝ նմուշ ձախից (տողով), կամ src_y՝ նմուշ ներքևից (սյունակով)
+        for y in range(y0, y1):
+            for x in range(x0, x1):
+                image.putpixel((x, y), image.getpixel((x, src_y[0]) if src_y else (src_x, y)))
     marker = (255, 0, 255)
     for corner in ((0, 0), (image.width - 1, 0), (0, image.height - 1), (image.width - 1, image.height - 1)):
         if sum(image.getpixel(corner)) > 690:
             ImageDraw.floodfill(image, corner, marker, thresh=24)
+    for sx, sy in BG_SEEDS.get(path.stem, ()):
+        ImageDraw.floodfill(image, (int(sx * image.width / 1024), int(sy * image.height / 1024)), marker, thresh=24)
     rgba = image.convert('RGBA')
     pixels = rgba.load()
     for y in range(rgba.height):
         for x in range(rgba.width):
             if pixels[x, y][:3] == marker:
                 pixels[x, y] = (255, 255, 255, 0)
+    if path.stem in DEHALO:
+        dehalo(rgba)
     box = rgba.getchannel('A').getbbox()
     if not box:
         raise SystemExit('%s: image is empty' % path.name)
@@ -83,7 +114,8 @@ def clean_image(path):
     margin = int(side * 0.12)
     canvas = Image.new('RGBA', (side + 2 * margin, side + 2 * margin), (255, 255, 255, 0))
     canvas.paste(rgba, (margin + (side - rgba.width) // 2, margin + (side - rgba.height) // 2))
-    return canvas.resize((IMAGE_SIDE, IMAGE_SIDE), Image.LANCZOS)
+    out = canvas.resize((IMAGE_SIDE, IMAGE_SIDE), Image.LANCZOS)
+    return out
 
 
 def build_media():
@@ -95,17 +127,32 @@ def build_media():
         frames[folder.name] = {'type': 'frames', 'src': '/physics/frames/' + name, 'frames': count, 'cols': cols, 'w': width, 'h': height}
         print('frames %s -> %s (%d KB, %d frames)' % (folder.name, name, len(data) // 1024, count))
     for path in sorted((SRC / 'images').glob('*.png')) if (SRC / 'images').exists() else []:
-        data = encode(clean_image(path), MAX_IMAGE, (92, 85, 75, 65, 55, 45, 35), exact=False)
+        cleaned = clean_image(path)
+        data = encode(cleaned, MAX_IMAGE, (92, 85, 75, 65, 55, 45, 35), exact=False)
+        bbox = cleaned.getchannel('A').point(lambda v: 255 if v > 24 else 0).getbbox()
         if data is None:
             raise SystemExit('%s: image exceeds %d KB' % (path.name, MAX_IMAGE // 1024))
         if path.stem not in alts:
             print('warning: %s is not in physics-src/image-list.json (alt text is empty)' % path.stem)
-        images[path.stem] = {'src': '/physics/img/' + write_versioned(IMAGES, path.stem, data), 'alt': alts.get(path.stem, '')}
+        images[path.stem] = {'src': '/physics/img/' + write_versioned(IMAGES, path.stem, data), 'alt': alts.get(path.stem, ''), 'box': list(bbox)}
         print('image %s (%d KB)' % (path.stem, len(data) // 1024))
     if not frames and not images:
         print('no renders or images found: PHYSICS_MEDIA and PHYSICS_IMAGES are empty')
-    MEDIA.write_text('// Գեներացվում է physics-media.py-ով. ձեռքով չխմբագրել\nconst PHYSICS_MEDIA = ' + json.dumps(frames, ensure_ascii=False, indent=2) +
-                     ';\nconst PHYSICS_IMAGES = ' + json.dumps(images, ensure_ascii=False, indent=2) + ';\n', encoding='utf-8')
+    write_media_js(frames, images)
+
+
+NL = chr(10)
+
+
+def write_media_js(frames, images):
+    # Ամեն գրառում՝ մեկ տողով (ֆայլը մնում է ≤ 300 տող)
+    def block(items):
+        if not items:
+            return '{}'
+        rows = ['  ' + json.dumps(key, ensure_ascii=False) + ': ' + json.dumps(value, ensure_ascii=False) for key, value in items.items()]
+        return '{' + NL + (',' + NL).join(rows) + NL + '}'
+    head = '// Գեներացվում է physics-media.py-ով. ձեռքով չխմբագրել' + NL
+    MEDIA.write_text(head + 'const PHYSICS_MEDIA = ' + block(frames) + ';' + NL + 'const PHYSICS_IMAGES = ' + block(images) + ';' + NL, encoding='utf-8')
 
 
 def build_palette(image_id):

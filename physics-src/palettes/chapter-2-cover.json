@@ -1,0 +1,25 @@
+{
+  "id": "chapter-2-cover",
+  "colors": [
+    {
+      "hex": "#2189c2",
+      "share": 0.429,
+      "saturation": 0.83
+    },
+    {
+      "hex": "#21aaf3",
+      "share": 0.424,
+      "saturation": 0.86
+    },
+    {
+      "hex": "#1d6ea3",
+      "share": 0.126,
+      "saturation": 0.82
+    },
+    {
+      "hex": "#60bff2",
+      "share": 0.02,
+      "saturation": 0.6
+    }
+  ]
+}

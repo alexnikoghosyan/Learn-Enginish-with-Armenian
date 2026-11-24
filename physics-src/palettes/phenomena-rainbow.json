@@ -1,0 +1,35 @@
+{
+  "id": "phenomena-rainbow",
+  "colors": [
+    {
+      "hex": "#f17517",
+      "share": 0.314,
+      "saturation": 0.9
+    },
+    {
+      "hex": "#a7254d",
+      "share": 0.22,
+      "saturation": 0.78
+    },
+    {
+      "hex": "#c9b895",
+      "share": 0.156,
+      "saturation": 0.26
+    },
+    {
+      "hex": "#8275a0",
+      "share": 0.137,
+      "saturation": 0.27
+    },
+    {
+      "hex": "#50aa45",
+      "share": 0.111,
+      "saturation": 0.59
+    },
+    {
+      "hex": "#f6c436",
+      "share": 0.063,
+      "saturation": 0.78
+    }
+  ]
+}

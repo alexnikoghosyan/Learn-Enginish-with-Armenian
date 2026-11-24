@@ -72,7 +72,15 @@ function physSectionKind(title) {
 const PHYSICS_COURSE = {
   grade: 7,
   chapters: physChapterData.map(([n, title, page, rows], index) => ({
-    id: 'ch' + (index + 1), n, title, page, color: index,
+    id: 'ch' + (index + 1), n, title, page, color: index, cover: 'chapter-' + (index + 1) + '-cover',
     sections: rows.map(([number, name, from]) => ({ id: 's' + number, n: number, title: name, page: from, kind: physSectionKind(name) }))
   }))
+};
+
+// Պատրաստ Flow նկարներ, որոնք դեռ ոչ մի դասում չեն. կօգտագործվեն համապատասխան դասերը գրելիս (ոչ հիմա, ոչ ստիպողաբար)։
+// Id-ն՝ PHYSICS_IMAGES-ից, բանալին՝ գլուխը և հարմար §-ները։
+const PHYS_LESSON_ART_PLAN = {
+  train: { chapter: 'ch3', sections: ['s14', 's16'], use: 'շարժում, շարժման հարաբերականությունը (գնացք և ուղևոր), հավասարաչափ շարժում' },
+  lever: { chapter: 'ch4', sections: ['s23', 's30'], use: 'ուժ, հավասարակշռություն (ավելի ուշ՝ §34 լծակ)' },
+  'balance-scale': { chapter: 'ch4', sections: ['s30'], use: 'երկու ուժերի գումարում, հավասարակշռություն' }
 };

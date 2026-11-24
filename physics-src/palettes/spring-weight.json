@@ -1,0 +1,30 @@
+{
+  "id": "spring-weight",
+  "colors": [
+    {
+      "hex": "#63488a",
+      "share": 0.256,
+      "saturation": 0.48
+    },
+    {
+      "hex": "#d486fd",
+      "share": 0.235,
+      "saturation": 0.47
+    },
+    {
+      "hex": "#5388c9",
+      "share": 0.216,
+      "saturation": 0.59
+    },
+    {
+      "hex": "#c6c1cc",
+      "share": 0.172,
+      "saturation": 0.05
+    },
+    {
+      "hex": "#70aac6",
+      "share": 0.121,
+      "saturation": 0.43
+    }
+  ]
+}

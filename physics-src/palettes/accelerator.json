@@ -1,0 +1,40 @@
+{
+  "id": "accelerator",
+  "colors": [
+    {
+      "hex": "#ce78fb",
+      "share": 0.389,
+      "saturation": 0.52
+    },
+    {
+      "hex": "#773494",
+      "share": 0.232,
+      "saturation": 0.65
+    },
+    {
+      "hex": "#391f6a",
+      "share": 0.157,
+      "saturation": 0.71
+    },
+    {
+      "hex": "#92cdf3",
+      "share": 0.098,
+      "saturation": 0.4
+    },
+    {
+      "hex": "#4d3584",
+      "share": 0.053,
+      "saturation": 0.6
+    },
+    {
+      "hex": "#9f52c1",
+      "share": 0.046,
+      "saturation": 0.58
+    },
+    {
+      "hex": "#c47ef7",
+      "share": 0.024,
+      "saturation": 0.49
+    }
+  ]
+}

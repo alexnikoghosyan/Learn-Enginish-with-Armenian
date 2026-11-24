@@ -1,0 +1,35 @@
+{
+  "id": "atom",
+  "colors": [
+    {
+      "hex": "#109fdf",
+      "share": 0.269,
+      "saturation": 0.93
+    },
+    {
+      "hex": "#0f9bdc",
+      "share": 0.221,
+      "saturation": 0.93
+    },
+    {
+      "hex": "#e66c14",
+      "share": 0.154,
+      "saturation": 0.91
+    },
+    {
+      "hex": "#a9d5e4",
+      "share": 0.124,
+      "saturation": 0.26
+    },
+    {
+      "hex": "#f99004",
+      "share": 0.119,
+      "saturation": 0.98
+    },
+    {
+      "hex": "#2ea8de",
+      "share": 0.113,
+      "saturation": 0.79
+    }
+  ]
+}

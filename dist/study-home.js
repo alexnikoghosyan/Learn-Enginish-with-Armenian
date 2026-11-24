@@ -37,8 +37,9 @@ function physicsCard() {
   const { done, total } = physicsProgress();
   const next = physicsNext();
   const ready = next && physicsReady(next.id);
+  const picture = physImageReady('home-card') ? physImageTag('home-card', 'phys-card-img') : '';
   return `<section class="panel study-card">
-          <h2>Ֆիզիկա 7</h2>
+          ${picture}<h2>Ֆիզիկա 7</h2>
           <p>${done} / ${total} դաս ավարտված</p>
           <progress max="${total}" value="${done}" aria-label="Ֆիզիկայի առաջընթաց"></progress>
           <p class="study-next">${next ? '§' + next.n + '. ' + esc(next.title) : 'Բոլոր դասերն ավարտված են։'}${next && !ready ? ' <small class="phys-soon">Շուտով</small>' : ''}</p>

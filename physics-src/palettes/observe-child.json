@@ -1,0 +1,25 @@
+{
+  "id": "observe-child",
+  "colors": [
+    {
+      "hex": "#63655b",
+      "share": 0.44,
+      "saturation": 0.1
+    },
+    {
+      "hex": "#f0e1c2",
+      "share": 0.252,
+      "saturation": 0.19
+    },
+    {
+      "hex": "#acac96",
+      "share": 0.246,
+      "saturation": 0.13
+    },
+    {
+      "hex": "#9fcd72",
+      "share": 0.062,
+      "saturation": 0.44
+    }
+  ]
+}

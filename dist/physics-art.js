@@ -38,12 +38,27 @@ PHYS_ART.spring = {
     for (let i = 1; i < 13; i++) points += ' ' + (100 + (i % 2 ? 28 : -28)) + ',' + (top + 6 + (length - 12) * i / 13);
     points += ' 100,' + end;
     const coil = (dy, color) => '<polyline points="' + points + '" transform="translate(0 ' + dy + ')" fill="none" stroke="' + color + '" stroke-width="9" stroke-linejoin="round" stroke-linecap="round"/>';
-    const tone = physTone('#AFAFAF');
+    // Բեռը՝ hook-weight նկար (physics-sprites.js), մի քանի բեռ կախվում են իրար տակ. նկար չկա՝ հին գլանաձև բլոկ
+    const sprite = loads ? physSprite('hook-weight', 32) : null;
     let weights = '';
-    for (let i = 0; i < loads; i++) weights += physBlock(62, end + 22 + i * 34, 76, 28, i % 2 ? '#FFC800' : '#1CB0F6', { r: 8, depth: 5 });
-    const group = physBlock(24, 0, 152, 16, '#AFAFAF', { r: 6, depth: 4 }) + coil(4, tone.dark) + coil(0, tone.base) +
-      '<rect x="97" y="' + end + '" width="6" height="' + (loads ? 22 : 14) + '" fill="' + tone.dark + '"/>' + weights;
-    return { group, parts: { top, endY: end, bottom: end + 22 + loads * 34 } };
+    let bottom = end + 22 + loads * 34;
+    if (sprite) {
+      // Ստորին բեռի օղակը թաքնվում է վերինի տակ (վերինները նկարվում են վերջում), ուստի կախված են իրար տակ
+      const pitch = sprite.h * 0.9;
+      bottom = end + 14 + (loads - 1) * pitch + sprite.h;
+      for (let i = loads - 1; i >= 0; i--) weights += '<g transform="translate(100 ' + (end + 14 + i * pitch + sprite.h / 2) + ')">' + sprite.svg + '</g>';
+    } else {
+      // Բեռը՝ գլանաձև (էլիպսաձև վերին երես), ամրակը՝ L-աձև (պատի թիթեղ + թև)
+      const weight = (y, color) => {
+        const t = physTone(color);
+        return '<rect x="62" y="' + (y + 5) + '" width="76" height="28" rx="8" fill="' + t.dark + '"/><rect x="62" y="' + y + '" width="76" height="28" rx="8" fill="' + t.base +
+          '"/><rect x="62" y="' + y + '" width="38" height="28" rx="8" fill="' + t.light + '"/><ellipse cx="100" cy="' + (y + 4) + '" rx="38" ry="6" fill="' + t.light + '"/>';
+      };
+      for (let i = 0; i < loads; i++) weights += weight(end + 22 + i * 34, i % 2 ? '#FFC800' : '#C6C1CC');
+    }
+    const group = physBlock(24, 0, 152, 16, '#5388C9', { r: 6, depth: 4 }) + physBlock(24, 0, 18, 64, '#5388C9', { r: 6, depth: 4 }) + coil(4, '#63488A') + coil(0, '#D486FD') +
+      '<rect x="97" y="' + end + '" width="6" height="' + (loads ? (sprite ? 18 : 22) : 14) + '" fill="#C6C1CC"/>' + weights;
+    return { group, parts: { top, endY: end, bottom } };
   },
   group(state) { return this.render(state).group; },
   build(state) { return physArtSvg(this, state, this.label); }
@@ -58,7 +73,10 @@ PHYS_ART.ruler = {
     const k = width / (to - from);
     const x = value => x0 + (value - from) * k;
     const hot = hi ? value => (value >= hi.from - 1e-9 && value <= hi.to + 1e-9 && (value - hi.from) / step <= hi.count + 1e-9 ? '#E25A00' : null) : undefined;
-    const group = physBlock(0, 8, bodyWidth, 78, '#FFC800', { r: 10, depth: 6 }) + physTicks(from, to, step, x, 8, { major, hot });
+    // Հորիզոնական երկու շերտ՝ վերևում բաց, ներքևում մուգ, տակը՝ հաստություն
+    const body = '<rect x="0" y="14" width="' + bodyWidth + '" height="78" rx="10" fill="#9C650A"/><rect x="0" y="8" width="' + bodyWidth + '" height="78" rx="10" fill="#E0A408"/>' +
+      '<path d="M0 36V18a10 10 0 0 1 10-10H' + (bodyWidth - 10) + 'a10 10 0 0 1 10 10V36Z" fill="#FFDB4B"/>';
+    const group = body + physTicks(from, to, step, x, 8, { major, hot });
     return { group, parts: { k, x0, x0Value: from, y: 8, height: 78 } };
   },
   group(state) { return this.render(state).group; },
@@ -68,11 +86,19 @@ PHYS_ART.ruler = {
 // ---------- cube (three-cubes). սկզբնակետը՝ ներքևի կենտրոնում, տարրը ձգվում է վերև ----------
 PHYS_ART.cube = {
   ref: 'three-cubes', w: 120, h: 110, label: 'Մարմին',
+  colors: ['#B97B40', '#BFBEBE', '#454448'], // Flow նկարի երեք խորանարդների գույները (փայտ, ալյումին, մուգ). palette-ի ստուգումը միավորում է դրանք
   // state՝ { color, shape: 'cube'|'round'|'flat'|'tall', size = 1 }
   render({ color = '#B5BCC4', shape = 'cube', size = 1 } = {}) {
     const dims = { cube: [72, 72], flat: [88, 48], tall: [56, 92], round: [72, 72] }[shape] || [72, 72];
     const [w, h] = dims.map(value => value * size);
     const depth = 6 * size;
+    if (shape === 'cube') { // իզոմետրիկ խորանարդ՝ վերին երես (բաց), ձախ (հիմնական), աջ (մուգ)
+      const a = w / 2, b = w / 4, s = h * 0.66, tone = physTone(color);
+      const poly = (points, fill) => '<polygon points="' + points + '" fill="' + fill + '" stroke="' + fill + '" stroke-width="1" stroke-linejoin="round"/>';
+      const body = poly(-a + ',' + -b + ' 0,0 0,' + -(2 * b + s - b) + ' ' + -a + ',' + -(b + s), tone.base) + poly('0,0 ' + a + ',' + -b + ' ' + a + ',' + -(b + s) + ' 0,' + -(2 * b + s - b), tone.dark) +
+        poly(-a + ',' + -(b + s) + ' 0,' + -(2 * b + s) + ' ' + a + ',' + -(b + s) + ' 0,' + -(b + s - b), tone.light);
+      return { group: body, parts: { width: w, height: 2 * b + s } };
+    }
     const body = shape === 'round' ? physDisc(0, -h / 2 - depth, w / 2, color, depth) : physBlock(-w / 2, -h - depth, w, h, color, { r: 10 * size, depth });
     return { group: body, parts: { width: w, height: h + depth } };
   },

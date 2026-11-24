@@ -1,0 +1,35 @@
+{
+  "id": "train",
+  "colors": [
+    {
+      "hex": "#5cb91e",
+      "share": 0.352,
+      "saturation": 0.84
+    },
+    {
+      "hex": "#28a3d3",
+      "share": 0.271,
+      "saturation": 0.81
+    },
+    {
+      "hex": "#eed076",
+      "share": 0.188,
+      "saturation": 0.5
+    },
+    {
+      "hex": "#265971",
+      "share": 0.134,
+      "saturation": 0.66
+    },
+    {
+      "hex": "#7e993e",
+      "share": 0.044,
+      "saturation": 0.59
+    },
+    {
+      "hex": "#7abd3d",
+      "share": 0.01,
+      "saturation": 0.68
+    }
+  ]
+}

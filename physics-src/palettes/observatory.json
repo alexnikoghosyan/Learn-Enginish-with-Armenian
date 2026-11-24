@@ -1,0 +1,20 @@
+{
+  "id": "observatory",
+  "colors": [
+    {
+      "hex": "#5d6862",
+      "share": 0.413,
+      "saturation": 0.11
+    },
+    {
+      "hex": "#79b378",
+      "share": 0.377,
+      "saturation": 0.33
+    },
+    {
+      "hex": "#ebebea",
+      "share": 0.21,
+      "saturation": 0.0
+    }
+  ]
+}

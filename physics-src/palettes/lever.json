@@ -1,0 +1,35 @@
+{
+  "id": "lever",
+  "colors": [
+    {
+      "hex": "#ce3f40",
+      "share": 0.227,
+      "saturation": 0.69
+    },
+    {
+      "hex": "#b96d0e",
+      "share": 0.165,
+      "saturation": 0.92
+    },
+    {
+      "hex": "#fe991e",
+      "share": 0.164,
+      "saturation": 0.88
+    },
+    {
+      "hex": "#f18605",
+      "share": 0.162,
+      "saturation": 0.98
+    },
+    {
+      "hex": "#a49a8d",
+      "share": 0.142,
+      "saturation": 0.14
+    },
+    {
+      "hex": "#c0bab4",
+      "share": 0.14,
+      "saturation": 0.06
+    }
+  ]
+}

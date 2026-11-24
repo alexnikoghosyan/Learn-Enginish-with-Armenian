@@ -1,0 +1,15 @@
+{
+  "id": "kitchen-scale",
+  "colors": [
+    {
+      "hex": "#cecfcf",
+      "share": 0.556,
+      "saturation": 0.0
+    },
+    {
+      "hex": "#768590",
+      "share": 0.444,
+      "saturation": 0.18
+    }
+  ]
+}

@@ -1,12 +1,52 @@
 // Գեներացվում է physics-media.py-ով. ձեռքով չխմբագրել
 const PHYSICS_MEDIA = {
-  "cylinder-displacement": {
-    "type": "frames",
-    "src": "/physics/frames/cylinder-displacement.419fd31e.webp",
-    "frames": 24,
-    "cols": 6,
-    "w": 300,
-    "h": 400
-  }
+  "cylinder-displacement": {"type": "frames", "src": "/physics/frames/cylinder-displacement.419fd31e.webp", "frames": 24, "cols": 6, "w": 300, "h": 400}
 };
-const PHYSICS_IMAGES = {};
+const PHYSICS_IMAGES = {
+  "accelerator": {"src": "/physics/img/accelerator.ef2685a6.webp", "alt": "Մասնիկների արագացուցիչի օղակ", "box": [49, 66, 463, 446]},
+  "aluminium-cube": {"src": "/physics/img/aluminium-cube.c689d4ee.webp", "alt": "Ալյումինե խորանարդ", "box": [70, 49, 442, 463]},
+  "apple": {"src": "/physics/img/apple.4706bf2d.webp", "alt": "Կարմիր խնձոր՝ կանաչ տերևով", "box": [72, 49, 439, 463]},
+  "aragats-station": {"src": "/physics/img/aragats-station.c0a8e342.webp", "alt": "Լեռան կայան լանջին", "box": [49, 49, 463, 463]},
+  "atom": {"src": "/physics/img/atom.d6ee189a.webp", "alt": "Ատոմի պարզ մոդել", "box": [49, 53, 463, 458]},
+  "balance-scale": {"src": "/physics/img/balance-scale.9b49772a.webp", "alt": "Նժարավոր կշեռք", "box": [49, 72, 463, 440]},
+  "book": {"src": "/physics/img/book.dc025d40.webp", "alt": "Կապույտ գիրք՝ դատարկ պիտակով", "box": [98, 49, 414, 463]},
+  "chapter-1-cover": {"src": "/physics/img/chapter-1-cover.ae9ebaf3.webp", "alt": "Աստղադիտակ եռոտանու վրա", "box": [69, 49, 443, 463]},
+  "chapter-2-cover": {"src": "/physics/img/chapter-2-cover.d8ecdfae.webp", "alt": "Ջրի կաթիլ մասնիկներով", "box": [106, 49, 405, 463]},
+  "chapter-3-cover": {"src": "/physics/img/chapter-3-cover.50769519.webp", "alt": "Արագ ընթացող կարմիր մեքենա", "box": [49, 182, 463, 330]},
+  "chapter-4-cover": {"src": "/physics/img/chapter-4-cover.91355643.webp", "alt": "Ձեռքը հրում է տուփը", "box": [49, 105, 463, 407]},
+  "chapter-5-cover": {"src": "/physics/img/chapter-5-cover.02d31856.webp", "alt": "Ճախարակ բեռով", "box": [146, 49, 366, 463]},
+  "chapter-6-cover": {"src": "/physics/img/chapter-6-cover.0239f41b.webp", "alt": "Բեռնանավ ջրի վրա", "box": [49, 154, 463, 358]},
+  "cube-aluminium": {"src": "/physics/img/cube-aluminium.22fc3f88.webp", "alt": "Ալյումինե խորանարդ", "box": [88, 49, 423, 463]},
+  "cube-steel": {"src": "/physics/img/cube-steel.5b824c2d.webp", "alt": "Պողպատե խորանարդ", "box": [88, 49, 423, 463]},
+  "cube-wood": {"src": "/physics/img/cube-wood.dc62d8d4.webp", "alt": "Փայտե խորանարդ", "box": [88, 49, 424, 463]},
+  "dynamometer": {"src": "/physics/img/dynamometer.d34636f7.webp", "alt": "Զսպանակավոր ուժաչափ", "box": [214, 49, 298, 463]},
+  "experiment-child": {"src": "/physics/img/experiment-child.8bf3f966.webp", "alt": "Երեխան գնդակ է նետում", "box": [50, 49, 462, 463]},
+  "foam-ball": {"src": "/physics/img/foam-ball.aeb9c924.webp", "alt": "Սպիտակ պոլիստիրոլե խորանարդ և պողպատե գնդիկ", "box": [49, 107, 463, 405]},
+  "home-card": {"src": "/physics/img/home-card.de0cd87e.webp", "alt": "Կոլբա և ատոմ", "box": [49, 116, 463, 396]},
+  "hook-weight": {"src": "/physics/img/hook-weight.7bcd12fe.webp", "alt": "Արույրե գլանաձև բեռ՝ վերևում օղակով", "box": [83, 49, 429, 463]},
+  "ice-melting": {"src": "/physics/img/ice-melting.4e909bd9.webp", "alt": "Սառցախորանարդը հալվում է՝ ջրափոս է առաջանում", "box": [49, 83, 463, 429]},
+  "key": {"src": "/physics/img/key.77b83012.webp", "alt": "Դեղին բանալի՝ կլոր գլխիկով և անցքով", "box": [49, 163, 463, 348]},
+  "kitchen-scale": {"src": "/physics/img/kitchen-scale.3cf1388a.webp", "alt": "Թվային կշեռք", "box": [49, 129, 463, 382]},
+  "lesson-complete": {"src": "/physics/img/lesson-complete.1c625d8d.webp", "alt": "Կանաչ կրծքանշան ատոմի նշանով", "box": [98, 49, 413, 463]},
+  "lever": {"src": "/physics/img/lever.227d428e.webp", "alt": "Լծակ կշռաքարով", "box": [49, 121, 463, 391]},
+  "magnifier": {"src": "/physics/img/magnifier.f1de2983.webp", "alt": "Խոշորացույց", "box": [54, 49, 458, 463]},
+  "measuring-cylinder": {"src": "/physics/img/measuring-cylinder.00ad295a.webp", "alt": "Չափագլան ջրով", "box": [163, 49, 349, 463]},
+  "measuring-tape": {"src": "/physics/img/measuring-tape.5cab5d3d.webp", "alt": "Չափիչ ժապավեն", "box": [49, 149, 463, 363]},
+  "observatory": {"src": "/physics/img/observatory.a2eeff65.webp", "alt": "Աստղադիտարանի գմբեթ աստղազարդ երկնքի ֆոնին", "box": [49, 111, 463, 400]},
+  "observe-child": {"src": "/physics/img/observe-child.716df398.webp", "alt": "Երեխան նայում է երկնքին", "box": [83, 49, 429, 463]},
+  "pencil": {"src": "/physics/img/pencil.01e89c43.webp", "alt": "Դեղին մատիտ՝ վարդագույն ռետինով", "box": [49, 237, 463, 275]},
+  "phenomena-apple": {"src": "/physics/img/phenomena-apple.0afc123e.webp", "alt": "Ճյուղից ընկնող խնձոր", "box": [128, 49, 384, 463]},
+  "phenomena-echo": {"src": "/physics/img/phenomena-echo.4a3c5dc9.webp", "alt": "Արձագանք երկու ժայռերի միջև", "box": [49, 124, 463, 388]},
+  "phenomena-ice": {"src": "/physics/img/phenomena-ice.a58d7484.webp", "alt": "Հալվող սառցախորանարդ ջրափոսի վրա", "box": [49, 114, 463, 398]},
+  "phenomena-rainbow": {"src": "/physics/img/phenomena-rainbow.361877ae.webp", "alt": "Ծիածան ամպի վրա", "box": [49, 123, 463, 389]},
+  "phenomena-shadow": {"src": "/physics/img/phenomena-shadow.bbe25316.webp", "alt": "Փայտե խորանարդ և նրա ստվերը արևի լույսի տակ", "box": [49, 100, 463, 412]},
+  "ruler": {"src": "/physics/img/ruler.a69ef4c3.webp", "alt": "Դեղին քանոն", "box": [49, 208, 463, 304]},
+  "spring-weight": {"src": "/physics/img/spring-weight.e4c54e2e.webp", "alt": "Զսպանակ բեռով", "box": [168, 49, 344, 463]},
+  "stone-cylinder": {"src": "/physics/img/stone-cylinder.28f7587c.webp", "alt": "Քար, որը սուզվում է ջրով չափագլանի մեջ", "box": [117, 49, 395, 463]},
+  "stone": {"src": "/physics/img/stone.08ff62b6.webp", "alt": "Մոխրագույն քար", "box": [49, 49, 463, 462]},
+  "stopwatch": {"src": "/physics/img/stopwatch.29e12f07.webp", "alt": "Վայրկենաչափ", "box": [85, 49, 427, 463]},
+  "table": {"src": "/physics/img/table.a6af0a15.webp", "alt": "Փայտե սեղան", "box": [49, 105, 463, 407]},
+  "three-cubes": {"src": "/physics/img/three-cubes.6e69cd5f.webp", "alt": "Փայտե, ալյումինե և պողպատե նույն չափի խորանարդներ", "box": [49, 179, 463, 333]},
+  "train": {"src": "/physics/img/train.335cd390.webp", "alt": "Գնացք ռելսերի վրա", "box": [49, 169, 463, 342]},
+  "weight-1kg": {"src": "/physics/img/weight-1kg.86a2d5c7.webp", "alt": "Կշռաքար", "box": [128, 49, 384, 463]}
+};

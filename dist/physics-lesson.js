@@ -105,7 +105,7 @@ function finishPhysicsLesson() {
   const next = physicsNext();
   const ready = next && physicsReady(next.id);
   app.innerHTML = '<section class="lesson-body panel"><div class="lesson-reward is-new" role="status">' +
-    '<span class="reward-medal" aria-hidden="true">' + gardenIllustration('medal') + '</span><div><strong>Դասն ավարտված է։</strong><small>' +
+    '<span class="reward-medal" aria-hidden="true">' + (physImageReady('lesson-complete') ? physImageTag('lesson-complete', 'phys-medal-img') : gardenIllustration('medal')) + '</span><div><strong>Դասն ավարտված է։</strong><small>' +
     results.correct + ' / ' + results.total + ' ճիշտ պատասխան</small>' + rewardChips(fresh, results, fresh ? 10 : 0) + '</div></div>' +
     (next && !ready ? '<p class="phys-text">Հաջորդ դասը շուտով կհայտնվի։</p>' : '') + '<div class="tools">' +
     (ready ? '<button class="primary" onclick="openPhysicsLesson(\'' + next.id + '\')">Հաջորդ դասը →</button>' : '') +

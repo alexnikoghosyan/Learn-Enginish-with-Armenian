@@ -1,0 +1,15 @@
+{
+  "id": "measuring-tape",
+  "colors": [
+    {
+      "hex": "#fec60f",
+      "share": 0.85,
+      "saturation": 0.94
+    },
+    {
+      "hex": "#daad2d",
+      "share": 0.15,
+      "saturation": 0.79
+    }
+  ]
+}

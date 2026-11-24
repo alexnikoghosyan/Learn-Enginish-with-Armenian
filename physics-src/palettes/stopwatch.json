@@ -1,0 +1,40 @@
+{
+  "id": "stopwatch",
+  "colors": [
+    {
+      "hex": "#f98501",
+      "share": 0.389,
+      "saturation": 1.0
+    },
+    {
+      "hex": "#e76b06",
+      "share": 0.242,
+      "saturation": 0.97
+    },
+    {
+      "hex": "#fe9e13",
+      "share": 0.21,
+      "saturation": 0.93
+    },
+    {
+      "hex": "#c76215",
+      "share": 0.1,
+      "saturation": 0.89
+    },
+    {
+      "hex": "#d19943",
+      "share": 0.036,
+      "saturation": 0.68
+    },
+    {
+      "hex": "#fed987",
+      "share": 0.013,
+      "saturation": 0.47
+    },
+    {
+      "hex": "#fa8e09",
+      "share": 0.011,
+      "saturation": 0.96
+    }
+  ]
+}

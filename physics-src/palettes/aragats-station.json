@@ -1,0 +1,35 @@
+{
+  "id": "aragats-station",
+  "colors": [
+    {
+      "hex": "#d2eefe",
+      "share": 0.311,
+      "saturation": 0.17
+    },
+    {
+      "hex": "#687a90",
+      "share": 0.299,
+      "saturation": 0.28
+    },
+    {
+      "hex": "#d1eefd",
+      "share": 0.19,
+      "saturation": 0.17
+    },
+    {
+      "hex": "#92a3b7",
+      "share": 0.151,
+      "saturation": 0.2
+    },
+    {
+      "hex": "#e5f2f9",
+      "share": 0.029,
+      "saturation": 0.08
+    },
+    {
+      "hex": "#68788e",
+      "share": 0.021,
+      "saturation": 0.27
+    }
+  ]
+}
