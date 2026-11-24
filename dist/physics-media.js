@@ -4,6 +4,9 @@ const PHYSICS_MEDIA = {
 };
 const PHYSICS_IMAGES = {
   "accelerator": {"src": "/physics/img/accelerator.ef2685a6.webp", "alt": "Մասնիկների արագացուցիչի օղակ", "box": [49, 66, 463, 446]},
+  "ambartsumian": {"src": "/physics/img/ambartsumian.c8d06e80.webp", "alt": "Վիկտոր Համբարձումյանի լուսանկարը", "box": [51, 0, 461, 512]},
+  "alikhanian": {"src": "/physics/img/alikhanian.d1da924e.webp", "alt": "Արտեմ Ալիխանյանի լուսանկարը՝ լաբորատորիայում", "box": [51, 0, 461, 512]},
+  "alikhanov": {"src": "/physics/img/alikhanov.1d9b0de8.webp", "alt": "Աբրամ Ալիխանովի լուսանկարը", "box": [51, 0, 461, 512]},
   "aluminium-cube": {"src": "/physics/img/aluminium-cube.c689d4ee.webp", "alt": "Ալյումինե խորանարդ", "box": [70, 49, 442, 463]},
   "apple": {"src": "/physics/img/apple.4706bf2d.webp", "alt": "Կարմիր խնձոր՝ կանաչ տերևով", "box": [72, 49, 439, 463]},
   "aragats-station": {"src": "/physics/img/aragats-station.c0a8e342.webp", "alt": "Լեռան կայան լանջին", "box": [49, 49, 463, 463]},

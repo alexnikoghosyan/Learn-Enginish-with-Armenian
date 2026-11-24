@@ -84,6 +84,20 @@ def dehalo(rgba, passes=2):
             pixels[x, y] = (255, 255, 255, 0)
 
 
+# Իրական լուսանկարներ (§2 ֆիզիկոսներ). նախապես մշակված են (4:5, սև-սպիտակ, կլոր անկյուններ՝ թափանցիկ).
+# Ֆոնը չի դառնում թափանցիկ և լուսանցք չի ավելանում՝ միայն տեղավորվում է 512x512 թափանցիկ կտավի կենտրոնում։
+PHOTOS = {'ambartsumian', 'alikhanian', 'alikhanov'}
+MAX_PHOTO = MAX_IMAGE  # նույն 25 KB սահմանը (worker/physics.test.mjs)
+
+
+def fit_photo(path):
+    photo = Image.open(path).convert('RGBA')
+    photo.thumbnail((IMAGE_SIDE, IMAGE_SIDE), Image.LANCZOS)
+    canvas = Image.new('RGBA', (IMAGE_SIDE, IMAGE_SIDE), (255, 255, 255, 0))
+    canvas.paste(photo, ((IMAGE_SIDE - photo.width) // 2, (IMAGE_SIDE - photo.height) // 2))
+    return canvas
+
+
 def clean_image(path):
     """White background -> transparent (flood fill from the corners), crop, centre, 512x512."""
     image = Image.open(path).convert('RGB')
@@ -127,11 +141,12 @@ def build_media():
         frames[folder.name] = {'type': 'frames', 'src': '/physics/frames/' + name, 'frames': count, 'cols': cols, 'w': width, 'h': height}
         print('frames %s -> %s (%d KB, %d frames)' % (folder.name, name, len(data) // 1024, count))
     for path in sorted((SRC / 'images').glob('*.png')) if (SRC / 'images').exists() else []:
-        cleaned = clean_image(path)
-        data = encode(cleaned, MAX_IMAGE, (92, 85, 75, 65, 55, 45, 35), exact=False)
+        photo = path.stem in PHOTOS
+        cleaned = fit_photo(path) if photo else clean_image(path)
+        data = encode(cleaned, MAX_PHOTO if photo else MAX_IMAGE, (92, 85, 75, 65, 55, 45, 35), exact=False)
         bbox = cleaned.getchannel('A').point(lambda v: 255 if v > 24 else 0).getbbox()
         if data is None:
-            raise SystemExit('%s: image exceeds %d KB' % (path.name, MAX_IMAGE // 1024))
+            raise SystemExit('%s: image exceeds %d KB' % (path.name, (MAX_PHOTO if photo else MAX_IMAGE) // 1024))
         if path.stem not in alts:
             print('warning: %s is not in physics-src/image-list.json (alt text is empty)' % path.stem)
         images[path.stem] = {'src': '/physics/img/' + write_versioned(IMAGES, path.stem, data), 'alt': alts.get(path.stem, ''), 'box': list(bbox)}
