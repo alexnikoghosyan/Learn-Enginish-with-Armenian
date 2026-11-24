@@ -4,6 +4,16 @@ function physParseNumber(text) {
   return /^-?\d+(\.\d+)?$/.test(clean) ? Number(clean) : NaN;
 }
 
+// Թվի դաշտում թույլատրվում են միայն թվանշաններ, մեկ տասնորդական նշան (, կամ .) և սկզբի մինուսը. տառերը հանվում են (մուտքագրելիս և տեղադրելիս)
+function physCleanNumber(text) {
+  let out = String(text).replace(/[−–]/g, '-').replace(/[^0-9,.\-]/g, '');
+  const negative = out.startsWith('-');
+  out = out.replace(/-/g, '');
+  const at = out.search(/[,.]/);
+  if (at >= 0) out = out.slice(0, at + 1) + out.slice(at + 1).replace(/[,.]/g, '');
+  return (negative ? '-' : '') + out;
+}
+
 // tol՝ բացարձակ թիվ կամ { rel: 0.02 }
 function physClose(value, target, tol = 0) {
   const limit = typeof tol === 'object' ? Math.abs(target) * tol.rel : tol;

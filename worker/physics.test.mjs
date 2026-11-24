@@ -17,7 +17,7 @@ function load(names, exports, globals = {}) {
   vm.runInContext(read(names) + '\n;globalThis.api = { ' + exports + ' };', context);
   return context.api;
 }
-const api = load(files, 'physParseNumber, physClose, physRound, physFormat, physDensity, physConvert, physGoalMet, physCalc, PHYS_G, physPhase, physEase, physTween, physLerpColor, physSpring, ' +
+const api = load(files, 'physParseNumber, physCleanNumber, physClose, physRound, physFormat, physDensity, physConvert, physGoalMet, physCalc, PHYS_G, physPhase, physEase, physTween, physLerpColor, physSpring, ' +
   'physRich, physFormula, physGivenHtml, physLinesHtml, physHeroHtml, PHYSICS_COURSE, PHYSICS_LESSONS, PHYS_TOOLS, PHYS_MEASURE, PHYS_STEPS, PHYS_LIQUIDS, PHYSICS_MEDIA, PHYSICS_IMAGES, ' +
   'PHYS_FIGS, PHYS_ART, PHYS_ANIMS, PHYS_LESSON_ART_PLAN, physSprite, physCubeHalvesSvg, PHYS_PENCIL_CUTS', { matchMedia: () => ({ matches: false }) });
 const list = array => Array.from(array);
@@ -417,4 +417,13 @@ test('սպրայթներ. ամեն նկարի box-ը 512 կտավի մեջ է, p
   assert.equal(api.PHYSICS_LESSONS.s20[2].params.items.length, 3);
   assert.ok(api.PHYSICS_LESSONS.s20[2].params.items.every(item => item.objW === 76), 'խորանարդները նույն չափով');
   assert.ok((api.physCubeHalvesSvg(60).match(/<polygon/g) || []).length >= 10);
+});
+
+test('թվի դաշտ. տառերը հանվում են, մնում են թվանշաններ, մեկ տասնորդական նշան և սկզբի մինուսը', () => {
+  assert.equal(api.physCleanNumber('12abc'), '12');
+  assert.equal(api.physCleanNumber('սմ 4,5'), '4,5');
+  assert.equal(api.physCleanNumber('1.2,3'), '1.23');
+  assert.equal(api.physCleanNumber('−3-4'), '-34');
+  assert.equal(api.physCleanNumber('  7 '), '7');
+  assert.equal(api.physCleanNumber(''), '');
 });

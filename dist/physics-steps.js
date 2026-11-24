@@ -21,7 +21,16 @@ function revealPhysicsOptions(step) {
   });
 }
 
-const physInput = (label, attrs = '') => '<input type="text" inputmode="decimal" autocomplete="off" class="phys-input" aria-label="' + label + '"' + attrs + '>';
+// Թվի դաշտ. հեռախոսում բացվում է թվային ստեղնաշար (inputmode="decimal", pattern), տառերը չեն մնում (տե՛ս ներքևի լսողը)
+const physInput = (label, attrs = '') => '<input type="text" inputmode="decimal" pattern="[0-9]*[.,]?[0-9]*" enterkeyhint="done" autocomplete="off" autocapitalize="off" spellcheck="false" class="phys-input" aria-label="' + label + '"' + attrs + '>';
+if (typeof document !== 'undefined') {
+  document.addEventListener('input', event => {
+    const field = event.target;
+    if (!field.classList || !field.classList.contains('phys-input')) return;
+    const clean = physCleanNumber(field.value);
+    if (clean !== field.value) field.value = clean;
+  });
+}
 const physNumberOf = input => physParseNumber(input.value);
 
 // Աղյուսակի բջիջ՝ թիվ/տեքստ (ցուցադրվում է) կամ { ans, tol? } / { calc, tol? } (լրացվող)
