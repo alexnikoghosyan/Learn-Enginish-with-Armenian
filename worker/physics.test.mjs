@@ -457,13 +457,24 @@ test('կլորակներ. կոճակի attribute-ները (aria-label, aria-expa
   assert.ok(/<button type="button" class="phys-btn"/.test(done), 'կլորակը <button type="button"> է');
 });
 
-test('կլորակներ. դասի պատուհանը՝ հին փոքր պատուհանի տեսքով. փակ դասի համար պատուհան չկա', () => {
+test('կլորակներ. դասի պատուհանի տեքստերը (դիզայնից) և կոճակները', () => {
   const section = api.PHYSICS_COURSE.chapters[0].sections[0];
-  const done = api.physCardHtml(section, 'done');
-  assert.ok(done.includes('Կրկնել') && done.includes('data-start="s1"') && done.includes('<strong>§1.'));
-  const current = api.physCardHtml(section, 'current');
-  assert.ok(current.includes('Սկսել') && current.includes('data-start="s1"'));
-  assert.equal(api.physCardHtml(section, 'locked'), '');
+  const done = api.physCardHtml(section, 'done', false);
+  assert.ok(done.includes('Ավարտված է։ Կարող ես կրկնել։') && done.includes('ԿՐԿՆԵԼ') && done.includes('data-start="s1"'));
+  const current = api.physCardHtml(section, 'current', false);
+  assert.ok(current.includes('Հաջորդ դասը քեզ է սպասում։') && current.includes('ՍԿՍԵԼ'));
+  const locked = api.physCardHtml(section, 'locked', false);
+  assert.ok(locked.includes('Ավարտիր նախորդ դասերը, որ այս դասը բացվի։') && locked.includes('disabled') && locked.includes('ՓԱԿ Է') && !locked.includes('data-start'));
+  assert.ok(api.physCardHtml(section, 'locked', true).includes('շուտով'));
+});
+
+test('կլորակներ. չափերը 1:1 դիզայնի հետ. կլորակ 72, քայլ 200, անուն +76 (190 px, 14 px), պատուհան 252 (+66/+94/+72), մասշտաբի փոփոխական', () => {
+  const css = readFileSync(new URL('physics.css', root), 'utf8');
+  for (const rule of ['--phys-node-scale: 1', '--step: 200px', '--cy: 60px', 'width: 72px; height: 72px', 'calc(var(--cy) + 76px)', 'width: 190px', 'font-size: 14px; line-height: 1.3; font-weight: 700', 'color: #3c3c3c',
+    'color: #afafaf', 'width: 252px', '--card-gap: 66px', '--card-gap: 94px', '--card-gap: 72px', '--path-swing: 62px', '--path-swing: 48px', 'margin-top: 40px', 'zoom: var(--phys-node-scale)', 'box-shadow: 0 5px 0 var(--ps)'])
+    assert.ok(css.includes(rule), rule);
+  const art = readFileSync(new URL('physics-nodes-art.js', root), 'utf8');
+  assert.ok(art.includes('width=\\"140\\" height=\\"140\\" viewBox=\\"0 0 140 140\\"'), 'SVG 140×140');
 });
 
 test('կլորակներ. CSS-ում «ներս մտնելը» միայն պատուհանի կոճակի համար է, ch7-ը դարձել է ch6', () => {

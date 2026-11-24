@@ -21,15 +21,19 @@ function physNodeStopHtml(n, section, status, bend) {
     (status === 'locked' ? ' aria-disabled="true"' : '') + (status === 'current' ? ' aria-current="step"' : '') + '>' + art.svg.replace(/\{u\}/g, uid) + '</button>';
   const shell = grouped ? art.spring + '<div class="c-bn"><div class="p-bn"><div class="h-bn">' + button + '</div></div></div>' : button;
   const bubble = status === 'current' ? '<div class="phys-start" aria-hidden="true"><div>ՍԿՍԵԼ<i></i></div></div>' : '';
-  return '<li class="path-stop phys-stop ch' + n + '" style="--bend:' + bend + ';--pc:' + meta.color + ';--ps:' + meta.shadow + '" data-id="' + section.id + '">' +
+  return '<li class="path-stop phys-stop ch' + n + ' is-' + status + '" style="--bend:' + bend + ';--pc:' + meta.color + ';--ps:' + meta.shadow + '" data-id="' + section.id + '">' +
     '<div class="phys-state ' + (grouped ? 'grp' : 'node') + ' ' + status + '" data-id="' + section.id + '" data-status="' + status + '">' + shell + bubble + '</div>' +
     '<span class="phys-title"><strong>' + esc(title) + '</strong></span></li>';
 }
 
-// Դասի պատուհանը (հին փոքր պատուհանի տեսքով). փակ դասի համար պատուհան չկա՝ կլորակը միայն թափահարվում է
-function physCardHtml(section, status) {
-  if (status === 'locked') return '';
-  return '<strong>§' + section.n + '. ' + esc(section.title) + '</strong><button type="button" class="secondary" data-start="' + section.id + '">' + (status === 'done' ? 'Կրկնել' : 'Սկսել') + '</button>';
+// Դասի պատուհանը (դիզայնի տեքստերով). soon՝ հաջորդ դասը դեռ պատրաստ չէ
+function physCardHtml(section, status, soon) {
+  const title = '<div class="phys-card-title">§' + section.n + '. ' + esc(section.title) + '</div>';
+  const text = status === 'done' ? 'Ավարտված է։ Կարող ես կրկնել։' : status === 'current' ? 'Հաջորդ դասը քեզ է սպասում։' :
+    soon ? 'Այս դասը շուտով կհայտնվի։' : 'Ավարտիր նախորդ դասերը, որ այս դասը բացվի։';
+  const button = status === 'locked' ? '<button type="button" class="cta" disabled>' + (soon ? 'ՇՈՒՏՈՎ' : 'ՓԱԿ Է') + '</button>' :
+    '<button type="button" class="cta" data-start="' + section.id + '">' + (status === 'done' ? 'ԿՐԿՆԵԼ' : 'ՍԿՍԵԼ') + '</button>';
+  return title + '<p>' + text + '</p>' + button;
 }
 
 // Սահուն «հանգստացում» մկնիկը հանելիս. ոչինչ կտրուկ չի վերադառնում, պտտվողները ետ չեն գնում (իներցիա, 750 մվ)
@@ -91,20 +95,35 @@ function physNodeCloseCard() {
   if (!physNodeHovered(state)) physNodeSettle(state);
 }
 
+// Պատուհանի հորիզոնական դիրքը. կլորակի կենտրոնում, բայց էկրանի (և ուղու) եզրից ≥ 12 px, սլաքը՝ կլորակի վրա
+function physNodePlaceCard(stop, card, state) {
+  const path = app.querySelector('.phys-path');
+  const zoom = parseFloat(getComputedStyle(path).getPropertyValue('--phys-node-scale')) || 1;
+  const area = path.getBoundingClientRect();
+  const box = stop.getBoundingClientRect();
+  const node = state.getBoundingClientRect();
+  const center = node.left + node.width / 2;
+  const width = 252 * zoom;
+  const low = Math.max(12, area.left + 12), high = Math.min(innerWidth - 12, area.right - 12);
+  const left = Math.max(low, Math.min(high - width, center - width / 2));
+  card.style.left = (left - box.left) / zoom + 'px';
+  card.style.setProperty('--arrow', (center - left) / zoom - 8 + 'px');
+}
+
 function physNodeOpenCard(id) {
   const stop = app.querySelector('.phys-stop[data-id="' + id + '"]');
   const state = stop.querySelector('.phys-state');
   const status = state.dataset.status;
   const section = physicsSections().find(item => item.id === id);
   const card = document.createElement('div');
-  card.className = 'phys-card';
+  card.className = 'phys-card' + (status === 'locked' ? ' is-locked' : '');
   card.id = 'phys-card-' + id;
   card.setAttribute('role', 'region');
   card.setAttribute('aria-label', 'Դասի պատուհան');
-  card.innerHTML = physCardHtml(section, status);
-  if (stop.classList.contains('ch4')) card.style.top = '164px'; // IV-ում բեռը ավելի ցածր է
+  card.innerHTML = physCardHtml(section, status, status === 'locked' && section === physicsNext());
   stop.appendChild(card);
   stop.classList.add('has-card');
+  physNodePlaceCard(stop, card, state);
   state.classList.add('hov'); // պատուհանը բաց լինելու ընթացքում կլորակը պահում է hov վիճակը
   stop.querySelector('.phys-btn').setAttribute('aria-expanded', 'true');
   physNodes.open = id;
@@ -116,7 +135,7 @@ function physNodeToggle(id) {
   const state = physNodeStateOf(id);
   physNodeFlip(state, physNodes.taps, 'tap');
   if (previous) physNodeCloseCard();
-  if (previous !== id && state.dataset.status !== 'locked') physNodeOpenCard(id);
+  if (previous !== id) physNodeOpenCard(id);
 }
 
 async function physNodeOpenLesson(id) {
@@ -165,7 +184,7 @@ function physNodeBubbles(root) {
   const area = root.getBoundingClientRect();
   root.querySelectorAll('.grp .phys-start').forEach(bubble => {
     const node = bubble.parentElement.getBoundingClientRect();
-    bubble.classList.toggle('is-right', node.left - area.left < 104 + 14 + 8);
+    bubble.classList.toggle('is-right', node.left - area.left < 104 + 42 + 8);
   });
 }
 
@@ -194,7 +213,7 @@ if (typeof document !== 'undefined') {
   document.addEventListener('click', event => {
     if (physNodes.open && !event.target.closest('.phys-card, .phys-state')) physNodeCloseCard();
   });
-  window.addEventListener('resize', () => { const root = app.querySelector('.phys-path'); if (root) { physNodeTrack(root); physNodeBubbles(root); } });
+  window.addEventListener('resize', () => { const root = app.querySelector('.phys-path'); if (root) { physNodeTrack(root); physNodeBubbles(root); if (physNodes.open) { const id = physNodes.open; physNodeCloseCard(); physNodeOpenCard(id); } } });
 }
 
 function physNodesReset() {
