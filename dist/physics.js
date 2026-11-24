@@ -15,7 +15,7 @@ function physics() {
     const stops = chapter.sections.map((section, offset) => physNodeStopHtml(n, section, physicsStatus(section, next), [0, 1, 2, 2, 1, 0, 0, 1, 2, 1][offset % 10])).join('');
     const done = chapter.sections.filter(section => physicsDone(section.id)).length;
     const cover = physImageReady(chapter.cover) ? physImageTag(chapter.cover, 'phys-chapter-img') : '';
-    return '<section class="path-unit phys-unit ch' + n + '" data-color="' + chapter.color % 7 + '"><div class="path-unit-heading phys-heading">' + cover + '<div><h3>Գլուխ ' + chapter.n +
+    return '<section class="path-unit phys-chapter ch' + n + '" data-color="' + chapter.color % 7 + '"><div class="path-unit-heading phys-heading">' + cover + '<div><h3>Գլուխ ' + chapter.n +
       ' · ' + esc(chapter.title) + '</h3><small>' + done + ' / ' + chapter.sections.length + ' դաս</small></div></div><ol>' + stops + '</ol>' +
       courseMilestone(done === chapter.sections.length) + '</section>';
   }).join('');

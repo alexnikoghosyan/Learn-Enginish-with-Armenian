@@ -140,5 +140,5 @@
 .phys-card strong { font-size: 18px; overflow-wrap: anywhere; }
 .phys-card .secondary { color: var(--unit-ink); text-transform: uppercase; }
 .phys-track { position: absolute; left: 0; top: 0; z-index: 0; pointer-events: none; overflow: visible; }
-.phys-unit ol { position: relative; }
+.phys-chapter ol { position: relative; }
 @media (prefers-reduced-motion: reduce) { .phys-start, .phys-card { animation: none; } }
