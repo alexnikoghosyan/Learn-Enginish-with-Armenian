@@ -113,18 +113,11 @@
 }
 
 /* Ուղու կլորակները (Design/physics-path-nodes). անիմացիաները՝ physics-nodes.css (գեներացված), այստեղ՝ դասավորությունը, «ՍԿՍԵԼ» պիտակը, դասի պատուհանը */
-.phys-heading { background: var(--pc); box-shadow: 0 5px 0 var(--ps); color: #fff; border-radius: 16px; padding: 16px 20px; }
-.phys-heading h3 { color: #fff; font-size: 18px; line-height: 1.3; }
-.phys-heading .phys-eyebrow { margin: 0 0 4px; font-size: 13px; font-weight: 800; letter-spacing: 1px; opacity: 1; }
-.phys-chapter-img { padding: 4px; background: #fff; border-radius: 14px; }
 .phys-stop { position: relative; z-index: 0; }
 .phys-stop.has-card { z-index: 6; }
-.phys-stop:has(.phys-state.current:not(.grp)) { margin-top: 70px; }
+.phys-stop:has(.phys-state.current:not(.grp)) { margin-top: 64px; }
 .phys-state { position: relative; width: 72px; height: 72px; flex: none; }
-.phys-path .phys-stop .phys-state { margin-bottom: 38px; }
 .phys-state.grp { height: 154px; }
-.phys-path .phys-stop .phys-state.grp { margin-bottom: 14px; }
-.phys-path .phys-stop.ch2 .phys-state { margin-bottom: 54px; }
 .phys-btn { position: absolute; left: 0; top: 0; width: 72px; height: 72px; margin: 0; padding: 0; border: 0; border-radius: 50%; background: none; cursor: pointer; overflow: visible; -webkit-tap-highlight-color: transparent; }
 .phys-btn svg { position: absolute; left: -34px; top: -30px; width: 140px; height: 140px; overflow: visible; pointer-events: none; }
 .phys-btn[aria-disabled="true"] { cursor: not-allowed; }
@@ -134,7 +127,7 @@
 .phys-state.grp .p-bn, .phys-state.grp .h-bn { position: absolute; inset: 0; }
 .phys-state.grp .phys-btn { width: 100%; height: 100%; border-radius: 24px; }
 .phys-state.grp .phys-btn svg { top: -22px; }
-.phys-start { position: absolute; left: -16px; top: -64px; width: 104px; pointer-events: none; animation: bob 1.6s ease-in-out infinite; }
+.phys-start { position: absolute; left: -16px; top: -52px; width: 104px; pointer-events: none; animation: bob 1.6s ease-in-out infinite; }
 .phys-start > div { position: relative; box-sizing: border-box; padding: 8px 0; background: #fff; border: 2px solid #e5e5e5; border-radius: 12px; text-align: center; font-size: 15px; font-weight: 800; letter-spacing: .5px; color: var(--pc); }
 .phys-start i { position: absolute; left: 45px; bottom: -7px; width: 12px; height: 12px; background: #fff; border-right: 2px solid #e5e5e5; border-bottom: 2px solid #e5e5e5; transform: rotate(45deg); }
 .phys-state.grp .phys-start { left: auto; right: calc(100% + 14px); top: 80px; }
@@ -142,15 +135,10 @@
 .phys-state.grp .phys-start.is-right { left: calc(100% + 14px); right: auto; }
 .phys-state.grp .phys-start.is-right i { left: -7px; right: auto; border-right: 0; border-top: 0; border-left: 2px solid #e5e5e5; border-bottom: 2px solid #e5e5e5; }
 .phys-title { text-align: center; }
-.phys-card { position: absolute; z-index: 5; box-sizing: border-box; padding: 16px; border-radius: 16px; background: var(--pc); color: #fff; box-shadow: 0 5px 0 var(--ps); text-align: left; animation: pop .22s cubic-bezier(.3, 1.4, .6, 1); transform-origin: 50% 0; }
-.phys-card::before { content: ""; position: absolute; top: -9px; left: var(--arrow, 117px); width: 16px; height: 16px; transform: rotate(45deg); border-radius: 3px; background: inherit; }
-.phys-card-title { position: relative; font-size: 16px; font-weight: 800; line-height: 1.3; }
-.phys-card p { position: relative; margin: 6px 0 0; font-size: 14px; line-height: 1.4; font-weight: 600; }
-.phys-card .cta { position: relative; margin-top: 14px; background: #fff; color: var(--pc); box-shadow: 0 4px 0 var(--ps); }
-.phys-card.is-locked { background: #f7f7f7; border: 2px solid #e5e5e5; color: #4b4b4b; box-shadow: none; }
-.phys-card.is-locked::before { background: #f7f7f7; border-left: 2px solid #e5e5e5; border-top: 2px solid #e5e5e5; }
-.phys-card.is-locked p { color: #6f6f6f; }
-.phys-card.is-locked .cta { background: #e5e5e5; color: #8a8a8a; box-shadow: none; }
+.phys-card { display: grid; gap: 13px; position: absolute; z-index: 5; top: 82px; left: 50%; width: min(270px, calc(100vw - 145px)); transform: translateX(-50%); padding: 16px; border-radius: 16px; background: var(--unit); color: #fff; box-shadow: 0 4px var(--unit-shadow); text-align: start; transform-origin: top center; animation: lesson-preview-open .24s cubic-bezier(.22, .75, .3, 1) both; }
+.phys-card::before { content: ""; position: absolute; top: -6px; left: calc(50% - 7px); width: 14px; height: 14px; transform: rotate(45deg); background: var(--unit); }
+.phys-card strong { font-size: 18px; overflow-wrap: anywhere; }
+.phys-card .secondary { color: var(--unit-ink); text-transform: uppercase; }
 .phys-track { position: absolute; left: 0; top: 0; z-index: 0; pointer-events: none; overflow: visible; }
 .phys-unit ol { position: relative; }
 @media (prefers-reduced-motion: reduce) { .phys-start, .phys-card { animation: none; } }

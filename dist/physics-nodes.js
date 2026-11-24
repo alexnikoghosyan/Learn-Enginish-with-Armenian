@@ -26,14 +26,10 @@ function physNodeStopHtml(n, section, status, bend) {
     '<span class="phys-title"><strong>' + esc(title) + '</strong></span></li>';
 }
 
-// Պատուհանի տեքստը ըստ վիճակի. soon՝ հաջորդ դասը դեռ պատրաստ չէ
-function physCardHtml(section, status, soon) {
-  const title = '<div class="phys-card-title">§' + section.n + '. ' + esc(section.title) + '</div>';
-  const text = status === 'done' ? 'Ավարտված է։ Կարող ես կրկնել։' : status === 'current' ? 'Հաջորդ դասը քեզ է սպասում։' :
-    soon ? 'Այս դասը շուտով կհայտնվի։' : 'Ավարտիր նախորդ դասերը, որ այս դասը բացվի։';
-  const button = status === 'locked' ? '<button type="button" class="cta" disabled>' + (soon ? 'ՇՈՒՏՈՎ' : 'ՓԱԿ Է') + '</button>' :
-    '<button type="button" class="cta" data-start="' + section.id + '">' + (status === 'done' ? 'ԿՐԿՆԵԼ' : 'ՍԿՍԵԼ') + '</button>';
-  return title + '<p>' + text + '</p>' + button;
+// Դասի պատուհանը (հին փոքր պատուհանի տեսքով). փակ դասի համար պատուհան չկա՝ կլորակը միայն թափահարվում է
+function physCardHtml(section, status) {
+  if (status === 'locked') return '';
+  return '<strong>§' + section.n + '. ' + esc(section.title) + '</strong><button type="button" class="secondary" data-start="' + section.id + '">' + (status === 'done' ? 'Կրկնել' : 'Սկսել') + '</button>';
 }
 
 // Սահուն «հանգստացում» մկնիկը հանելիս. ոչինչ կտրուկ չի վերադառնում, պտտվողները ետ չեն գնում (իներցիա, 750 մվ)
@@ -95,33 +91,20 @@ function physNodeCloseCard() {
   if (!physNodeHovered(state)) physNodeSettle(state);
 }
 
-function physNodePlaceCard(stop, card, state) {
-  const area = app.querySelector('.phys-path').getBoundingClientRect();
-  const box = stop.getBoundingClientRect();
-  const node = state.getBoundingClientRect();
-  const width = Math.min(252, area.width - 16);
-  const center = node.left + node.width / 2;
-  const left = Math.max(area.left + 8, Math.min(area.right - 8 - width, center - width / 2));
-  card.style.width = width + 'px';
-  card.style.left = (left - box.left) + 'px';
-  card.style.top = (node.bottom - box.top + (PHYS_CARD_GAP[Number(stop.className.match(/ch(\d)/)[1])] || 30)) + 'px';
-  card.style.setProperty('--arrow', (center - left - 8) + 'px');
-}
-
 function physNodeOpenCard(id) {
   const stop = app.querySelector('.phys-stop[data-id="' + id + '"]');
   const state = stop.querySelector('.phys-state');
   const status = state.dataset.status;
   const section = physicsSections().find(item => item.id === id);
   const card = document.createElement('div');
-  card.className = 'phys-card' + (status === 'locked' ? ' is-locked' : '');
+  card.className = 'phys-card';
   card.id = 'phys-card-' + id;
   card.setAttribute('role', 'region');
   card.setAttribute('aria-label', 'Դասի պատուհան');
-  card.innerHTML = physCardHtml(section, status, status === 'locked' && section === physicsNext());
+  card.innerHTML = physCardHtml(section, status);
+  if (stop.classList.contains('ch4')) card.style.top = '164px'; // IV-ում բեռը ավելի ցածր է
   stop.appendChild(card);
   stop.classList.add('has-card');
-  physNodePlaceCard(stop, card, state);
   state.classList.add('hov'); // պատուհանը բաց լինելու ընթացքում կլորակը պահում է hov վիճակը
   stop.querySelector('.phys-btn').setAttribute('aria-expanded', 'true');
   physNodes.open = id;
@@ -133,7 +116,7 @@ function physNodeToggle(id) {
   const state = physNodeStateOf(id);
   physNodeFlip(state, physNodes.taps, 'tap');
   if (previous) physNodeCloseCard();
-  if (previous !== id) physNodeOpenCard(id);
+  if (previous !== id && state.dataset.status !== 'locked') physNodeOpenCard(id);
 }
 
 async function physNodeOpenLesson(id) {
@@ -211,7 +194,7 @@ if (typeof document !== 'undefined') {
   document.addEventListener('click', event => {
     if (physNodes.open && !event.target.closest('.phys-card, .phys-state')) physNodeCloseCard();
   });
-  window.addEventListener('resize', () => { const root = app.querySelector('.phys-path'); if (root) { physNodeTrack(root); physNodeBubbles(root); } if (physNodes.open) { const id = physNodes.open; physNodeCloseCard(); physNodeOpenCard(id); } });
+  window.addEventListener('resize', () => { const root = app.querySelector('.phys-path'); if (root) { physNodeTrack(root); physNodeBubbles(root); } });
 }
 
 function physNodesReset() {

@@ -457,15 +457,13 @@ test('կլորակներ. կոճակի attribute-ները (aria-label, aria-expa
   assert.ok(/<button type="button" class="phys-btn"/.test(done), 'կլորակը <button type="button"> է');
 });
 
-test('կլորակներ. դասի պատուհանի տեքստերը և կոճակները', () => {
+test('կլորակներ. դասի պատուհանը՝ հին փոքր պատուհանի տեսքով. փակ դասի համար պատուհան չկա', () => {
   const section = api.PHYSICS_COURSE.chapters[0].sections[0];
-  const done = api.physCardHtml(section, 'done', false);
-  assert.ok(done.includes('Ավարտված է։ Կարող ես կրկնել։') && done.includes('ԿՐԿՆԵԼ') && done.includes('data-start="s1"'));
-  const current = api.physCardHtml(section, 'current', false);
-  assert.ok(current.includes('Հաջորդ դասը քեզ է սպասում։') && current.includes('ՍԿՍԵԼ'));
-  const locked = api.physCardHtml(section, 'locked', false);
-  assert.ok(locked.includes('Ավարտիր նախորդ դասերը, որ այս դասը բացվի։') && locked.includes('disabled') && locked.includes('ՓԱԿ Է') && !locked.includes('data-start'));
-  assert.ok(api.physCardHtml(section, 'locked', true).includes('շուտով'));
+  const done = api.physCardHtml(section, 'done');
+  assert.ok(done.includes('Կրկնել') && done.includes('data-start="s1"') && done.includes('<strong>§1.'));
+  const current = api.physCardHtml(section, 'current');
+  assert.ok(current.includes('Սկսել') && current.includes('data-start="s1"'));
+  assert.equal(api.physCardHtml(section, 'locked'), '');
 });
 
 test('կլորակներ. CSS-ում «ներս մտնելը» միայն պատուհանի կոճակի համար է, ch7-ը դարձել է ch6', () => {
