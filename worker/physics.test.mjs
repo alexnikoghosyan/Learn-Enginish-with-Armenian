@@ -8,7 +8,7 @@ import { readFileSync, statSync, existsSync } from 'node:fs';
 const root = new URL('../dist/', import.meta.url);
 const src = new URL('../physics-src/', import.meta.url);
 const files = ['physics-math.js', 'physics-text.js', 'physics-course.js', 'physics-lessons.js', 'physics-lessons-2.js', 'physics-lessons-3.js', 'physics-tools.js',
-  'physics-art.js', 'physics-art-2.js', 'physics-sprites.js', 'physics-ruler.js', 'physics-scale.js', 'physics-cylinder.js', 'physics-spring.js', 'physics-tank.js', 'physics-frames.js',
+  'physics-art.js', 'physics-art-2.js', 'physics-sprites.js', 'physics-nodes-art.js', 'physics-nodes.js', 'physics-ruler.js', 'physics-scale.js', 'physics-cylinder.js', 'physics-spring.js', 'physics-tank.js', 'physics-frames.js',
   'physics-figs.js', 'physics-anim.js', 'physics-anims.js', 'physics-anims-2.js', 'physics-media.js', 'physics-steps.js'];
 const read = names => names.map(name => readFileSync(new URL(name, root), 'utf8')).join('\n');
 // const/let-ը vm-ում չեն դառնում context-ի հատկություն, ուստի արժեքները հանում ենք ձեռքով
@@ -19,7 +19,7 @@ function load(names, exports, globals = {}) {
 }
 const api = load(files, 'physParseNumber, physCleanNumber, physClose, physRound, physFormat, physDensity, physConvert, physGoalMet, physCalc, PHYS_G, physPhase, physEase, physTween, physLerpColor, physSpring, ' +
   'physRich, physFormula, physGivenHtml, physLinesHtml, physHeroHtml, PHYSICS_COURSE, PHYSICS_LESSONS, PHYS_TOOLS, PHYS_MEASURE, PHYS_STEPS, PHYS_LIQUIDS, PHYSICS_MEDIA, PHYSICS_IMAGES, ' +
-  'PHYS_FIGS, PHYS_ART, PHYS_ANIMS, PHYS_LESSON_ART_PLAN, physSprite, physCubeHalvesSvg, PHYS_PENCIL_CUTS', { matchMedia: () => ({ matches: false }) });
+  'PHYS_FIGS, PHYS_ART, PHYS_ANIMS, PHYS_LESSON_ART_PLAN, PHYS_NODE_ART, PHYS_NODE_META, physNodeStopHtml, physCardHtml, physSprite, physCubeHalvesSvg, PHYS_PENCIL_CUTS', { matchMedia: () => ({ matches: false }), esc: text => String(text).replace(/[&<>"']/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[char])) });
 const list = array => Array.from(array);
 const lessons = Object.entries(api.PHYSICS_LESSONS);
 const steps = lessons.flatMap(([id, items]) => items.map((step, index) => ({ id, index, step })));
@@ -392,7 +392,7 @@ test('մեդիա. ամեն scrub քայլի թերթը կա dist/-ում և ≤ 
 });
 
 test('ֆայլերի չափը. ոչ մի ֆիզիկայի ֆայլ > 300 տող, physics-anim*.js ընդհանուր ≤ 25 KB', () => {
-  for (const name of [...files, 'physics-lesson.js', 'physics.js', 'physics.css']) assert.ok(readFileSync(new URL(name, root), 'utf8').split('\n').length <= 300, name);
+  for (const name of [...files, 'physics-lesson.js', 'physics.js', 'physics.css', 'physics-nodes.css']) assert.ok(readFileSync(new URL(name, root), 'utf8').split('\n').length <= 300, name);
   const animBytes = ['physics-anim.js', 'physics-anims.js', 'physics-anims-2.js'].reduce((sum, name) => sum + statSync(new URL(name, root)).size, 0);
   assert.ok(animBytes <= 25 * 1024, 'physics-anim*.js ' + animBytes + ' բայթ');
 });
@@ -426,4 +426,53 @@ test('թվի դաշտ. տառերը հանվում են, մնում են թվա�
   assert.equal(api.physCleanNumber('−3-4'), '-34');
   assert.equal(api.physCleanNumber('  7 '), '7');
   assert.equal(api.physCleanNumber(''), '');
+});
+
+// ---------- Ուղու կլորակները (Design/physics-path-nodes) ----------
+test('կլորակներ. 6 գլխի 3 վիճակը կա, IV-ում՝ զսպանակով, գույները՝ դիզայնի աղյուսակից, «pulse» օղակ չկա', () => {
+  const colors = { 1: '#388201', 2: '#945DB7', 3: '#137BAC', 4: '#A86200', 5: '#D13D3D', 6: '#008089' };
+  for (let n = 1; n <= 6; n++) {
+    for (const state of ['done', 'current', 'locked']) {
+      const art = api.PHYS_NODE_ART[n][state];
+      assert.ok(art.svg.startsWith('<svg') && art.svg.includes('aria-hidden="true"'), n + ' ' + state);
+      assert.ok(!/class="[^"]*pulse/.test(art.svg), 'պուլսացող օղակ չպետք է լինի. ' + n + ' ' + state);
+      assert.equal(Boolean(art.spring), n === 4, n + ' ' + state + ' spring');
+    }
+    assert.equal(api.PHYS_NODE_META[n].color, colors[n]);
+  }
+  assert.deepEqual([1, 2, 3, 4, 5, 6].map(n => api.PHYS_NODE_META[n].cut), [1150, 900, 620, 850, 1000, 850]);
+});
+
+test('կլորակներ. կոճակի attribute-ները (aria-label, aria-expanded, aria-controls, aria-disabled), յուրահատուկ clipPath id', () => {
+  const section = api.PHYSICS_COURSE.chapters[0].sections[0];
+  const done = api.physNodeStopHtml(1, section, 'done', 0);
+  const current = api.physNodeStopHtml(1, section, 'current', 1);
+  const locked = api.physNodeStopHtml(1, section, 'locked', 2);
+  assert.ok(done.includes('— ավարտված"') && current.includes('— ընթացիկ դաս"') && locked.includes('— փակ"'));
+  assert.ok(done.includes('aria-expanded="false"') && done.includes('aria-controls="phys-card-s1"'));
+  assert.ok(locked.includes('aria-disabled="true"') && !/ disabled[ >]/.test(locked));
+  assert.ok(current.includes('aria-current="step"') && current.includes('ՍԿՍԵԼ') && !done.includes('ՍԿՍԵԼ'));
+  assert.ok(!done.includes('{u}'));
+  assert.notEqual(done.match(/id="(lc\d+)"/)[1], api.physNodeStopHtml(1, section, 'done', 0).match(/id="(lc\d+)"/)[1]);
+  assert.ok(/<button type="button" class="phys-btn"/.test(done), 'կլորակը <button type="button"> է');
+});
+
+test('կլորակներ. դասի պատուհանի տեքստերը և կոճակները', () => {
+  const section = api.PHYSICS_COURSE.chapters[0].sections[0];
+  const done = api.physCardHtml(section, 'done', false);
+  assert.ok(done.includes('Ավարտված է։ Կարող ես կրկնել։') && done.includes('ԿՐԿՆԵԼ') && done.includes('data-start="s1"'));
+  const current = api.physCardHtml(section, 'current', false);
+  assert.ok(current.includes('Հաջորդ դասը քեզ է սպասում։') && current.includes('ՍԿՍԵԼ'));
+  const locked = api.physCardHtml(section, 'locked', false);
+  assert.ok(locked.includes('Ավարտիր նախորդ դասերը, որ այս դասը բացվի։') && locked.includes('disabled') && locked.includes('ՓԱԿ Է') && !locked.includes('data-start'));
+  assert.ok(api.physCardHtml(section, 'locked', true).includes('շուտով'));
+});
+
+test('կլորակներ. CSS-ում «ներս մտնելը» միայն պատուհանի կոճակի համար է, ch7-ը դարձել է ch6', () => {
+  const css = readFileSync(new URL('physics-nodes.css', root), 'utf8') + readFileSync(new URL('physics.css', root), 'utf8');
+  assert.ok(!css.includes('ch7'));
+  assert.ok(css.includes('.phys-path .ch6 .done.clickA .c-nd'));
+  assert.ok(!/\.(node|phys-btn|phys-state)[^{]*:active/.test(css), 'կլորակը սեղմելիս ներս չի մտնում');
+  assert.ok(css.includes('.cta:active{transform:translateY(4px)}'));
+  assert.ok(css.includes('prefers-reduced-motion'));
 });

@@ -1,0 +1,256 @@
+<!doctype html>
+<html lang="hy">
+<head>
+<meta charset="utf-8">
+<title>Գլուխ VI — մանոմետր, դասի պատուհանով</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Armenian:wght@600;700;800&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#1899D6}a:hover{color:#1453A3}
+.node{display:block;background:none;border:0;padding:0;margin:0;cursor:pointer}
+.node:disabled{cursor:not-allowed}
+.node:focus-visible{outline:3px solid #1CB0F6;outline-offset:2px;border-radius:50%}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes pulse{0%{transform:scale(1);opacity:.55}100%{transform:scale(1.3);opacity:0}}
+@keyframes bob{50%{transform:translateY(-5px)}}
+@keyframes flicker{0%,100%{opacity:1}45%{opacity:.25}55%{opacity:1}70%{opacity:.4}}
+.spin{transform-origin:70px 66px;animation:spin 6s linear infinite}
+.spin-slow{transform-origin:70px 66px;animation:spin 14s linear infinite}
+.pulse{transform-origin:70px 66px;animation:pulse 1.8s ease-out infinite}
+.bob{animation:bob 1.6s ease-in-out infinite}
+.flicker{animation:flicker 2.4s linear infinite}
+@media (prefers-reduced-motion: reduce){.spin,.spin-slow,.pulse,.bob,.flicker{animation:none}}
+
+@keyframes sway{0%,100%{transform:rotate(-8deg)}50%{transform:rotate(8deg)}}
+@keyframes stretch{0%,100%{transform:scaleY(1)}50%{transform:scaleY(1.25)}}
+@keyframes drop{0%,100%{transform:translateY(0px)}50%{transform:translateY(15px)}}
+@keyframes wave{to{transform:translateX(-40px)}}
+@keyframes rise{0%{transform:translateY(0px);opacity:1}100%{transform:translateY(-34px);opacity:0}}
+@keyframes dash{0%,100%{opacity:1}50%{opacity:.3}}
+.sway{transform-origin:70px 66px;animation:sway 2.4s ease-in-out infinite}
+.spin-fast{transform-origin:70px 66px;animation:spin 1.6s linear infinite}
+.stretch{transform-origin:30px 18px;transform-box:view-box;animation:stretch 1.6s ease-in-out infinite}
+.drop{animation:drop 1.6s ease-in-out infinite}
+.wave{animation:wave 2s linear infinite}
+.rise{animation:rise 2.2s ease-in infinite}
+.rise2{animation:rise 2.2s ease-in .9s infinite}
+.dash{animation:dash 1s ease-in-out infinite}
+@media (prefers-reduced-motion: reduce){.sway,.spin-fast,.stretch,.drop,.wave,.rise,.rise2,.dash{animation:none}}
+
+.c-fx,.p-fx,.h-fx,.c-nd,.p-nd,.h-nd,.ndl,.shk{transform-origin:70px 66px}
+.puff{transform-box:fill-box;transform-origin:center}
+.h-fx{transition:transform .3s ease}
+@keyframes idle{0%,100%{transform:rotate(-8deg)}50%{transform:rotate(8deg)}}
+.ndl{animation:idle 2.6s ease-in-out infinite}
+/* hover: pressure builds — needle climbs and trembles, the red zone glows, the dial swells a little */
+@keyframes ndrise{0%{transform:rotate(0deg)}100%{transform:rotate(45deg)}}
+@keyframes ndjit{0%,100%{transform:rotate(45deg)}25%{transform:rotate(49deg)}50%{transform:rotate(42deg)}75%{transform:rotate(48deg)}}
+@keyframes zrglow{0%,100%{opacity:1}50%{opacity:.35}}
+.ch7 .node.hov:not(.locked) .h-nd{animation:ndrise .45s cubic-bezier(.3,1.2,.5,1) forwards,ndjit .18s linear .45s infinite}
+.ch7 .node.hov:not(.locked) .h-fx{transform:scale(1.05)}
+.ch7 .node.hov:not(.locked) .zr{animation:zrglow .6s ease-in-out infinite}
+
+
+@keyframes pop{0%{opacity:0;transform:translateY(-6px) scale(.9)}100%{opacity:1;transform:translateY(0px) scale(1)}}
+.card{animation:pop .22s cubic-bezier(.3,1.4,.6,1);transform-origin:50% 0%}
+.cta{display:block;width:100%;box-sizing:border-box;border:0;border-radius:14px;padding:12px 0px;font-family:inherit;font-size:15px;font-weight:800;letter-spacing:.8px;cursor:pointer;transition:transform .06s,box-shadow .06s}
+.cta:active{transform:translateY(4px)}
+.cta:focus-visible{outline:3px solid #FFFFFF;outline-offset:2px}
+.cta:disabled{cursor:not-allowed}
+.cta:disabled:active{transform:none}
+@media (prefers-reduced-motion: reduce){.card{animation:none}.p-fx,.p-orb,.p-core,.p-sp,.p-bn,.p-gb,.p-lvl{animation:none !important}}
+
+@keyframes shake-ta{0%,100%{transform:translateX(0px)}20%{transform:translateX(-7px)}40%{transform:translateX(6px)}60%{transform:translateX(-4px)}80%{transform:translateX(3px)}}
+@keyframes flick-ta{0%{transform:rotate(0deg)}30%{transform:rotate(28deg)}62%{transform:rotate(-7deg)}82%{transform:rotate(3deg)}100%{transform:rotate(0deg)}}
+@keyframes bump-ta{0%,100%{transform:scale(1)}35%{transform:scale(1.07)}}
+.locked.tapA .shk{animation:shake-ta .45s ease-in-out}
+.ch7 .done.tapA .p-nd,.ch7 .current.tapA .p-nd{animation:flick-ta .55s ease-out}
+.ch7 .done.tapA .p-fx,.ch7 .current.tapA .p-fx{animation:bump-ta .35s ease-out}
+@keyframes shake-tb{0%,100%{transform:translateX(0px)}20%{transform:translateX(-7px)}40%{transform:translateX(6px)}60%{transform:translateX(-4px)}80%{transform:translateX(3px)}}
+@keyframes flick-tb{0%{transform:rotate(0deg)}30%{transform:rotate(28deg)}62%{transform:rotate(-7deg)}82%{transform:rotate(3deg)}100%{transform:rotate(0deg)}}
+@keyframes bump-tb{0%,100%{transform:scale(1)}35%{transform:scale(1.07)}}
+.locked.tapB .shk{animation:shake-tb .45s ease-in-out}
+.ch7 .done.tapB .p-nd,.ch7 .current.tapB .p-nd{animation:flick-tb .55s ease-out}
+.ch7 .done.tapB .p-fx,.ch7 .current.tapB .p-fx{animation:bump-tb .35s ease-out}
+@keyframes swingD-a{0%{transform:rotate(0deg)}22%{transform:rotate(88deg)}30%{transform:rotate(81deg)}38%{transform:rotate(88deg)}46%{transform:rotate(83deg)}54%{transform:rotate(88deg)}70%{transform:rotate(-14deg)}82%{transform:rotate(6deg)}92%{transform:rotate(-2deg)}100%{transform:rotate(0deg)}}
+@keyframes swingC-a{0%{transform:rotate(0deg)}22%{transform:rotate(158deg)}30%{transform:rotate(151deg)}38%{transform:rotate(158deg)}46%{transform:rotate(153deg)}54%{transform:rotate(158deg)}70%{transform:rotate(-14deg)}82%{transform:rotate(6deg)}92%{transform:rotate(-2deg)}100%{transform:rotate(0deg)}}
+@keyframes rattle-a{0%,20%,58%,100%{transform:translate(0px,0px)}24%{transform:translate(-2px,1px)}30%{transform:translate(2px,-1px)}36%{transform:translate(-2px,-1px)}42%{transform:translate(2px,1px)}48%{transform:translate(-1px,1px)}54%{transform:translate(1px,-1px)}}
+@keyframes redflash-a{0%,18%,62%,100%{opacity:1}26%,42%{opacity:.2}34%,50%{opacity:1}}
+@keyframes steam-a{0%,26%{opacity:0;transform:translate(0px,0px) scale(.3)}36%{opacity:1}100%{opacity:0;transform:translate(14px,-22px) scale(1.9)}}
+.ch7 .done.clickA .c-nd{animation:swingD-a 1.6s ease-in-out}
+.ch7 .current.clickA .c-nd{animation:swingC-a 1.6s ease-in-out}
+.ch7 .done.clickA .c-fx,.ch7 .current.clickA .c-fx{animation:rattle-a 1.6s linear}
+.ch7 .done.clickA .zr,.ch7 .current.clickA .zr{animation:redflash-a 1.6s linear}
+.ch7 .done.clickA .puff,.ch7 .current.clickA .puff{animation:steam-a 1.3s ease-out}
+.ch7 .done.clickA .pf1,.ch7 .current.clickA .pf1{animation:steam-a 1.3s ease-out .12s}
+.ch7 .done.clickA .pf2,.ch7 .current.clickA .pf2{animation:steam-a 1.3s ease-out .24s}
+@keyframes swingD-b{0%{transform:rotate(0deg)}22%{transform:rotate(88deg)}30%{transform:rotate(81deg)}38%{transform:rotate(88deg)}46%{transform:rotate(83deg)}54%{transform:rotate(88deg)}70%{transform:rotate(-14deg)}82%{transform:rotate(6deg)}92%{transform:rotate(-2deg)}100%{transform:rotate(0deg)}}
+@keyframes swingC-b{0%{transform:rotate(0deg)}22%{transform:rotate(158deg)}30%{transform:rotate(151deg)}38%{transform:rotate(158deg)}46%{transform:rotate(153deg)}54%{transform:rotate(158deg)}70%{transform:rotate(-14deg)}82%{transform:rotate(6deg)}92%{transform:rotate(-2deg)}100%{transform:rotate(0deg)}}
+@keyframes rattle-b{0%,20%,58%,100%{transform:translate(0px,0px)}24%{transform:translate(-2px,1px)}30%{transform:translate(2px,-1px)}36%{transform:translate(-2px,-1px)}42%{transform:translate(2px,1px)}48%{transform:translate(-1px,1px)}54%{transform:translate(1px,-1px)}}
+@keyframes redflash-b{0%,18%,62%,100%{opacity:1}26%,42%{opacity:.2}34%,50%{opacity:1}}
+@keyframes steam-b{0%,26%{opacity:0;transform:translate(0px,0px) scale(.3)}36%{opacity:1}100%{opacity:0;transform:translate(14px,-22px) scale(1.9)}}
+.ch7 .done.clickB .c-nd{animation:swingD-b 1.6s ease-in-out}
+.ch7 .current.clickB .c-nd{animation:swingC-b 1.6s ease-in-out}
+.ch7 .done.clickB .c-fx,.ch7 .current.clickB .c-fx{animation:rattle-b 1.6s linear}
+.ch7 .done.clickB .zr,.ch7 .current.clickB .zr{animation:redflash-b 1.6s linear}
+.ch7 .done.clickB .puff,.ch7 .current.clickB .puff{animation:steam-b 1.3s ease-out}
+.ch7 .done.clickB .pf1,.ch7 .current.clickB .pf1{animation:steam-b 1.3s ease-out .12s}
+.ch7 .done.clickB .pf2,.ch7 .current.clickB .pf2{animation:steam-b 1.3s ease-out .24s}
+@media (prefers-reduced-motion: reduce){.c-fx,.p-fx,.h-fx,.c-nd,.p-nd,.h-nd,.ndl,.zr,.puff,.shk,.card{animation:none !important;transition:none !important}}
+
+@keyframes lessonIn{0%{opacity:0}100%{opacity:1}}
+@keyframes lessonBody{0%{opacity:0;transform:translateY(16px)}100%{opacity:1;transform:translateY(0px)}}
+@keyframes barIn{0%{width:0%}}
+.lesson{animation:lessonIn .12s linear}
+.lesson > div{animation:lessonBody .3s cubic-bezier(.2,.8,.3,1) .08s backwards}
+.bar{animation:barIn .6s ease-out .25s backwards}
+.xbtn:focus-visible{outline:3px solid #1CB0F6;outline-offset:2px;border-radius:12px}
+@media (prefers-reduced-motion: reduce){.lesson,.lesson > div,.bar{animation:none}}
+</style>
+</helmet>
+<div class="ch7" style="position: relative; width: 360px; height: 1160px; background: #FFFFFF; overflow: hidden; font-family: 'Noto Sans Armenian', system-ui, sans-serif">
+<div style="position: absolute; left: 16px; top: 20px; width: 328px; box-sizing: border-box; padding: 16px 20px; background: #008089; border-radius: 16px; box-shadow: 0px 5px 0px #006068; color: #FFFFFF"><div style="font-size: 13px; font-weight: 800; letter-spacing: 1px">ԳԼՈՒԽ VI</div><div style="margin-top: 4px; font-size: 18px; line-height: 1.3; font-weight: 800">Ճնշում</div></div>
+<button class="node done {{c0}}" type="button" aria-label="Ճնշում և ճնշման ուժ — ավարտված" aria-expanded="{{e0}}" aria-controls="card0" onClick="{{k0}}" data-node="0" onMouseEnter="{{m0}}" onMouseLeave="{{l0}}" style="position: absolute; left: 100px; top: 184px; width: 140px; height: 140px"><svg aria-hidden="true" width="140" height="140" viewBox="0 0 140 140" style="overflow: visible"><circle class="puff pf0" cx="110.1" cy="21.4" r="7" fill="#E5E5E5" opacity="0"></circle><circle class="puff pf1" cx="116.1" cy="15.4" r="6" fill="#E5E5E5" opacity="0"></circle><circle class="puff pf2" cx="122.1" cy="9.4" r="5" fill="#E5E5E5" opacity="0"></circle><g class="c-fx"><g class="p-fx"><g class="h-fx"><rect x="63" y="100" width="14" height="12" fill="#009FAB"></rect><rect x="57" y="110" width="26" height="9" rx="3" fill="#009FAB"></rect><g transform="rotate(42 70 66)"><rect x="65" y="20" width="10" height="12" fill="#009FAB"></rect><rect x="60" y="15" width="20" height="7" rx="3.5" fill="#00C2D1"></rect></g><circle cx="70" cy="73" r="37" fill="#009FAB"></circle><circle cx="70" cy="66" r="37" fill="#00C2D1"></circle><circle cx="70" cy="66" r="30" fill="#FFFFFF"></circle><path d="M53.7 82.3 A23 23 0 0 1 81.5 46.1" fill="none" stroke="#58CC02" stroke-width="5" stroke-linecap="round"></path><path d="M81.5 46.1 A23 23 0 0 1 92.9 64.0" fill="none" stroke="#FFC800" stroke-width="5" stroke-linecap="round"></path><path class="zr" d="M92.9 64.0 A23 23 0 0 1 86.3 82.3" fill="none" stroke="#FF4B4B" stroke-width="5" stroke-linecap="round"></path><line x1="59.4" y1="76.6" x2="56.2" y2="79.8" stroke="#C9C9C9" stroke-width="2" stroke-linecap="round"></line><line x1="55.7" y1="70.6" x2="52.9" y2="71.6" stroke="#C9C9C9" stroke-width="2" stroke-linecap="round"></line><line x1="55.2" y1="63.7" x2="52.2" y2="63.2" stroke="#C9C9C9" stroke-width="2" stroke-linecap="round"></line><line x1="57.9" y1="57.2" x2="55.4" y2="55.4" stroke="#C9C9C9" stroke-width="2" stroke-linecap="round"></line><line x1="63.2" y1="52.6" x2="61.8" y2="50.0" stroke="#C9C9C9" stroke-width="2" stroke-linecap="round"></line><line x1="70.0" y1="51.0" x2="70.0" y2="46.5" stroke="#C9C9C9" stroke-width="2" stroke-linecap="round"></line><line x1="76.8" y1="52.6" x2="78.2" y2="50.0" stroke="#C9C9C9" stroke-width="2" stroke-linecap="round"></line><line x1="82.1" y1="57.2" x2="84.6" y2="55.4" stroke="#C9C9C9" stroke-width="2" stroke-linecap="round"></line><line x1="84.8" y1="63.7" x2="87.8" y2="63.2" stroke="#C9C9C9" stroke-width="2" stroke-linecap="round"></line><line x1="84.3" y1="70.6" x2="87.1" y2="71.6" stroke="#C9C9C9" stroke-width="2" stroke-linecap="round"></line><line x1="80.6" y1="76.6" x2="83.8" y2="79.8" stroke="#C9C9C9" stroke-width="2" stroke-linecap="round"></line><g class="c-nd"><g class="p-nd"><g class="h-nd"><g transform="rotate(40 70 66)"><g><line x1="70" y1="72" x2="70" y2="45" stroke="#009FAB" stroke-width="4" stroke-linecap="round"></line><circle cx="70" cy="66" r="5.5" fill="#009FAB"></circle><circle cx="70" cy="66" r="2" fill="#FFFFFF"></circle></g></g></g></g></g></g></g></g><circle cx="102" cy="98" r="14" fill="#58CC02" stroke="#FFFFFF" stroke-width="4"></circle><path d="M95.3 98.4 L99.9 103.0 L109.1 93.4" fill="none" stroke="#FFFFFF" stroke-width="3.8" stroke-linecap="round" stroke-linejoin="round"></path></svg></button>
+<div style="position: absolute; left: 75px; top: 326px; width: 190px; text-align: center; font-size: 14px; line-height: 1.3; font-weight: 700; color: #3C3C3C; pointer-events: none">Ճնշում և ճնշման ուժ</div>
+<button class="node done {{c1}}" type="button" aria-label="Գազի ճնշումը — ավարտված" aria-expanded="{{e1}}" aria-controls="card1" onClick="{{k1}}" data-node="1" onMouseEnter="{{m1}}" onMouseLeave="{{l1}}" style="position: absolute; left: 46px; top: 384px; width: 140px; height: 140px"><svg aria-hidden="true" width="140" height="140" viewBox="0 0 140 140" style="overflow: visible"><circle class="puff pf0" cx="110.1" cy="21.4" r="7" fill="#E5E5E5" opacity="0"></circle><circle class="puff pf1" cx="116.1" cy="15.4" r="6" fill="#E5E5E5" opacity="0"></circle><circle class="puff pf2" cx="122.1" cy="9.4" r="5" fill="#E5E5E5" opacity="0"></circle><g class="c-fx"><g class="p-fx"><g class="h-fx"><rect x="63" y="100" width="14" height="12" fill="#009FAB"></rect><rect x="57" y="110" width="26" height="9" rx="3" fill="#009FAB"></rect><g transform="rotate(42 70 66)"><rect x="65" y="20" width="10" height="12" fill="#009FAB"></rect><rect x="60" y="15" width="20" height="7" rx="3.5" fill="#00C2D1"></rect></g><circle cx="70" cy="73" r="37" fill="#009FAB"></circle><circle cx="70" cy="66" r="37" fill="#00C2D1"></circle><circle cx="70" cy="66" r="30" fill="#FFFFFF"></circle><path d="M53.7 82.3 A23 23 0 0 1 81.5 46.1" fill="none" stroke="#58CC02" stroke-width="5" stroke-linecap="round"></path><path d="M81.5 46.1 A23 23 0 0 1 92.9 64.0" fill="none" stroke="#FFC800" stroke-width="5" stroke-linecap="round"></path><path class="zr" d="M92.9 64.0 A23 23 0 0 1 86.3 82.3" fill="none" stroke="#FF4B4B" stroke-width="5" stroke-linecap="round"></path><line x1="59.4" y1="76.6" x2="56.2" y2="79.8" stroke="#C9C9C9" stroke-width="2" stroke-linecap="round"></line><line x1="55.7" y1="70.6" x2="52.9" y2="71.6" stroke="#C9C9C9" stroke-width="2" stroke-linecap="round"></line><line x1="55.2" y1="63.7" x2="52.2" y2="63.2" stroke="#C9C9C9" stroke-width="2" stroke-linecap="round"></line><line x1="57.9" y1="57.2" x2="55.4" y2="55.4" stroke="#C9C9C9" stroke-width="2" stroke-linecap="round"></line><line x1="63.2" y1="52.6" x2="61.8" y2="50.0" stroke="#C9C9C9" stroke-width="2" stroke-linecap="round"></line><line x1="70.0" y1="51.0" x2="70.0" y2="46.5" stroke="#C9C9C9" stroke-width="2" stroke-linecap="round"></line><line x1="76.8" y1="52.6" x2="78.2" y2="50.0" stroke="#C9C9C9" stroke-width="2" stroke-linecap="round"></line><line x1="82.1" y1="57.2" x2="84.6" y2="55.4" stroke="#C9C9C9" stroke-width="2" stroke-linecap="round"></line><line x1="84.8" y1="63.7" x2="87.8" y2="63.2" stroke="#C9C9C9" stroke-width="2" stroke-linecap="round"></line><line x1="84.3" y1="70.6" x2="87.1" y2="71.6" stroke="#C9C9C9" stroke-width="2" stroke-linecap="round"></line><line x1="80.6" y1="76.6" x2="83.8" y2="79.8" stroke="#C9C9C9" stroke-width="2" stroke-linecap="round"></line><g class="c-nd"><g class="p-nd"><g class="h-nd"><g transform="rotate(40 70 66)"><g><line x1="70" y1="72" x2="70" y2="45" stroke="#009FAB" stroke-width="4" stroke-linecap="round"></line><circle cx="70" cy="66" r="5.5" fill="#009FAB"></circle><circle cx="70" cy="66" r="2" fill="#FFFFFF"></circle></g></g></g></g></g></g></g></g><circle cx="102" cy="98" r="14" fill="#58CC02" stroke="#FFFFFF" stroke-width="4"></circle><path d="M95.3 98.4 L99.9 103.0 L109.1 93.4" fill="none" stroke="#FFFFFF" stroke-width="3.8" stroke-linecap="round" stroke-linejoin="round"></path></svg></button>
+<div style="position: absolute; left: 21px; top: 526px; width: 190px; text-align: center; font-size: 14px; line-height: 1.3; font-weight: 700; color: #3C3C3C; pointer-events: none">Գազի ճնշումը</div>
+<button class="node current {{c2}}" type="button" aria-label="Պասկալի օրենքը — ընթացիկ դաս" aria-expanded="{{e2}}" aria-controls="card2" onClick="{{k2}}" data-node="2" onMouseEnter="{{m2}}" onMouseLeave="{{l2}}" style="position: absolute; left: 166px; top: 624px; width: 140px; height: 140px"><svg aria-hidden="true" width="140" height="140" viewBox="0 0 140 140" style="overflow: visible"><circle class="puff pf0" cx="110.1" cy="21.4" r="7" fill="#E5E5E5" opacity="0"></circle><circle class="puff pf1" cx="116.1" cy="15.4" r="6" fill="#E5E5E5" opacity="0"></circle><circle class="puff pf2" cx="122.1" cy="9.4" r="5" fill="#E5E5E5" opacity="0"></circle><g class="c-fx"><g class="p-fx"><g class="h-fx"><rect x="63" y="100" width="14" height="12" fill="#009FAB"></rect><rect x="57" y="110" width="26" height="9" rx="3" fill="#009FAB"></rect><g transform="rotate(42 70 66)"><rect x="65" y="20" width="10" height="12" fill="#009FAB"></rect><rect x="60" y="15" width="20" height="7" rx="3.5" fill="#00C2D1"></rect></g><circle cx="70" cy="73" r="37" fill="#009FAB"></circle><circle cx="70" cy="66" r="37" fill="#00C2D1"></circle><circle cx="70" cy="66" r="30" fill="#FFFFFF"></circle><path d="M53.7 82.3 A23 23 0 0 1 81.5 46.1" fill="none" stroke="#58CC02" stroke-width="5" stroke-linecap="round"></path><path d="M81.5 46.1 A23 23 0 0 1 92.9 64.0" fill="none" stroke="#FFC800" stroke-width="5" stroke-linecap="round"></path><path class="zr" d="M92.9 64.0 A23 23 0 0 1 86.3 82.3" fill="none" stroke="#FF4B4B" stroke-width="5" stroke-linecap="round"></path><line x1="59.4" y1="76.6" x2="56.2" y2="79.8" stroke="#C9C9C9" stroke-width="2" stroke-linecap="round"></line><line x1="55.7" y1="70.6" x2="52.9" y2="71.6" stroke="#C9C9C9" stroke-width="2" stroke-linecap="round"></line><line x1="55.2" y1="63.7" x2="52.2" y2="63.2" stroke="#C9C9C9" stroke-width="2" stroke-linecap="round"></line><line x1="57.9" y1="57.2" x2="55.4" y2="55.4" stroke="#C9C9C9" stroke-width="2" stroke-linecap="round"></line><line x1="63.2" y1="52.6" x2="61.8" y2="50.0" stroke="#C9C9C9" stroke-width="2" stroke-linecap="round"></line><line x1="70.0" y1="51.0" x2="70.0" y2="46.5" stroke="#C9C9C9" stroke-width="2" stroke-linecap="round"></line><line x1="76.8" y1="52.6" x2="78.2" y2="50.0" stroke="#C9C9C9" stroke-width="2" stroke-linecap="round"></line><line x1="82.1" y1="57.2" x2="84.6" y2="55.4" stroke="#C9C9C9" stroke-width="2" stroke-linecap="round"></line><line x1="84.8" y1="63.7" x2="87.8" y2="63.2" stroke="#C9C9C9" stroke-width="2" stroke-linecap="round"></line><line x1="84.3" y1="70.6" x2="87.1" y2="71.6" stroke="#C9C9C9" stroke-width="2" stroke-linecap="round"></line><line x1="80.6" y1="76.6" x2="83.8" y2="79.8" stroke="#C9C9C9" stroke-width="2" stroke-linecap="round"></line><g class="c-nd"><g class="p-nd"><g class="h-nd"><g transform="rotate(-30 70 66)"><g class="ndl"><line x1="70" y1="72" x2="70" y2="45" stroke="#009FAB" stroke-width="4" stroke-linecap="round"></line><circle cx="70" cy="66" r="5.5" fill="#009FAB"></circle><circle cx="70" cy="66" r="2" fill="#FFFFFF"></circle></g></g></g></g></g></g></g></g></svg></button>
+<div style="position: absolute; left: 141px; top: 766px; width: 190px; text-align: center; font-size: 14px; line-height: 1.3; font-weight: 700; color: #3C3C3C; pointer-events: none">Պասկալի օրենքը</div>
+<div class="bob" style="position: absolute; left: 184px; top: 568px; width: 104px; pointer-events: none"><div style="position: relative; box-sizing: border-box; width: 104px; padding: 8px 0px; background: #FFFFFF; border: 2px solid #E5E5E5; border-radius: 12px; text-align: center; font-size: 15px; font-weight: 800; letter-spacing: 0.5px; color: #008089">ՍԿՍԵԼ<div style="position: absolute; left: 45px; bottom: -7px; width: 12px; height: 12px; background: #FFFFFF; border-right: 2px solid #E5E5E5; border-bottom: 2px solid #E5E5E5; transform: rotate(45deg)"></div></div></div>
+<button class="node locked {{c3}}" type="button" aria-label="Հիդրոստատիկ ճնշում — փակ" aria-expanded="{{e3}}" aria-controls="card3" onClick="{{k3}}" data-node="3" onMouseEnter="{{m3}}" onMouseLeave="{{l3}}" style="position: absolute; left: 110px; top: 834px; width: 140px; height: 140px"><svg aria-hidden="true" width="140" height="140" viewBox="0 0 140 140" style="overflow: visible"><g class="shk"><g class="c-fx"><g class="p-fx"><g class="h-fx"><rect x="63" y="100" width="14" height="12" fill="#C9C9C9"></rect><rect x="57" y="110" width="26" height="9" rx="3" fill="#C9C9C9"></rect><g transform="rotate(42 70 66)"><rect x="65" y="20" width="10" height="12" fill="#C9C9C9"></rect><rect x="60" y="15" width="20" height="7" rx="3.5" fill="#E5E5E5"></rect></g><circle cx="70" cy="73" r="37" fill="#C9C9C9"></circle><circle cx="70" cy="66" r="37" fill="#E5E5E5"></circle><circle cx="70" cy="66" r="30" fill="#F7F7F7"></circle><path d="M53.7 82.3 A23 23 0 1 1 86.3 82.3" fill="none" stroke="#E5E5E5" stroke-width="5" stroke-linecap="round"></path><line x1="59.4" y1="76.6" x2="56.2" y2="79.8" stroke="#C9C9C9" stroke-width="2" stroke-linecap="round"></line><line x1="55.7" y1="70.6" x2="52.9" y2="71.6" stroke="#C9C9C9" stroke-width="2" stroke-linecap="round"></line><line x1="55.2" y1="63.7" x2="52.2" y2="63.2" stroke="#C9C9C9" stroke-width="2" stroke-linecap="round"></line><line x1="57.9" y1="57.2" x2="55.4" y2="55.4" stroke="#C9C9C9" stroke-width="2" stroke-linecap="round"></line><line x1="63.2" y1="52.6" x2="61.8" y2="50.0" stroke="#C9C9C9" stroke-width="2" stroke-linecap="round"></line><line x1="70.0" y1="51.0" x2="70.0" y2="46.5" stroke="#C9C9C9" stroke-width="2" stroke-linecap="round"></line><line x1="76.8" y1="52.6" x2="78.2" y2="50.0" stroke="#C9C9C9" stroke-width="2" stroke-linecap="round"></line><line x1="82.1" y1="57.2" x2="84.6" y2="55.4" stroke="#C9C9C9" stroke-width="2" stroke-linecap="round"></line><line x1="84.8" y1="63.7" x2="87.8" y2="63.2" stroke="#C9C9C9" stroke-width="2" stroke-linecap="round"></line><line x1="84.3" y1="70.6" x2="87.1" y2="71.6" stroke="#C9C9C9" stroke-width="2" stroke-linecap="round"></line><line x1="80.6" y1="76.6" x2="83.8" y2="79.8" stroke="#C9C9C9" stroke-width="2" stroke-linecap="round"></line><path d="M62 68 v-6 a8 8 0 0 1 16 0 v6" fill="none" stroke="#AFAFAF" stroke-width="5" stroke-linecap="round"></path><rect x="57" y="67" width="26" height="21" rx="5" fill="#AFAFAF"></rect></g></g></g></g></svg></button>
+<div style="position: absolute; left: 85px; top: 976px; width: 190px; text-align: center; font-size: 14px; line-height: 1.3; font-weight: 700; color: #AFAFAF; pointer-events: none">Հիդրոստատիկ ճնշում</div>
+<sc-if value="{{o0}}" hint-placeholder-val="{{ false }}"><div class="card" id="card0" style="position: absolute; left: 44px; top: 322px; width: 252px; box-sizing: border-box; padding: 16px; border-radius: 16px; z-index: 5; background: #008089; color: #FFFFFF; box-shadow: 0px 5px 0px #006068"><div style="position: absolute; left: 117px; top: -9px; width: 16px; height: 16px; transform: rotate(45deg); border-radius: 3px; background: #008089"></div><div style="position: relative"><div style="font-size: 16px; font-weight: 800; line-height: 1.3">Ճնշում և ճնշման ուժ</div><div style="margin-top: 6px; font-size: 14px; line-height: 1.4; font-weight: 600">Ավարտված է։ Կարող ես կրկնել։</div><button class="cta" type="button" onClick="{{g0}}" style="margin-top: 14px; background: #FFFFFF; color: #008089; box-shadow: 0px 4px 0px #006068">ԿՐԿՆԵԼ</button></div></div></sc-if>
+<sc-if value="{{o1}}" hint-placeholder-val="{{ false }}"><div class="card" id="card1" style="position: absolute; left: 12px; top: 522px; width: 252px; box-sizing: border-box; padding: 16px; border-radius: 16px; z-index: 5; background: #008089; color: #FFFFFF; box-shadow: 0px 5px 0px #006068"><div style="position: absolute; left: 95px; top: -9px; width: 16px; height: 16px; transform: rotate(45deg); border-radius: 3px; background: #008089"></div><div style="position: relative"><div style="font-size: 16px; font-weight: 800; line-height: 1.3">Գազի ճնշումը</div><div style="margin-top: 6px; font-size: 14px; line-height: 1.4; font-weight: 600">Ավարտված է։ Կարող ես կրկնել։</div><button class="cta" type="button" onClick="{{g1}}" style="margin-top: 14px; background: #FFFFFF; color: #008089; box-shadow: 0px 4px 0px #006068">ԿՐԿՆԵԼ</button></div></div></sc-if>
+<sc-if value="{{o2}}" hint-placeholder-val="{{ false }}"><div class="card" id="card2" style="position: absolute; left: 96px; top: 762px; width: 252px; box-sizing: border-box; padding: 16px; border-radius: 16px; z-index: 5; background: #008089; color: #FFFFFF; box-shadow: 0px 5px 0px #006068"><div style="position: absolute; left: 131px; top: -9px; width: 16px; height: 16px; transform: rotate(45deg); border-radius: 3px; background: #008089"></div><div style="position: relative"><div style="font-size: 16px; font-weight: 800; line-height: 1.3">Պասկալի օրենքը</div><div style="margin-top: 6px; font-size: 14px; line-height: 1.4; font-weight: 600">Հաջորդ դասը քեզ է սպասում։</div><button class="cta" type="button" onClick="{{g2}}" style="margin-top: 14px; background: #FFFFFF; color: #008089; box-shadow: 0px 4px 0px #006068">ՍԿՍԵԼ</button></div></div></sc-if>
+<sc-if value="{{o3}}" hint-placeholder-val="{{ false }}"><div class="card" id="card3" style="position: absolute; left: 54px; top: 972px; width: 252px; box-sizing: border-box; padding: 16px; border-radius: 16px; z-index: 5; background: #F7F7F7; border: 2px solid #E5E5E5; color: #4B4B4B"><div style="position: absolute; left: 117px; top: -9px; width: 16px; height: 16px; transform: rotate(45deg); border-radius: 3px; background: #F7F7F7; border-left: 2px solid #E5E5E5; border-top: 2px solid #E5E5E5"></div><div style="position: relative"><div style="font-size: 16px; font-weight: 800; line-height: 1.3; color: #4B4B4B">Հիդրոստատիկ ճնշում</div><div style="margin-top: 6px; font-size: 14px; line-height: 1.4; font-weight: 600; color: #6F6F6F">Ավարտիր նախորդ դասերը, որ այս դասը բացվի։</div><button class="cta" type="button" disabled style="margin-top: 14px; background: #E5E5E5; color: #8A8A8A">ՓԱԿ Է</button></div></div></sc-if>
+<sc-if value="{{lessonOpen}}" hint-placeholder-val="{{ false }}"><div class="lesson" style="position: absolute; left: 0px; top: 0px; width: 360px; height: 1160px; box-sizing: border-box; padding: 20px; background: #FFFFFF; z-index: 10; display: flex; flex-direction: column; gap: 28px"><div style="display: flex; align-items: center; gap: 12px"><button class="xbtn" type="button" aria-label="Փակել դասը" onClick="{{closeLesson}}" style="width: 44px; height: 44px; border: 0px; background: none; padding: 0px; cursor: pointer; display: flex; align-items: center; justify-content: center"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 22 22"><path d="M4 4 L18 18 M18 4 L4 18" stroke="#AFAFAF" stroke-width="3.5" stroke-linecap="round"></path></svg></button><div style="flex: 1; height: 16px; border-radius: 8px; background: #E5E5E5; overflow: hidden"><div class="bar" style="width: 12%; height: 16px; border-radius: 8px; background: #00C2D1"></div></div></div><div style="display: flex; flex-direction: column; gap: 8px"><div style="font-size: 13px; font-weight: 800; letter-spacing: 1px; color: #008089">ԳԼՈՒԽ VI</div><div style="font-size: 24px; line-height: 1.3; font-weight: 800; color: #3C3C3C">{{lessonTitle}}</div><div style="font-size: 15px; line-height: 1.5; font-weight: 600; color: #6F6F6F">Այստեղ կբացվի դասի առաջին քայլը։</div></div></div></sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":360,"height":1160}}'>
+class Component extends DCLogic {
+keep() {
+return true;
+}
+renderVals() {
+const st = this.state || {};
+const open = st.open === undefined ? -1 : st.open;
+const t = st.t || [0, 0, 0, 0];
+const g = st.g || [0, 0, 0, 0];
+const h = st.h || [false, false, false, false];
+const out = {};
+for (let i = 0; i < 4; i++) {
+const tap = t[i] === 0 ? '' : (t[i] % 2 ? 'tapA' : 'tapB');
+const go = g[i] === 0 ? '' : (g[i] % 2 ? 'clickA' : 'clickB');
+const hov = h[i] || (this.keep() && open === i);
+out['c' + i] = tap + ' ' + go + (hov ? ' hov' : '');
+out['o' + i] = open === i;
+out['e' + i] = open === i ? 'true' : 'false';
+out['k' + i] = () => this.toggle(i);
+out['g' + i] = () => this.start(i);
+out['m' + i] = () => this.setHov(i, true);
+out['l' + i] = (e) => this.leave(i, e);
+}
+const L = ["Ճնշում և ճնշման ուժ", "Գազի ճնշումը", "Պասկալի օրենքը", "Հիդրոստատիկ ճնշում"];
+const lesson = st.lesson === undefined ? -1 : st.lesson;
+out.lessonOpen = lesson !== -1;
+out.lessonTitle = lesson === -1 ? '' : L[lesson];
+out.closeLesson = () => this.closeLesson();
+return out;
+}
+settle(root) {
+try {
+const calm = typeof matchMedia === 'function' && matchMedia('(prefers-reduced-motion: reduce)').matches;
+if (!root || !root.getAnimations || calm) { if (root) root.classList.remove('hov'); return; }
+const spinners = [];
+root.querySelectorAll('.h-orb,.h-sp,.h-gb').forEach((el) => {
+const an = el.getAnimations().filter((a) => a.animationName);
+const o = el.parentNode;
+if (!an.length || !o || !o.classList || !o.classList.contains('o-rot')) return;
+const m = new DOMMatrix(getComputedStyle(el).transform);
+spinners.push({ o: o, ang: Math.atan2(m.b, m.a) * 180 / Math.PI, v: 360 / (Number(an[0].effect.getTiming().duration) || 1000) });
+});
+const snap = [];
+root.querySelectorAll('*').forEach((el) => {
+if (el.classList && (el.classList.contains('h-orb') || el.classList.contains('h-sp') || el.classList.contains('h-gb'))) return;
+const an = el.getAnimations().filter((a) => a.animationName);
+if (an.length) {
+const cs = getComputedStyle(el);
+snap.push({ el: el, names: an.map((a) => a.animationName).join(','), t: cs.transform, o: cs.opacity });
+}
+});
+root.classList.remove('hov');
+const T = 750;
+spinners.forEach((sp) => {
+const base = parseFloat(sp.o.getAttribute('data-rot') || '0') + sp.ang;
+const end = base + sp.v * T / 3;
+sp.o.style.transform = 'rotate(' + end + 'deg)';
+sp.o.setAttribute('data-rot', String(end % 360));
+sp.o.animate([{ transform: 'rotate(' + base + 'deg)' }, { transform: 'rotate(' + end + 'deg)' }], { duration: T, easing: 'cubic-bezier(.2,.6,.4,1)' });
+});
+snap.forEach((s) => {
+const names = s.el.getAnimations().filter((a) => a.animationName).map((a) => a.animationName).join(',');
+if (names === s.names) return;
+const cs = getComputedStyle(s.el);
+if (cs.transform === s.t && cs.opacity === s.o) return;
+s.el.animate([{ transform: s.t, opacity: s.o }, { transform: cs.transform, opacity: cs.opacity }], { duration: 380, easing: 'cubic-bezier(.2,.7,.3,1)' });
+});
+} catch (err) {}
+}
+nodeEl(i) {
+return typeof document !== 'undefined' ? document.querySelector('[data-node="' + i + '"]') : null;
+}
+setHov(i, v) {
+const h = ((this.state && this.state.h) || [false, false, false, false]).slice();
+h[i] = v;
+this.setState({ h: h });
+}
+leave(i, e) {
+const st = this.state || {};
+const t = e && e.currentTarget;
+const root = t ? ((t.closest && t.closest('.grp')) || t) : null;
+if (!(this.keep() && st.open === i)) this.settle(root);
+this.setHov(i, false);
+}
+toggle(i) {
+const s = this.state || {};
+if (s.busy) return;
+const h = s.h || [false, false, false, false];
+const prev = s.open === undefined ? -1 : s.open;
+const next = prev === i ? -1 : i;
+if (this.keep() && prev !== -1 && prev !== next && !h[prev]) this.settle(this.nodeEl(prev));
+const tt = (s.t || [0, 0, 0, 0]).slice();
+tt[i] += 1;
+this.setState({ t: tt, open: next });
+}
+start(i) {
+const s = this.state || {};
+if (s.busy) return;
+const h = s.h || [false, false, false, false];
+if (this.keep() && !h[i]) this.settle(this.nodeEl(i));
+const gg = (s.g || [0, 0, 0, 0]).slice();
+gg[i] += 1;
+this.setState({ g: gg, open: -1, busy: true });
+let finished = false;
+const done = () => {
+if (finished) return;
+finished = true;
+this.setState({ busy: false, lesson: i });
+};
+const calm = typeof matchMedia === 'function' && matchMedia('(prefers-reduced-motion: reduce)').matches;
+setTimeout(done, calm ? 0 : this.cut());
+}
+closeLesson() {
+this.setState({ lesson: -1 });
+}
+cut() {
+return 850;
+}
+}
+</script>
+</body>
+</html>

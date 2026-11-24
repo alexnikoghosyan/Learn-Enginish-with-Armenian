@@ -1,12 +1,6 @@
 // Ֆիզիկա 7. ուսուցման ճանապարհի էջը (/physics). գլուխները՝ բաժիններ, §-ները՝ կլոր հանգույցներ։
 // Խիստ հերթականություն. current է միայն առաջին չավարտված §-ը (եթե պատրաստ է), մնացածը կողպված են։
 // Եթե առաջին չավարտվածը դեռ պատրաստ չէ, նրա հանգույցի վրա «Շուտով» պիտակ է, և դրանից հետո ոչինչ չի բացվում։
-const physicsIcons = {
-  lesson: '★',
-  lab: '<svg viewBox="0 0 32 32" width="28" height="28" focusable="false"><path d="M12 4h8m-6 0v8L6 25a2 2 0 0 0 1.7 3h16.6a2 2 0 0 0 1.7-3L18 12V4" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>',
-  problems: '<svg viewBox="0 0 32 32" width="28" height="28" focusable="false"><path d="m6 26 1.5-6L21 6.5a2.8 2.8 0 0 1 4 4L11.5 24z" fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="round"/></svg>'
-};
-
 function physicsStatus(section, next) {
   if (physicsDone(section.id)) return 'done';
   return section === next && physicsReady(section.id) ? 'current' : 'locked';
@@ -14,22 +8,23 @@ function physicsStatus(section, next) {
 
 function physics() {
   physicsCloseTool();
+  physNodesReset();
   const next = physicsNext();
-  const units = PHYSICS_COURSE.chapters.map(chapter => {
-    const stops = chapter.sections.map((section, offset) => {
-      const status = physicsStatus(section, next);
-      const stop = renderPathStop('§' + section.n + '. ' + section.title, offset, status,
-        status === 'locked' ? '' : 'openPhysicsLesson(\'' + section.id + '\')', physicsIcons[section.kind]);
-      return section === next && !physicsReady(section.id) ? stop.replace('</strong>', '</strong><small class="phys-soon">Շուտով</small>') : stop;
-    }).join('');
+  const units = PHYSICS_COURSE.chapters.map((chapter, index) => {
+    const n = index + 1;
+    const stops = chapter.sections.map((section, offset) => physNodeStopHtml(n, section, physicsStatus(section, next), [0, 1, 2, 2, 1, 0, 0, 1, 2, 1][offset % 10])).join('');
     const done = chapter.sections.filter(section => physicsDone(section.id)).length;
     const cover = physImageReady(chapter.cover) ? physImageTag(chapter.cover, 'phys-chapter-img') : '';
-    return '<section class="path-unit" data-color="' + chapter.color % 7 + '"><div class="path-unit-heading phys-heading">' + cover + '<div><h3>Գլուխ ' + chapter.n +
-      ' · ' + esc(chapter.title) + '</h3><small>' + done + ' / ' + chapter.sections.length + ' դաս</small></div></div><ol>' + stops + '</ol>' +
+    return '<section class="path-unit phys-unit ch' + n + '" data-color="' + chapter.color % 7 + '"><div class="path-unit-heading phys-heading" style="--pc:' + PHYS_NODE_META[n].color + ';--ps:' + PHYS_NODE_META[n].shadow + '">' +
+      cover + '<div><small class="phys-eyebrow">ԳԼՈՒԽ ' + chapter.n + '</small><h3>' + esc(chapter.title) + '</h3><small>' + done + ' / ' + chapter.sections.length + ' դաս</small></div></div><ol>' + stops + '</ol>' +
       courseMilestone(done === chapter.sections.length) + '</section>';
   }).join('');
   const progress = physicsProgress();
   app.innerHTML = courseLayout('<div class="learning-path phys-path"><h1>Ֆիզիկա 7</h1><div class="path-intro"><p>' +
     progress.done + ' / ' + progress.total + ' դաս ավարտված</p></div>' + units + '</div>', 'physics');
+  const path = app.querySelector('.phys-path');
+  physNodeBind(path);
+  physNodeTrack(path);
+  physNodeBubbles(path);
   updatePathArrow();
 }

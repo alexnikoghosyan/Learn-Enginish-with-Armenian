@@ -83,7 +83,7 @@ function focusLessonHeader(step, total, destination, { showCount = true, showIni
 function updatePathArrow() {
   const arrow = app.querySelector('.path-jump');
   if (!arrow) return;
-  const current = app.querySelector('.path-node.path-current');
+  const current = app.querySelector('.path-node.path-current, .phys-state.current .phys-btn');
   if (!current) { arrow.hidden = true; return; }
   const rect = current.getBoundingClientRect();
   const above = rect.top < 60;
@@ -93,7 +93,7 @@ function updatePathArrow() {
 }
 
 function jumpToCurrentLesson() {
-  const current = app.querySelector('.path-node.path-current');
+  const current = app.querySelector('.path-node.path-current, .phys-state.current .phys-btn');
   if (!current) return;
   const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   current.scrollIntoView({ block: 'center', behavior: reduced ? 'auto' : 'smooth' });

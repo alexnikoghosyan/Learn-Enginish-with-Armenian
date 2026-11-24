@@ -1,0 +1,447 @@
+<!doctype html>
+<html lang="hy">
+<head>
+<meta charset="utf-8">
+<title>Գլուխ III — դասի պատուհանով</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Armenian:wght@600;700;800&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#1899D6}a:hover{color:#1453A3}
+.node{display:block;background:none;border:0;padding:0;margin:0;cursor:pointer}
+.node:disabled{cursor:not-allowed}
+.node:focus-visible{outline:3px solid #1CB0F6;outline-offset:2px;border-radius:50%}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes pulse{0%{transform:scale(1);opacity:.55}100%{transform:scale(1.3);opacity:0}}
+@keyframes bob{50%{transform:translateY(-5px)}}
+@keyframes flicker{0%,100%{opacity:1}45%{opacity:.25}55%{opacity:1}70%{opacity:.4}}
+.spin{transform-origin:70px 66px;animation:spin 6s linear infinite}
+.spin-slow{transform-origin:70px 66px;animation:spin 14s linear infinite}
+.pulse{transform-origin:70px 66px;animation:pulse 1.8s ease-out infinite}
+.bob{animation:bob 1.6s ease-in-out infinite}
+.flicker{animation:flicker 2.4s linear infinite}
+@media (prefers-reduced-motion: reduce){.spin,.spin-slow,.pulse,.bob,.flicker{animation:none}}
+
+@keyframes sway{0%,100%{transform:rotate(-8deg)}50%{transform:rotate(8deg)}}
+@keyframes stretch{0%,100%{transform:scaleY(1)}50%{transform:scaleY(1.25)}}
+@keyframes drop{0%,100%{transform:translateY(0px)}50%{transform:translateY(15px)}}
+@keyframes wave{to{transform:translateX(-40px)}}
+@keyframes rise{0%{transform:translateY(0px);opacity:1}100%{transform:translateY(-34px);opacity:0}}
+@keyframes dash{0%,100%{opacity:1}50%{opacity:.3}}
+.sway{transform-origin:70px 66px;animation:sway 2.4s ease-in-out infinite}
+.spin-fast{transform-origin:70px 66px;animation:spin 1.6s linear infinite}
+.stretch{transform-origin:30px 18px;transform-box:view-box;animation:stretch 1.6s ease-in-out infinite}
+.drop{animation:drop 1.6s ease-in-out infinite}
+.wave{animation:wave 2s linear infinite}
+.rise{animation:rise 2.2s ease-in infinite}
+.rise2{animation:rise 2.2s ease-in .9s infinite}
+.dash{animation:dash 1s ease-in-out infinite}
+@media (prefers-reduced-motion: reduce){.sway,.spin-fast,.stretch,.drop,.wave,.rise,.rise2,.dash{animation:none}}
+
+.node.locked{cursor:not-allowed}
+.c-fx,.p-fx,.h-fx,.h-mag,.c-orb,.p-orb,.h-orb,.c-core,.p-core,.h-core,.c-sp,.p-sp,.h-sp,.c-gb,.p-gb,.h-gb,.p-lvl,.h-lvl,.slosh,.shk,.glow,.o-rot{transform-origin:70px 66px}
+.el,.dust,.puff,.streak,.jet,.drp,.spot,.smk{transform-box:fill-box;transform-origin:center}
+.streak{transform-origin:right center}
+.c-F,.p-F{transform-box:fill-box;transform-origin:center bottom}
+.ch3 .h-fx,.ch3 .p-fx,.ch3 .c-fx{transform-origin:70px 103px}
+.ch4 .c-sp,.ch4 .p-sp,.ch4 .h-sp{transform-origin:30px 18px}
+
+
+.h-fx,.h-mag,.h-sp,.h-lvl,.h-bn,.h-sl,.el{transition:transform .3s ease,opacity .3s ease}
+/* I · scan */
+.ch1 .node.hov:not(.locked) .h-fx{animation:scan 1.8s ease-in-out infinite}
+.ch1 .node.hov:not(.locked) .h-mag{transform:scale(1.4)}
+.ch1 .node.hov:not(.locked) .glint{animation:glint 1.8s ease-in-out infinite}
+@keyframes scan{0%,100%{transform:translate(0px,0px) rotate(-6deg)}25%{transform:translate(6px,-4px) rotate(-12deg)}50%{transform:translate(0px,-8px) rotate(-6deg)}75%{transform:translate(-6px,-4px) rotate(0deg)}}
+@keyframes glint{0%{opacity:0;transform:translateX(-46px)}30%{opacity:.8}70%{opacity:.8}100%{opacity:0;transform:translateX(46px)}}
+/* II · excited atom */
+.ch2 .node.hov:not(.locked) .h-orb{animation:spin 1.1s linear infinite}
+.ch2 .node.hov:not(.locked) .el{transform:scale(1.5)}
+.ch2 .node.hov:not(.locked) .h-core{animation:jitter .22s linear infinite}
+@keyframes jitter{0%,100%{transform:translate(0px,0px)}25%{transform:translate(1.6px,-1.2px)}50%{transform:translate(-1.4px,1.4px)}75%{transform:translate(1.2px,1.4px)}}
+/* III · revving */
+.h-sl{opacity:0}
+.h-sl.on{opacity:1}
+.h-sl.on .sline{animation:stream .8s linear infinite}
+.h-sl.on .sl1{animation-delay:.25s}
+.h-sl.on .sl2{animation-delay:.5s}
+.ch3 .node.hov:not(.locked) .h-sl{opacity:1}
+.ch3 .node.hov:not(.locked) .sline{animation:stream .5s linear infinite}
+.ch3 .node.hov:not(.locked) .sl1{animation-delay:.15s}
+.ch3 .node.hov:not(.locked) .sl2{animation-delay:.3s}
+.ch3 .node.hov:not(.locked) .h-fx{transform:skewX(-9deg) translateX(-3px)}
+.ch3 .node.hov:not(.locked) .h-sp{animation:spin .4s linear infinite}
+.ch3 .node.hov:not(.locked) .dust{animation:kick .7s ease-out infinite}
+.ch3 .node.hov:not(.locked) .du1{animation-delay:.23s}
+.ch3 .node.hov:not(.locked) .du2{animation-delay:.46s}
+@keyframes stream{0%{transform:translateX(6px);opacity:0}30%{opacity:1}100%{transform:translateX(-14px);opacity:0}}
+@keyframes kick{0%{opacity:.9;transform:translate(0px,0px) scale(.4)}100%{opacity:0;transform:translate(-16px,-8px) scale(1.4)}}
+/* IV · forces appear, weight sags a little */
+.c-ar{opacity:0;transition:opacity .25s ease}
+.ch4 .grp.hov:not(.locked) .c-ar{opacity:1}
+.ch4 .grp.hov:not(.locked) .h-sp{transform:scaleY(1.2)}
+.ch4 .grp.hov:not(.locked) .h-bn{transform:translateY(12px)}
+/* V · gear turns over */
+.ch5 .node.hov:not(.locked) .h-gb{animation:spin 6.3s linear infinite}
+/* VI · pressure builds */
+.ch6 .node.hov:not(.locked) .h-fx{transform:scale(1.06)}
+.ch6 .node.hov:not(.locked) .h-lvl{transform:translateY(-7px)}
+.ch6 .node.hov:not(.locked) .slosh{animation:slosh .9s ease-in-out infinite}
+.ch6 .node.hov:not(.locked) .hb{animation:rise 1.2s ease-in infinite}
+.ch6 .node.hov:not(.locked) .hb2{animation-delay:.4s}
+.ch6 .node.hov:not(.locked) .hb3{animation-delay:.8s}
+@keyframes slosh{0%,100%{transform:rotate(-7deg)}50%{transform:rotate(7deg)}}
+
+
+@keyframes pop{0%{opacity:0;transform:translateY(-6px) scale(.9)}100%{opacity:1;transform:translateY(0px) scale(1)}}
+.card{animation:pop .22s cubic-bezier(.3,1.4,.6,1);transform-origin:50% 0%}
+.cta{display:block;width:100%;box-sizing:border-box;border:0;border-radius:14px;padding:12px 0px;font-family:inherit;font-size:15px;font-weight:800;letter-spacing:.8px;cursor:pointer;transition:transform .06s,box-shadow .06s}
+.cta:active{transform:translateY(4px)}
+.cta:focus-visible{outline:3px solid #FFFFFF;outline-offset:2px}
+.cta:disabled{cursor:not-allowed}
+.cta:disabled:active{transform:none}
+@media (prefers-reduced-motion: reduce){.card{animation:none}.p-fx,.p-orb,.p-core,.p-sp,.p-bn,.p-gb,.p-lvl{animation:none !important}}
+
+@keyframes shake-ta{0%,100%{transform:translateX(0px)}20%{transform:translateX(-7px)}40%{transform:translateX(6px)}60%{transform:translateX(-4px)}80%{transform:translateX(3px)}}
+@keyframes peek-ta{0%{transform:rotate(0deg) scale(1)}35%{transform:rotate(-12deg) scale(1.1)}70%{transform:rotate(4deg) scale(.98)}100%{transform:rotate(0deg) scale(1)}}
+@keyframes orbit1-ta{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
+@keyframes corebeat-ta{0%,100%{transform:scale(1)}30%{transform:scale(1.1)}60%{transform:scale(.96)}}
+@keyframes nudge-ta{0%{transform:translateX(0px)}40%{transform:translateX(9px)}70%{transform:translateX(-3px)}100%{transform:translateX(0px)}}
+@keyframes spoke60-ta{0%{transform:rotate(0deg)}100%{transform:rotate(120deg)}}
+@keyframes tug-ta{0%{transform:translateY(0px)}25%{transform:translateY(10px)}52%{transform:translateY(-4px)}76%{transform:translateY(2px)}100%{transform:translateY(0px)}}
+@keyframes tugsp-ta{0%{transform:scaleY(1)}25%{transform:scaleY(1.17)}52%{transform:scaleY(.93)}76%{transform:scaleY(1.03)}100%{transform:scaleY(1)}}
+@keyframes tick-ta{0%{transform:rotate(0deg)}55%{transform:rotate(52deg)}75%{transform:rotate(42deg)}100%{transform:rotate(45deg)}}
+@keyframes wobble-ta{0%{transform:rotate(0deg)}20%{transform:rotate(-10deg)}45%{transform:rotate(8deg)}70%{transform:rotate(-4deg)}100%{transform:rotate(0deg)}}
+@keyframes flaskbob-ta{0%,100%{transform:scale(1,1)}30%{transform:scale(1.05,.95)}60%{transform:scale(.98,1.02)}}
+.locked.tapA .shk{animation:shake-ta .45s ease-in-out}
+.ch4 .locked.tapA .c-bn{animation:shake-ta .45s ease-in-out}
+.ch1 .done.tapA .p-fx,.ch1 .current.tapA .p-fx{animation:peek-ta .5s ease-out}
+.ch2 .done.tapA .p-orb,.ch2 .current.tapA .p-orb{animation:orbit1-ta .6s cubic-bezier(.3,0,.2,1)}
+.ch2 .done.tapA .p-core,.ch2 .current.tapA .p-core{animation:corebeat-ta .4s ease-out}
+.ch3 .done.tapA .p-fx,.ch3 .current.tapA .p-fx{animation:nudge-ta .5s ease-out}
+.ch3 .done.tapA .p-sp,.ch3 .current.tapA .p-sp{animation:spoke60-ta .5s ease-out}
+.ch4 .done.tapA .p-bn,.ch4 .current.tapA .p-bn{animation:tug-ta .6s ease-out}
+.ch4 .done.tapA .p-sp,.ch4 .current.tapA .p-sp{animation:tugsp-ta .6s ease-out}
+.ch5 .done.tapA .p-gb,.ch5 .current.tapA .p-gb{animation:tick-ta .35s cubic-bezier(.3,1.4,.5,1) forwards}
+.ch6 .done.tapA .p-lvl,.ch6 .current.tapA .p-lvl{animation:wobble-ta .7s ease-out}
+.ch6 .done.tapA .p-fx,.ch6 .current.tapA .p-fx{animation:flaskbob-ta .4s ease-out}
+@keyframes shake-tb{0%,100%{transform:translateX(0px)}20%{transform:translateX(-7px)}40%{transform:translateX(6px)}60%{transform:translateX(-4px)}80%{transform:translateX(3px)}}
+@keyframes peek-tb{0%{transform:rotate(0deg) scale(1)}35%{transform:rotate(-12deg) scale(1.1)}70%{transform:rotate(4deg) scale(.98)}100%{transform:rotate(0deg) scale(1)}}
+@keyframes orbit1-tb{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
+@keyframes corebeat-tb{0%,100%{transform:scale(1)}30%{transform:scale(1.1)}60%{transform:scale(.96)}}
+@keyframes nudge-tb{0%{transform:translateX(0px)}40%{transform:translateX(9px)}70%{transform:translateX(-3px)}100%{transform:translateX(0px)}}
+@keyframes spoke60-tb{0%{transform:rotate(0deg)}100%{transform:rotate(120deg)}}
+@keyframes tug-tb{0%{transform:translateY(0px)}25%{transform:translateY(10px)}52%{transform:translateY(-4px)}76%{transform:translateY(2px)}100%{transform:translateY(0px)}}
+@keyframes tugsp-tb{0%{transform:scaleY(1)}25%{transform:scaleY(1.17)}52%{transform:scaleY(.93)}76%{transform:scaleY(1.03)}100%{transform:scaleY(1)}}
+@keyframes tick-tb{0%{transform:rotate(0deg)}55%{transform:rotate(52deg)}75%{transform:rotate(42deg)}100%{transform:rotate(45deg)}}
+@keyframes wobble-tb{0%{transform:rotate(0deg)}20%{transform:rotate(-10deg)}45%{transform:rotate(8deg)}70%{transform:rotate(-4deg)}100%{transform:rotate(0deg)}}
+@keyframes flaskbob-tb{0%,100%{transform:scale(1,1)}30%{transform:scale(1.05,.95)}60%{transform:scale(.98,1.02)}}
+.locked.tapB .shk{animation:shake-tb .45s ease-in-out}
+.ch4 .locked.tapB .c-bn{animation:shake-tb .45s ease-in-out}
+.ch1 .done.tapB .p-fx,.ch1 .current.tapB .p-fx{animation:peek-tb .5s ease-out}
+.ch2 .done.tapB .p-orb,.ch2 .current.tapB .p-orb{animation:orbit1-tb .6s cubic-bezier(.3,0,.2,1)}
+.ch2 .done.tapB .p-core,.ch2 .current.tapB .p-core{animation:corebeat-tb .4s ease-out}
+.ch3 .done.tapB .p-fx,.ch3 .current.tapB .p-fx{animation:nudge-tb .5s ease-out}
+.ch3 .done.tapB .p-sp,.ch3 .current.tapB .p-sp{animation:spoke60-tb .5s ease-out}
+.ch4 .done.tapB .p-bn,.ch4 .current.tapB .p-bn{animation:tug-tb .6s ease-out}
+.ch4 .done.tapB .p-sp,.ch4 .current.tapB .p-sp{animation:tugsp-tb .6s ease-out}
+.ch5 .done.tapB .p-gb,.ch5 .current.tapB .p-gb{animation:tick-tb .35s cubic-bezier(.3,1.4,.5,1) forwards}
+.ch6 .done.tapB .p-lvl,.ch6 .current.tapB .p-lvl{animation:wobble-tb .7s ease-out}
+.ch6 .done.tapB .p-fx,.ch6 .current.tapB .p-fx{animation:flaskbob-tb .4s ease-out}
+@keyframes shake-a{0%,100%{transform:translateX(0px)}20%{transform:translateX(-7px)}40%{transform:translateX(6px)}60%{transform:translateX(-4px)}80%{transform:translateX(3px)}}
+@keyframes rin-a{0%,8%{opacity:0;stroke-dashoffset:50}12%{opacity:1}30%{opacity:1;stroke-dashoffset:0}70%{opacity:1;stroke-dashoffset:0}100%{opacity:0;stroke-dashoffset:0}}
+@keyframes rout-a{0%,28%{opacity:0;stroke-dashoffset:40}31%{opacity:1}48%{opacity:1;stroke-dashoffset:0}75%{opacity:1;stroke-dashoffset:0}100%{opacity:0;stroke-dashoffset:0}}
+@keyframes lensfx-a{0%{transform:rotate(0deg) scale(1)}18%{transform:rotate(-8deg) scale(1.05)}45%{transform:rotate(-4deg) scale(1.02)}100%{transform:rotate(0deg) scale(1)}}
+@keyframes warm-a{0%{opacity:0}30%{opacity:.5}50%{opacity:.6}100%{opacity:0}}
+@keyframes spot-a{0%,44%{opacity:0;transform:scale(0)}54%{opacity:1;transform:scale(1.5)}63%{transform:scale(.9)}72%{transform:scale(1.15)}85%{opacity:1;transform:scale(1)}100%{opacity:0;transform:scale(.6)}}
+@keyframes smk-a{0%,55%{opacity:0;transform:translate(0px,0px) scale(.5)}65%{opacity:.9}100%{opacity:0;transform:translate(-4px,-24px) scale(1.8)}}
+@keyframes qjump-a{0%{transform:scale(1)}15%{transform:scale(.72)}35%{transform:scale(1.32)}60%{transform:scale(1.32)}75%{transform:scale(.94)}100%{transform:scale(1)}}
+@keyframes corepop-a{0%{transform:scale(1)}15%{transform:scale(1.08)}35%{transform:scale(.88)}55%{transform:scale(1.06)}100%{transform:scale(1)}}
+@keyframes glowout-a{0%{opacity:0;transform:scale(1)}15%{opacity:.4;transform:scale(1.1)}40%{opacity:.5;transform:scale(1.6)}100%{opacity:0;transform:scale(2)}}
+@keyframes photon-a{0%{opacity:1;stroke-dashoffset:24}100%{opacity:1;stroke-dashoffset:-60}}
+@keyframes dashoff-a{0%{transform:translateX(0px) scale(1,1)}16%{transform:translateX(-12px) scale(1.05,.92)}24%{transform:translateX(-4px) scale(.96,1.04)}46%{transform:translateX(90px);opacity:0}47%{transform:translateX(-90px);opacity:0}76%{transform:translateX(8px);opacity:1}88%{transform:translateX(-3px)}100%{transform:translateX(0px);opacity:1}}
+@keyframes spokes-a{0%{transform:rotate(0deg)}16%{transform:rotate(-140deg)}100%{transform:rotate(1080deg)}}
+@keyframes streak-a{0%,22%{opacity:0;transform:scaleX(0)}32%{opacity:1;transform:scaleX(1)}52%{opacity:0;transform:translateX(50px) scaleX(.2)}100%{opacity:0}}
+@keyframes dustburst-a{0%,18%{opacity:0;transform:scale(.3)}26%{opacity:1}60%{opacity:0;transform:translate(-26px,-10px) scale(1.8)}100%{opacity:0}}
+@keyframes boing-a{0%{transform:translateY(0px)}18%{transform:translateY(26px)}31%{transform:translateY(-12px)}45%{transform:translateY(10px)}59%{transform:translateY(-5px)}73%{transform:translateY(3px)}87%{transform:translateY(-1px)}100%{transform:translateY(0px)}}
+@keyframes spboing-a{0%{transform:scaleY(1)}18%{transform:scaleY(1.45)}31%{transform:scaleY(.8)}45%{transform:scaleY(1.17)}59%{transform:scaleY(.92)}73%{transform:scaleY(1.05)}87%{transform:scaleY(.98)}100%{transform:scaleY(1)}}
+@keyframes fpulse-a{0%{transform:scaleY(1)}18%{transform:scaleY(1.8)}31%{transform:scaleY(.3)}45%{transform:scaleY(1.45)}59%{transform:scaleY(.7)}73%{transform:scaleY(1.15)}87%{transform:scaleY(.95)}100%{transform:scaleY(1)}}
+@keyframes arshow-a{0%,90%{opacity:1}100%{opacity:0}}
+@keyframes bracket-a{0%,100%{transform:translateY(0px)}31%{transform:translateY(-2px)}45%{transform:translateY(1px)}}
+@keyframes gearrun-a{0%{transform:rotate(0deg)}22%{transform:rotate(30deg)}100%{transform:rotate(390deg)}}
+@keyframes puff-a{0%,40%{opacity:0;transform:translateY(0px) scale(.3)}55%{opacity:1}100%{opacity:0;transform:translateY(-22px) scale(1.6)}}
+@keyframes burst-a{0%{transform:scale(1,1)}18%{transform:scale(.86,1.06)}32%{transform:scale(1.1,.93)}50%{transform:scale(.96,1.03)}70%{transform:scale(1.02,.99)}100%{transform:scale(1,1)}}
+@keyframes lvldrop-a{0%{transform:translateY(0px)}18%{transform:translateY(-12px)}42%{transform:translateY(4px)}100%{transform:translateY(0px)}}
+@keyframes jet-a{0%,20%{opacity:0;transform:scaleY(.1)}32%{opacity:1;transform:scaleY(1)}62%{opacity:1;transform:translateY(-12px) scaleY(1.25)}100%{opacity:0;transform:translateY(-26px) scaleY(.3)}}
+@keyframes drp-a{0%,28%{opacity:0;transform:translateY(0px)}42%{opacity:1}100%{opacity:0;transform:translateY(-30px) scale(.5)}}
+@keyframes dif0-a{0%,15%{opacity:0;transform:translate(0px,0px)}25%{opacity:1}50%{transform:translate(13.9px,-26.8px)}75%{transform:translate(1.4px,-48.5px)}100%{opacity:0;transform:translate(11.1px,-63.0px)}}
+@keyframes dif1-a{0%,15%{opacity:0;transform:translate(0px,0px)}25%{opacity:1}50%{transform:translate(29.3px,-1.1px)}75%{transform:translate(41.3px,-22.5px)}100%{opacity:0;transform:translate(58.3px,-21.2px)}}
+@keyframes dif2-a{0%,15%{opacity:0;transform:translate(0px,0px)}25%{opacity:1}50%{transform:translate(19.2px,24.4px)}75%{transform:translate(44.6px,22.7px)}100%{opacity:0;transform:translate(54.1px,37.9px)}}
+@keyframes dif3-a{0%,15%{opacity:0;transform:translate(0px,0px)}25%{opacity:1}50%{transform:translate(-11.2px,25.2px)}75%{transform:translate(3.2px,43.9px)}100%{opacity:0;transform:translate(-5.1px,57.8px)}}
+@keyframes dif4-a{0%,15%{opacity:0;transform:translate(0px,0px)}25%{opacity:1}50%{transform:translate(-29.4px,6.6px)}75%{transform:translate(-38.1px,30.1px)}100%{opacity:0;transform:translate(-55.4px,32.0px)}}
+@keyframes dif5-a{0%,15%{opacity:0;transform:translate(0px,0px)}25%{opacity:1}50%{transform:translate(-21.5px,-19.9px)}75%{transform:translate(-45.1px,-13.3px)}100%{opacity:0;transform:translate(-56.2px,-26.2px)}}
+@keyframes dif6-a{0%,15%{opacity:0;transform:translate(0px,0px)}25%{opacity:1}50%{transform:translate(-0.8px,-28.4px)}75%{transform:translate(-22.0px,-39.9px)}100%{opacity:0;transform:translate(-20.5px,-56.4px)}}
+.ch1 .done.clickA .c-fx,.ch1 .current.clickA .c-fx{animation:lensfx-a 1.8s ease-out}
+.ch1 .done.clickA .rin,.ch1 .current.clickA .rin{animation:rin-a 1.8s ease-out}
+.ch1 .done.clickA .rout,.ch1 .current.clickA .rout{animation:rout-a 1.8s ease-out}
+.ch1 .done.clickA .warm,.ch1 .current.clickA .warm{animation:warm-a 1.8s ease-out}
+.ch1 .done.clickA .spot,.ch1 .current.clickA .spot{animation:spot-a 1.8s ease-out}
+.ch1 .done.clickA .spot2,.ch1 .current.clickA .spot2{animation:spot-a 1.8s ease-out .05s}
+.ch1 .done.clickA .smk,.ch1 .current.clickA .smk{animation:smk-a 1.8s ease-out}
+.ch1 .done.clickA .smk2,.ch1 .current.clickA .smk2{animation:smk-a 1.8s ease-out .15s}
+.ch2 .done.clickA .c-orb,.ch2 .current.clickA .c-orb{animation:qjump-a 1.1s ease-in-out}
+.ch2 .done.clickA .c-core,.ch2 .current.clickA .c-core{animation:corepop-a 1.1s ease-out}
+.ch2 .done.clickA .glow,.ch2 .current.clickA .glow{animation:glowout-a 1.1s ease-out}
+.ch2 .done.clickA .ph,.ch2 .current.clickA .ph{animation:photon-a .55s ease-out .5s}
+.ch2 .done.clickA .ph1,.ch2 .current.clickA .ph1{animation:photon-a .55s ease-out .58s}
+.ch2 .done.clickA .dp0,.ch2 .current.clickA .dp0{animation:dif0-a 1.1s ease-out}
+.ch2 .done.clickA .dp1,.ch2 .current.clickA .dp1{animation:dif1-a 1.1s ease-out}
+.ch2 .done.clickA .dp2,.ch2 .current.clickA .dp2{animation:dif2-a 1.1s ease-out}
+.ch2 .done.clickA .dp3,.ch2 .current.clickA .dp3{animation:dif3-a 1.1s ease-out}
+.ch2 .done.clickA .dp4,.ch2 .current.clickA .dp4{animation:dif4-a 1.1s ease-out}
+.ch2 .done.clickA .dp5,.ch2 .current.clickA .dp5{animation:dif5-a 1.1s ease-out}
+.ch2 .done.clickA .dp6,.ch2 .current.clickA .dp6{animation:dif6-a 1.1s ease-out}
+.ch3 .done.clickA .c-fx,.ch3 .current.clickA .c-fx{animation:dashoff-a 1.4s ease-in-out}
+.ch3 .done.clickA .c-sp,.ch3 .current.clickA .c-sp{animation:spokes-a 1.4s ease-in-out}
+.ch3 .done.clickA .streak,.ch3 .current.clickA .streak{animation:streak-a 1.4s ease-out}
+.ch3 .done.clickA .dust,.ch3 .current.clickA .dust{animation:dustburst-a 1.4s ease-out}
+.ch4 .done.clickA .c-bn,.ch4 .current.clickA .c-bn{animation:boing-a 1.4s ease-out}
+.ch4 .done.clickA .c-sp,.ch4 .current.clickA .c-sp{animation:spboing-a 1.4s ease-out}
+.ch4 .done.clickA .c-F,.ch4 .current.clickA .c-F{animation:fpulse-a 1.4s ease-out}
+.ch4 .done.clickA .c-ar,.ch4 .current.clickA .c-ar{animation:arshow-a 1.4s linear}
+.ch4 .done.clickA .c-br,.ch4 .current.clickA .c-br{animation:bracket-a 1.4s ease-out}
+.ch5 .done.clickA .c-gb,.ch5 .current.clickA .c-gb{animation:gearrun-a 1.3s cubic-bezier(.3,0,.3,1)}
+.ch5 .done.clickA .puff,.ch5 .current.clickA .puff{animation:puff-a 1s ease-out}
+.ch5 .done.clickA .pf1,.ch5 .current.clickA .pf1{animation:puff-a 1s ease-out .15s}
+.ch5 .done.clickA .pf2,.ch5 .current.clickA .pf2{animation:puff-a 1s ease-out .3s}
+.ch6 .done.clickA .c-fx,.ch6 .current.clickA .c-fx{animation:burst-a 1s ease-out}
+.ch6 .done.clickA .p-lvl,.ch6 .current.clickA .p-lvl{animation:lvldrop-a 1s ease-out}
+.ch6 .done.clickA .jet,.ch6 .current.clickA .jet{animation:jet-a 1.1s ease-out}
+.ch6 .done.clickA .drp,.ch6 .current.clickA .drp{animation:drp-a 1.2s ease-out}
+@keyframes shake-b{0%,100%{transform:translateX(0px)}20%{transform:translateX(-7px)}40%{transform:translateX(6px)}60%{transform:translateX(-4px)}80%{transform:translateX(3px)}}
+@keyframes rin-b{0%,8%{opacity:0;stroke-dashoffset:50}12%{opacity:1}30%{opacity:1;stroke-dashoffset:0}70%{opacity:1;stroke-dashoffset:0}100%{opacity:0;stroke-dashoffset:0}}
+@keyframes rout-b{0%,28%{opacity:0;stroke-dashoffset:40}31%{opacity:1}48%{opacity:1;stroke-dashoffset:0}75%{opacity:1;stroke-dashoffset:0}100%{opacity:0;stroke-dashoffset:0}}
+@keyframes lensfx-b{0%{transform:rotate(0deg) scale(1)}18%{transform:rotate(-8deg) scale(1.05)}45%{transform:rotate(-4deg) scale(1.02)}100%{transform:rotate(0deg) scale(1)}}
+@keyframes warm-b{0%{opacity:0}30%{opacity:.5}50%{opacity:.6}100%{opacity:0}}
+@keyframes spot-b{0%,44%{opacity:0;transform:scale(0)}54%{opacity:1;transform:scale(1.5)}63%{transform:scale(.9)}72%{transform:scale(1.15)}85%{opacity:1;transform:scale(1)}100%{opacity:0;transform:scale(.6)}}
+@keyframes smk-b{0%,55%{opacity:0;transform:translate(0px,0px) scale(.5)}65%{opacity:.9}100%{opacity:0;transform:translate(-4px,-24px) scale(1.8)}}
+@keyframes qjump-b{0%{transform:scale(1)}15%{transform:scale(.72)}35%{transform:scale(1.32)}60%{transform:scale(1.32)}75%{transform:scale(.94)}100%{transform:scale(1)}}
+@keyframes corepop-b{0%{transform:scale(1)}15%{transform:scale(1.08)}35%{transform:scale(.88)}55%{transform:scale(1.06)}100%{transform:scale(1)}}
+@keyframes glowout-b{0%{opacity:0;transform:scale(1)}15%{opacity:.4;transform:scale(1.1)}40%{opacity:.5;transform:scale(1.6)}100%{opacity:0;transform:scale(2)}}
+@keyframes photon-b{0%{opacity:1;stroke-dashoffset:24}100%{opacity:1;stroke-dashoffset:-60}}
+@keyframes dashoff-b{0%{transform:translateX(0px) scale(1,1)}16%{transform:translateX(-12px) scale(1.05,.92)}24%{transform:translateX(-4px) scale(.96,1.04)}46%{transform:translateX(90px);opacity:0}47%{transform:translateX(-90px);opacity:0}76%{transform:translateX(8px);opacity:1}88%{transform:translateX(-3px)}100%{transform:translateX(0px);opacity:1}}
+@keyframes spokes-b{0%{transform:rotate(0deg)}16%{transform:rotate(-140deg)}100%{transform:rotate(1080deg)}}
+@keyframes streak-b{0%,22%{opacity:0;transform:scaleX(0)}32%{opacity:1;transform:scaleX(1)}52%{opacity:0;transform:translateX(50px) scaleX(.2)}100%{opacity:0}}
+@keyframes dustburst-b{0%,18%{opacity:0;transform:scale(.3)}26%{opacity:1}60%{opacity:0;transform:translate(-26px,-10px) scale(1.8)}100%{opacity:0}}
+@keyframes boing-b{0%{transform:translateY(0px)}18%{transform:translateY(26px)}31%{transform:translateY(-12px)}45%{transform:translateY(10px)}59%{transform:translateY(-5px)}73%{transform:translateY(3px)}87%{transform:translateY(-1px)}100%{transform:translateY(0px)}}
+@keyframes spboing-b{0%{transform:scaleY(1)}18%{transform:scaleY(1.45)}31%{transform:scaleY(.8)}45%{transform:scaleY(1.17)}59%{transform:scaleY(.92)}73%{transform:scaleY(1.05)}87%{transform:scaleY(.98)}100%{transform:scaleY(1)}}
+@keyframes fpulse-b{0%{transform:scaleY(1)}18%{transform:scaleY(1.8)}31%{transform:scaleY(.3)}45%{transform:scaleY(1.45)}59%{transform:scaleY(.7)}73%{transform:scaleY(1.15)}87%{transform:scaleY(.95)}100%{transform:scaleY(1)}}
+@keyframes arshow-b{0%,90%{opacity:1}100%{opacity:0}}
+@keyframes bracket-b{0%,100%{transform:translateY(0px)}31%{transform:translateY(-2px)}45%{transform:translateY(1px)}}
+@keyframes gearrun-b{0%{transform:rotate(0deg)}22%{transform:rotate(30deg)}100%{transform:rotate(390deg)}}
+@keyframes puff-b{0%,40%{opacity:0;transform:translateY(0px) scale(.3)}55%{opacity:1}100%{opacity:0;transform:translateY(-22px) scale(1.6)}}
+@keyframes burst-b{0%{transform:scale(1,1)}18%{transform:scale(.86,1.06)}32%{transform:scale(1.1,.93)}50%{transform:scale(.96,1.03)}70%{transform:scale(1.02,.99)}100%{transform:scale(1,1)}}
+@keyframes lvldrop-b{0%{transform:translateY(0px)}18%{transform:translateY(-12px)}42%{transform:translateY(4px)}100%{transform:translateY(0px)}}
+@keyframes jet-b{0%,20%{opacity:0;transform:scaleY(.1)}32%{opacity:1;transform:scaleY(1)}62%{opacity:1;transform:translateY(-12px) scaleY(1.25)}100%{opacity:0;transform:translateY(-26px) scaleY(.3)}}
+@keyframes drp-b{0%,28%{opacity:0;transform:translateY(0px)}42%{opacity:1}100%{opacity:0;transform:translateY(-30px) scale(.5)}}
+@keyframes dif0-b{0%,15%{opacity:0;transform:translate(0px,0px)}25%{opacity:1}50%{transform:translate(13.9px,-26.8px)}75%{transform:translate(1.4px,-48.5px)}100%{opacity:0;transform:translate(11.1px,-63.0px)}}
+@keyframes dif1-b{0%,15%{opacity:0;transform:translate(0px,0px)}25%{opacity:1}50%{transform:translate(29.3px,-1.1px)}75%{transform:translate(41.3px,-22.5px)}100%{opacity:0;transform:translate(58.3px,-21.2px)}}
+@keyframes dif2-b{0%,15%{opacity:0;transform:translate(0px,0px)}25%{opacity:1}50%{transform:translate(19.2px,24.4px)}75%{transform:translate(44.6px,22.7px)}100%{opacity:0;transform:translate(54.1px,37.9px)}}
+@keyframes dif3-b{0%,15%{opacity:0;transform:translate(0px,0px)}25%{opacity:1}50%{transform:translate(-11.2px,25.2px)}75%{transform:translate(3.2px,43.9px)}100%{opacity:0;transform:translate(-5.1px,57.8px)}}
+@keyframes dif4-b{0%,15%{opacity:0;transform:translate(0px,0px)}25%{opacity:1}50%{transform:translate(-29.4px,6.6px)}75%{transform:translate(-38.1px,30.1px)}100%{opacity:0;transform:translate(-55.4px,32.0px)}}
+@keyframes dif5-b{0%,15%{opacity:0;transform:translate(0px,0px)}25%{opacity:1}50%{transform:translate(-21.5px,-19.9px)}75%{transform:translate(-45.1px,-13.3px)}100%{opacity:0;transform:translate(-56.2px,-26.2px)}}
+@keyframes dif6-b{0%,15%{opacity:0;transform:translate(0px,0px)}25%{opacity:1}50%{transform:translate(-0.8px,-28.4px)}75%{transform:translate(-22.0px,-39.9px)}100%{opacity:0;transform:translate(-20.5px,-56.4px)}}
+.ch1 .done.clickB .c-fx,.ch1 .current.clickB .c-fx{animation:lensfx-b 1.8s ease-out}
+.ch1 .done.clickB .rin,.ch1 .current.clickB .rin{animation:rin-b 1.8s ease-out}
+.ch1 .done.clickB .rout,.ch1 .current.clickB .rout{animation:rout-b 1.8s ease-out}
+.ch1 .done.clickB .warm,.ch1 .current.clickB .warm{animation:warm-b 1.8s ease-out}
+.ch1 .done.clickB .spot,.ch1 .current.clickB .spot{animation:spot-b 1.8s ease-out}
+.ch1 .done.clickB .spot2,.ch1 .current.clickB .spot2{animation:spot-b 1.8s ease-out .05s}
+.ch1 .done.clickB .smk,.ch1 .current.clickB .smk{animation:smk-b 1.8s ease-out}
+.ch1 .done.clickB .smk2,.ch1 .current.clickB .smk2{animation:smk-b 1.8s ease-out .15s}
+.ch2 .done.clickB .c-orb,.ch2 .current.clickB .c-orb{animation:qjump-b 1.1s ease-in-out}
+.ch2 .done.clickB .c-core,.ch2 .current.clickB .c-core{animation:corepop-b 1.1s ease-out}
+.ch2 .done.clickB .glow,.ch2 .current.clickB .glow{animation:glowout-b 1.1s ease-out}
+.ch2 .done.clickB .ph,.ch2 .current.clickB .ph{animation:photon-b .55s ease-out .5s}
+.ch2 .done.clickB .ph1,.ch2 .current.clickB .ph1{animation:photon-b .55s ease-out .58s}
+.ch2 .done.clickB .dp0,.ch2 .current.clickB .dp0{animation:dif0-b 1.1s ease-out}
+.ch2 .done.clickB .dp1,.ch2 .current.clickB .dp1{animation:dif1-b 1.1s ease-out}
+.ch2 .done.clickB .dp2,.ch2 .current.clickB .dp2{animation:dif2-b 1.1s ease-out}
+.ch2 .done.clickB .dp3,.ch2 .current.clickB .dp3{animation:dif3-b 1.1s ease-out}
+.ch2 .done.clickB .dp4,.ch2 .current.clickB .dp4{animation:dif4-b 1.1s ease-out}
+.ch2 .done.clickB .dp5,.ch2 .current.clickB .dp5{animation:dif5-b 1.1s ease-out}
+.ch2 .done.clickB .dp6,.ch2 .current.clickB .dp6{animation:dif6-b 1.1s ease-out}
+.ch3 .done.clickB .c-fx,.ch3 .current.clickB .c-fx{animation:dashoff-b 1.4s ease-in-out}
+.ch3 .done.clickB .c-sp,.ch3 .current.clickB .c-sp{animation:spokes-b 1.4s ease-in-out}
+.ch3 .done.clickB .streak,.ch3 .current.clickB .streak{animation:streak-b 1.4s ease-out}
+.ch3 .done.clickB .dust,.ch3 .current.clickB .dust{animation:dustburst-b 1.4s ease-out}
+.ch4 .done.clickB .c-bn,.ch4 .current.clickB .c-bn{animation:boing-b 1.4s ease-out}
+.ch4 .done.clickB .c-sp,.ch4 .current.clickB .c-sp{animation:spboing-b 1.4s ease-out}
+.ch4 .done.clickB .c-F,.ch4 .current.clickB .c-F{animation:fpulse-b 1.4s ease-out}
+.ch4 .done.clickB .c-ar,.ch4 .current.clickB .c-ar{animation:arshow-b 1.4s linear}
+.ch4 .done.clickB .c-br,.ch4 .current.clickB .c-br{animation:bracket-b 1.4s ease-out}
+.ch5 .done.clickB .c-gb,.ch5 .current.clickB .c-gb{animation:gearrun-b 1.3s cubic-bezier(.3,0,.3,1)}
+.ch5 .done.clickB .puff,.ch5 .current.clickB .puff{animation:puff-b 1s ease-out}
+.ch5 .done.clickB .pf1,.ch5 .current.clickB .pf1{animation:puff-b 1s ease-out .15s}
+.ch5 .done.clickB .pf2,.ch5 .current.clickB .pf2{animation:puff-b 1s ease-out .3s}
+.ch6 .done.clickB .c-fx,.ch6 .current.clickB .c-fx{animation:burst-b 1s ease-out}
+.ch6 .done.clickB .p-lvl,.ch6 .current.clickB .p-lvl{animation:lvldrop-b 1s ease-out}
+.ch6 .done.clickB .jet,.ch6 .current.clickB .jet{animation:jet-b 1.1s ease-out}
+.ch6 .done.clickB .drp,.ch6 .current.clickB .drp{animation:drp-b 1.2s ease-out}
+
+@keyframes lessonIn{0%{opacity:0}100%{opacity:1}}
+@keyframes lessonBody{0%{opacity:0;transform:translateY(16px)}100%{opacity:1;transform:translateY(0px)}}
+@keyframes barIn{0%{width:0%}}
+.lesson{animation:lessonIn .12s linear}
+.lesson > div{animation:lessonBody .3s cubic-bezier(.2,.8,.3,1) .08s backwards}
+.bar{animation:barIn .6s ease-out .25s backwards}
+.xbtn:focus-visible{outline:3px solid #1CB0F6;outline-offset:2px;border-radius:12px}
+@media (prefers-reduced-motion: reduce){.lesson,.lesson > div,.bar{animation:none}}
+</style>
+</helmet>
+<div class="ch3" style="position: relative; width: 360px; height: 1160px; background: #FFFFFF; overflow: hidden; font-family: 'Noto Sans Armenian', system-ui, sans-serif">
+<svg aria-hidden="true" width="360" height="1030" viewBox="0 0 360 1030" style="position: absolute; left: 0px; top: 0px"><path d="M170 250 C170 350.0 116 350.0 116 450 C116 570.0 236 570.0 236 690 C236 795.0 180 795.0 180 900" fill="none" stroke="#84D8FF" stroke-width="5" stroke-linecap="round" stroke-dasharray="1 14"></path></svg>
+<div style="position: absolute; left: 16px; top: 20px; width: 328px; box-sizing: border-box; padding: 16px 20px; background: #137BAC; border-radius: 16px; box-shadow: 0px 5px 0px #0F5F84; color: #FFFFFF"><div style="font-size: 13px; font-weight: 800; letter-spacing: 1px">ԳԼՈՒԽ III</div><div style="margin-top: 4px; font-size: 18px; line-height: 1.3; font-weight: 800">Մեխանիկական շարժում</div></div>
+<button class="node done {{c0}}" type="button" aria-label="Մեխանիկական շարժում — ավարտված" aria-expanded="{{e0}}" aria-controls="card0" onClick="{{k0}}" data-node="0" onMouseEnter="{{m0}}" onMouseLeave="{{l0}}" style="position: absolute; left: 100px; top: 184px; width: 140px; height: 140px"><svg aria-hidden="true" width="140" height="140" viewBox="0 0 140 140" style="overflow: visible"><g class="h-sl"><line class="sline sl0" x1="2" y1="50" x2="24" y2="50" stroke="#84D8FF" stroke-width="5" stroke-linecap="round"></line><line class="sline sl1" x1="-6" y1="66" x2="24" y2="66" stroke="#84D8FF" stroke-width="5" stroke-linecap="round"></line><line class="sline sl2" x1="6" y1="82" x2="24" y2="82" stroke="#84D8FF" stroke-width="5" stroke-linecap="round"></line></g><line class="streak" x1="-40" y1="46" x2="30" y2="46" stroke="#84D8FF" stroke-width="4" stroke-linecap="round" opacity="0"></line><line class="streak" x1="-40" y1="62" x2="30" y2="62" stroke="#1CB0F6" stroke-width="6" stroke-linecap="round" opacity="0"></line><line class="streak" x1="-40" y1="78" x2="30" y2="78" stroke="#84D8FF" stroke-width="4" stroke-linecap="round" opacity="0"></line><line class="streak" x1="-40" y1="92" x2="30" y2="92" stroke="#1899D6" stroke-width="3" stroke-linecap="round" opacity="0"></line><circle class="dust du0" cx="42" cy="104" r="7" fill="#E5E5E5" opacity="0"></circle><circle class="dust du1" cx="30" cy="98" r="5" fill="#E5E5E5" opacity="0"></circle><circle class="dust du2" cx="52" cy="108" r="5" fill="#E5E5E5" opacity="0"></circle><g class="c-fx"><g class="p-fx"><g class="h-fx"><circle cx="70" cy="73" r="37" fill="#2F2F2F"></circle><circle cx="70" cy="66" r="37" fill="#4B4B4B"></circle><circle cx="70" cy="66" r="27" fill="#1CB0F6"></circle><g class="c-sp"><g class="p-sp"><g class="o-rot"><g class="h-sp"><g><rect x="67" y="40" width="6" height="26" rx="3" fill="#84D8FF" transform="rotate(0 70 66)"></rect><rect x="67" y="40" width="6" height="26" rx="3" fill="#84D8FF" transform="rotate(60 70 66)"></rect><rect x="67" y="40" width="6" height="26" rx="3" fill="#84D8FF" transform="rotate(120 70 66)"></rect><rect x="67" y="40" width="6" height="26" rx="3" fill="#84D8FF" transform="rotate(180 70 66)"></rect><rect x="67" y="40" width="6" height="26" rx="3" fill="#84D8FF" transform="rotate(240 70 66)"></rect><rect x="67" y="40" width="6" height="26" rx="3" fill="#84D8FF" transform="rotate(300 70 66)"></rect></g></g></g></g></g><circle cx="70" cy="66" r="17" fill="#1899D6"></circle><path d="M60.4 66.6 L67.0 73.2 L80.2 59.4" fill="none" stroke="#FFFFFF" stroke-width="5.4" stroke-linecap="round" stroke-linejoin="round"></path></g></g></g></svg></button>
+<div style="position: absolute; left: 75px; top: 326px; width: 190px; text-align: center; font-size: 14px; line-height: 1.3; font-weight: 700; color: #3C3C3C; pointer-events: none">Մեխանիկական շարժում</div>
+<button class="node done {{c1}}" type="button" aria-label="Հետագիծ և ճանապարհ — ավարտված" aria-expanded="{{e1}}" aria-controls="card1" onClick="{{k1}}" data-node="1" onMouseEnter="{{m1}}" onMouseLeave="{{l1}}" style="position: absolute; left: 46px; top: 384px; width: 140px; height: 140px"><svg aria-hidden="true" width="140" height="140" viewBox="0 0 140 140" style="overflow: visible"><g class="h-sl"><line class="sline sl0" x1="2" y1="50" x2="24" y2="50" stroke="#84D8FF" stroke-width="5" stroke-linecap="round"></line><line class="sline sl1" x1="-6" y1="66" x2="24" y2="66" stroke="#84D8FF" stroke-width="5" stroke-linecap="round"></line><line class="sline sl2" x1="6" y1="82" x2="24" y2="82" stroke="#84D8FF" stroke-width="5" stroke-linecap="round"></line></g><line class="streak" x1="-40" y1="46" x2="30" y2="46" stroke="#84D8FF" stroke-width="4" stroke-linecap="round" opacity="0"></line><line class="streak" x1="-40" y1="62" x2="30" y2="62" stroke="#1CB0F6" stroke-width="6" stroke-linecap="round" opacity="0"></line><line class="streak" x1="-40" y1="78" x2="30" y2="78" stroke="#84D8FF" stroke-width="4" stroke-linecap="round" opacity="0"></line><line class="streak" x1="-40" y1="92" x2="30" y2="92" stroke="#1899D6" stroke-width="3" stroke-linecap="round" opacity="0"></line><circle class="dust du0" cx="42" cy="104" r="7" fill="#E5E5E5" opacity="0"></circle><circle class="dust du1" cx="30" cy="98" r="5" fill="#E5E5E5" opacity="0"></circle><circle class="dust du2" cx="52" cy="108" r="5" fill="#E5E5E5" opacity="0"></circle><g class="c-fx"><g class="p-fx"><g class="h-fx"><circle cx="70" cy="73" r="37" fill="#2F2F2F"></circle><circle cx="70" cy="66" r="37" fill="#4B4B4B"></circle><circle cx="70" cy="66" r="27" fill="#1CB0F6"></circle><g class="c-sp"><g class="p-sp"><g class="o-rot"><g class="h-sp"><g><rect x="67" y="40" width="6" height="26" rx="3" fill="#84D8FF" transform="rotate(0 70 66)"></rect><rect x="67" y="40" width="6" height="26" rx="3" fill="#84D8FF" transform="rotate(60 70 66)"></rect><rect x="67" y="40" width="6" height="26" rx="3" fill="#84D8FF" transform="rotate(120 70 66)"></rect><rect x="67" y="40" width="6" height="26" rx="3" fill="#84D8FF" transform="rotate(180 70 66)"></rect><rect x="67" y="40" width="6" height="26" rx="3" fill="#84D8FF" transform="rotate(240 70 66)"></rect><rect x="67" y="40" width="6" height="26" rx="3" fill="#84D8FF" transform="rotate(300 70 66)"></rect></g></g></g></g></g><circle cx="70" cy="66" r="17" fill="#1899D6"></circle><path d="M60.4 66.6 L67.0 73.2 L80.2 59.4" fill="none" stroke="#FFFFFF" stroke-width="5.4" stroke-linecap="round" stroke-linejoin="round"></path></g></g></g></svg></button>
+<div style="position: absolute; left: 21px; top: 526px; width: 190px; text-align: center; font-size: 14px; line-height: 1.3; font-weight: 700; color: #3C3C3C; pointer-events: none">Հետագիծ և ճանապարհ</div>
+<button class="node current {{c2}}" type="button" aria-label="Հավասարաչափ շարժում: Արագություն — ընթացիկ դաս" aria-expanded="{{e2}}" aria-controls="card2" onClick="{{k2}}" data-node="2" onMouseEnter="{{m2}}" onMouseLeave="{{l2}}" style="position: absolute; left: 166px; top: 624px; width: 140px; height: 140px"><svg aria-hidden="true" width="140" height="140" viewBox="0 0 140 140" style="overflow: visible"><g class="h-sl on"><line class="sline sl0" x1="2" y1="50" x2="24" y2="50" stroke="#84D8FF" stroke-width="5" stroke-linecap="round"></line><line class="sline sl1" x1="-6" y1="66" x2="24" y2="66" stroke="#84D8FF" stroke-width="5" stroke-linecap="round"></line><line class="sline sl2" x1="6" y1="82" x2="24" y2="82" stroke="#84D8FF" stroke-width="5" stroke-linecap="round"></line></g><line class="streak" x1="-40" y1="46" x2="30" y2="46" stroke="#84D8FF" stroke-width="4" stroke-linecap="round" opacity="0"></line><line class="streak" x1="-40" y1="62" x2="30" y2="62" stroke="#1CB0F6" stroke-width="6" stroke-linecap="round" opacity="0"></line><line class="streak" x1="-40" y1="78" x2="30" y2="78" stroke="#84D8FF" stroke-width="4" stroke-linecap="round" opacity="0"></line><line class="streak" x1="-40" y1="92" x2="30" y2="92" stroke="#1899D6" stroke-width="3" stroke-linecap="round" opacity="0"></line><circle class="dust du0" cx="42" cy="104" r="7" fill="#E5E5E5" opacity="0"></circle><circle class="dust du1" cx="30" cy="98" r="5" fill="#E5E5E5" opacity="0"></circle><circle class="dust du2" cx="52" cy="108" r="5" fill="#E5E5E5" opacity="0"></circle><g class="c-fx"><g class="p-fx"><g class="h-fx"><circle cx="70" cy="73" r="37" fill="#2F2F2F"></circle><circle cx="70" cy="66" r="37" fill="#4B4B4B"></circle><circle cx="70" cy="66" r="27" fill="#1CB0F6"></circle><g class="c-sp"><g class="p-sp"><g class="o-rot"><g class="h-sp"><g class="spin-fast"><rect x="67" y="40" width="6" height="26" rx="3" fill="#84D8FF" transform="rotate(0 70 66)"></rect><rect x="67" y="40" width="6" height="26" rx="3" fill="#84D8FF" transform="rotate(60 70 66)"></rect><rect x="67" y="40" width="6" height="26" rx="3" fill="#84D8FF" transform="rotate(120 70 66)"></rect><rect x="67" y="40" width="6" height="26" rx="3" fill="#84D8FF" transform="rotate(180 70 66)"></rect><rect x="67" y="40" width="6" height="26" rx="3" fill="#84D8FF" transform="rotate(240 70 66)"></rect><rect x="67" y="40" width="6" height="26" rx="3" fill="#84D8FF" transform="rotate(300 70 66)"></rect></g></g></g></g></g><circle cx="70" cy="66" r="17" fill="#1899D6"></circle><polygon points="70.0,55.0 72.9,62.0 80.5,62.6 74.8,67.5 76.5,74.9 70.0,71.0 63.5,74.9 65.2,67.5 59.5,62.6 67.1,62.0" fill="#FFFFFF" stroke="#FFFFFF" stroke-width="3" stroke-linejoin="round"></polygon></g></g></g></svg></button>
+<div style="position: absolute; left: 141px; top: 766px; width: 190px; text-align: center; font-size: 14px; line-height: 1.3; font-weight: 700; color: #3C3C3C; pointer-events: none">Հավասարաչափ շարժում: Արագություն</div>
+<div class="bob" style="position: absolute; left: 184px; top: 568px; width: 104px; pointer-events: none"><div style="position: relative; box-sizing: border-box; width: 104px; padding: 8px 0px; background: #FFFFFF; border: 2px solid #E5E5E5; border-radius: 12px; text-align: center; font-size: 15px; font-weight: 800; letter-spacing: 0.5px; color: #137BAC">ՍԿՍԵԼ<div style="position: absolute; left: 45px; bottom: -7px; width: 12px; height: 12px; background: #FFFFFF; border-right: 2px solid #E5E5E5; border-bottom: 2px solid #E5E5E5; transform: rotate(45deg)"></div></div></div>
+<button class="node locked {{c3}}" type="button" aria-label="Արագության որոշումը (ԼԱ) — փակ" aria-expanded="{{e3}}" aria-controls="card3" onClick="{{k3}}" data-node="3" onMouseEnter="{{m3}}" onMouseLeave="{{l3}}" style="position: absolute; left: 110px; top: 834px; width: 140px; height: 140px"><svg aria-hidden="true" width="140" height="140" viewBox="0 0 140 140" style="overflow: visible"><g class="shk"><g class="c-fx"><g class="p-fx"><g class="h-fx"><circle cx="70" cy="73" r="37" fill="#BDBDBD"></circle><circle cx="70" cy="66" r="37" fill="#D4D4D4"></circle><circle cx="70" cy="66" r="27" fill="#E5E5E5"></circle><g class="c-sp"><g class="p-sp"><g class="o-rot"><g class="h-sp"><g><rect x="67" y="40" width="6" height="26" rx="3" fill="#F2F2F2" transform="rotate(0 70 66)"></rect><rect x="67" y="40" width="6" height="26" rx="3" fill="#F2F2F2" transform="rotate(60 70 66)"></rect><rect x="67" y="40" width="6" height="26" rx="3" fill="#F2F2F2" transform="rotate(120 70 66)"></rect><rect x="67" y="40" width="6" height="26" rx="3" fill="#F2F2F2" transform="rotate(180 70 66)"></rect><rect x="67" y="40" width="6" height="26" rx="3" fill="#F2F2F2" transform="rotate(240 70 66)"></rect><rect x="67" y="40" width="6" height="26" rx="3" fill="#F2F2F2" transform="rotate(300 70 66)"></rect></g></g></g></g></g><circle cx="70" cy="66" r="17" fill="#C9C9C9"></circle><path d="M62 64 v-6 a8 8 0 0 1 16 0 v6" fill="none" stroke="#FFFFFF" stroke-width="5" stroke-linecap="round"></path><rect x="57" y="63" width="26" height="21" rx="5" fill="#FFFFFF"></rect></g></g></g></g></svg></button>
+<div style="position: absolute; left: 85px; top: 976px; width: 190px; text-align: center; font-size: 14px; line-height: 1.3; font-weight: 700; color: #AFAFAF; pointer-events: none">Արագության որոշումը (ԼԱ)</div>
+<sc-if value="{{o0}}" hint-placeholder-val="{{ false }}"><div class="card" id="card0" style="position: absolute; left: 44px; top: 316px; width: 252px; box-sizing: border-box; padding: 16px; border-radius: 16px; z-index: 5; background: #137BAC; color: #FFFFFF; box-shadow: 0px 5px 0px #0F5F84"><div style="position: absolute; left: 117px; top: -9px; width: 16px; height: 16px; transform: rotate(45deg); border-radius: 3px; background: #137BAC"></div><div style="position: relative"><div style="font-size: 16px; font-weight: 800; line-height: 1.3">Մեխանիկական շարժում</div><div style="margin-top: 6px; font-size: 14px; line-height: 1.4; font-weight: 600">Ավարտված է։ Կարող ես կրկնել։</div><button class="cta" type="button" onClick="{{g0}}" style="margin-top: 14px; background: #FFFFFF; color: #137BAC; box-shadow: 0px 4px 0px #0F5F84">ԿՐԿՆԵԼ</button></div></div></sc-if>
+<sc-if value="{{o1}}" hint-placeholder-val="{{ false }}"><div class="card" id="card1" style="position: absolute; left: 12px; top: 516px; width: 252px; box-sizing: border-box; padding: 16px; border-radius: 16px; z-index: 5; background: #137BAC; color: #FFFFFF; box-shadow: 0px 5px 0px #0F5F84"><div style="position: absolute; left: 95px; top: -9px; width: 16px; height: 16px; transform: rotate(45deg); border-radius: 3px; background: #137BAC"></div><div style="position: relative"><div style="font-size: 16px; font-weight: 800; line-height: 1.3">Հետագիծ և ճանապարհ</div><div style="margin-top: 6px; font-size: 14px; line-height: 1.4; font-weight: 600">Ավարտված է։ Կարող ես կրկնել։</div><button class="cta" type="button" onClick="{{g1}}" style="margin-top: 14px; background: #FFFFFF; color: #137BAC; box-shadow: 0px 4px 0px #0F5F84">ԿՐԿՆԵԼ</button></div></div></sc-if>
+<sc-if value="{{o2}}" hint-placeholder-val="{{ false }}"><div class="card" id="card2" style="position: absolute; left: 96px; top: 756px; width: 252px; box-sizing: border-box; padding: 16px; border-radius: 16px; z-index: 5; background: #137BAC; color: #FFFFFF; box-shadow: 0px 5px 0px #0F5F84"><div style="position: absolute; left: 131px; top: -9px; width: 16px; height: 16px; transform: rotate(45deg); border-radius: 3px; background: #137BAC"></div><div style="position: relative"><div style="font-size: 16px; font-weight: 800; line-height: 1.3">Հավասարաչափ շարժում: Արագություն</div><div style="margin-top: 6px; font-size: 14px; line-height: 1.4; font-weight: 600">Հաջորդ դասը քեզ է սպասում։</div><button class="cta" type="button" onClick="{{g2}}" style="margin-top: 14px; background: #FFFFFF; color: #137BAC; box-shadow: 0px 4px 0px #0F5F84">ՍԿՍԵԼ</button></div></div></sc-if>
+<sc-if value="{{o3}}" hint-placeholder-val="{{ false }}"><div class="card" id="card3" style="position: absolute; left: 54px; top: 966px; width: 252px; box-sizing: border-box; padding: 16px; border-radius: 16px; z-index: 5; background: #F7F7F7; border: 2px solid #E5E5E5; color: #4B4B4B"><div style="position: absolute; left: 117px; top: -9px; width: 16px; height: 16px; transform: rotate(45deg); border-radius: 3px; background: #F7F7F7; border-left: 2px solid #E5E5E5; border-top: 2px solid #E5E5E5"></div><div style="position: relative"><div style="font-size: 16px; font-weight: 800; line-height: 1.3; color: #4B4B4B">Արագության որոշումը (ԼԱ)</div><div style="margin-top: 6px; font-size: 14px; line-height: 1.4; font-weight: 600; color: #6F6F6F">Ավարտիր նախորդ դասերը, որ այս դասը բացվի։</div><button class="cta" type="button" disabled style="margin-top: 14px; background: #E5E5E5; color: #8A8A8A">ՓԱԿ Է</button></div></div></sc-if>
+<sc-if value="{{lessonOpen}}" hint-placeholder-val="{{ false }}"><div class="lesson" style="position: absolute; left: 0px; top: 0px; width: 360px; height: 1160px; box-sizing: border-box; padding: 20px; background: #FFFFFF; z-index: 10; display: flex; flex-direction: column; gap: 28px"><div style="display: flex; align-items: center; gap: 12px"><button class="xbtn" type="button" aria-label="Փակել դասը" onClick="{{closeLesson}}" style="width: 44px; height: 44px; border: 0px; background: none; padding: 0px; cursor: pointer; display: flex; align-items: center; justify-content: center"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 22 22"><path d="M4 4 L18 18 M18 4 L4 18" stroke="#AFAFAF" stroke-width="3.5" stroke-linecap="round"></path></svg></button><div style="flex: 1; height: 16px; border-radius: 8px; background: #E5E5E5; overflow: hidden"><div class="bar" style="width: 12%; height: 16px; border-radius: 8px; background: #1CB0F6"></div></div></div><div style="display: flex; flex-direction: column; gap: 8px"><div style="font-size: 13px; font-weight: 800; letter-spacing: 1px; color: #137BAC">ԳԼՈՒԽ III</div><div style="font-size: 24px; line-height: 1.3; font-weight: 800; color: #3C3C3C">{{lessonTitle}}</div><div style="font-size: 15px; line-height: 1.5; font-weight: 600; color: #6F6F6F">Այստեղ կբացվի դասի առաջին քայլը։</div></div></div></sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":360,"height":1160}}'>
+class Component extends DCLogic {
+keep() {
+return true;
+}
+renderVals() {
+const st = this.state || {};
+const open = st.open === undefined ? -1 : st.open;
+const t = st.t || [0, 0, 0, 0];
+const g = st.g || [0, 0, 0, 0];
+const h = st.h || [false, false, false, false];
+const out = {};
+for (let i = 0; i < 4; i++) {
+const tap = t[i] === 0 ? '' : (t[i] % 2 ? 'tapA' : 'tapB');
+const go = g[i] === 0 ? '' : (g[i] % 2 ? 'clickA' : 'clickB');
+const hov = h[i] || (this.keep() && open === i);
+out['c' + i] = tap + ' ' + go + (hov ? ' hov' : '');
+out['o' + i] = open === i;
+out['e' + i] = open === i ? 'true' : 'false';
+out['k' + i] = () => this.toggle(i);
+out['g' + i] = () => this.start(i);
+out['m' + i] = () => this.setHov(i, true);
+out['l' + i] = (e) => this.leave(i, e);
+}
+const L = ["Մեխանիկական շարժում", "Հետագիծ և ճանապարհ", "Հավասարաչափ շարժում: Արագություն", "Արագության որոշումը (ԼԱ)"];
+const lesson = st.lesson === undefined ? -1 : st.lesson;
+out.lessonOpen = lesson !== -1;
+out.lessonTitle = lesson === -1 ? '' : L[lesson];
+out.closeLesson = () => this.closeLesson();
+return out;
+}
+settle(root) {
+try {
+const calm = typeof matchMedia === 'function' && matchMedia('(prefers-reduced-motion: reduce)').matches;
+if (!root || !root.getAnimations || calm) { if (root) root.classList.remove('hov'); return; }
+const spinners = [];
+root.querySelectorAll('.h-orb,.h-sp,.h-gb').forEach((el) => {
+const an = el.getAnimations().filter((a) => a.animationName);
+const o = el.parentNode;
+if (!an.length || !o || !o.classList || !o.classList.contains('o-rot')) return;
+const m = new DOMMatrix(getComputedStyle(el).transform);
+spinners.push({ o: o, ang: Math.atan2(m.b, m.a) * 180 / Math.PI, v: 360 / (Number(an[0].effect.getTiming().duration) || 1000) });
+});
+const snap = [];
+root.querySelectorAll('*').forEach((el) => {
+if (el.classList && (el.classList.contains('h-orb') || el.classList.contains('h-sp') || el.classList.contains('h-gb'))) return;
+const an = el.getAnimations().filter((a) => a.animationName);
+if (an.length) {
+const cs = getComputedStyle(el);
+snap.push({ el: el, names: an.map((a) => a.animationName).join(','), t: cs.transform, o: cs.opacity });
+}
+});
+root.classList.remove('hov');
+const T = 750;
+spinners.forEach((sp) => {
+const base = parseFloat(sp.o.getAttribute('data-rot') || '0') + sp.ang;
+const end = base + sp.v * T / 3;
+sp.o.style.transform = 'rotate(' + end + 'deg)';
+sp.o.setAttribute('data-rot', String(end % 360));
+sp.o.animate([{ transform: 'rotate(' + base + 'deg)' }, { transform: 'rotate(' + end + 'deg)' }], { duration: T, easing: 'cubic-bezier(.2,.6,.4,1)' });
+});
+snap.forEach((s) => {
+const names = s.el.getAnimations().filter((a) => a.animationName).map((a) => a.animationName).join(',');
+if (names === s.names) return;
+const cs = getComputedStyle(s.el);
+if (cs.transform === s.t && cs.opacity === s.o) return;
+s.el.animate([{ transform: s.t, opacity: s.o }, { transform: cs.transform, opacity: cs.opacity }], { duration: 380, easing: 'cubic-bezier(.2,.7,.3,1)' });
+});
+} catch (err) {}
+}
+nodeEl(i) {
+return typeof document !== 'undefined' ? document.querySelector('[data-node="' + i + '"]') : null;
+}
+setHov(i, v) {
+const h = ((this.state && this.state.h) || [false, false, false, false]).slice();
+h[i] = v;
+this.setState({ h: h });
+}
+leave(i, e) {
+const st = this.state || {};
+const t = e && e.currentTarget;
+const root = t ? ((t.closest && t.closest('.grp')) || t) : null;
+if (!(this.keep() && st.open === i)) this.settle(root);
+this.setHov(i, false);
+}
+toggle(i) {
+const s = this.state || {};
+if (s.busy) return;
+const h = s.h || [false, false, false, false];
+const prev = s.open === undefined ? -1 : s.open;
+const next = prev === i ? -1 : i;
+if (this.keep() && prev !== -1 && prev !== next && !h[prev]) this.settle(this.nodeEl(prev));
+const tt = (s.t || [0, 0, 0, 0]).slice();
+tt[i] += 1;
+this.setState({ t: tt, open: next });
+}
+start(i) {
+const s = this.state || {};
+if (s.busy) return;
+const h = s.h || [false, false, false, false];
+if (this.keep() && !h[i]) this.settle(this.nodeEl(i));
+const gg = (s.g || [0, 0, 0, 0]).slice();
+gg[i] += 1;
+this.setState({ g: gg, open: -1, busy: true });
+let finished = false;
+const done = () => {
+if (finished) return;
+finished = true;
+this.setState({ busy: false, lesson: i });
+};
+const calm = typeof matchMedia === 'function' && matchMedia('(prefers-reduced-motion: reduce)').matches;
+setTimeout(done, calm ? 0 : this.cut());
+}
+closeLesson() {
+this.setState({ lesson: -1 });
+}
+cut() {
+return 620;
+}
+}
+</script>
+</body>
+</html>
