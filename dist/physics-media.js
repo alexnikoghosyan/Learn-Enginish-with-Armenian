@@ -13,7 +13,7 @@ const PHYSICS_IMAGES = {
   "atom": {"src": "/physics/img/atom.d6ee189a.webp", "alt": "Ատոմի պարզ մոդել", "box": [49, 53, 463, 458]},
   "balance-scale": {"src": "/physics/img/balance-scale.9b49772a.webp", "alt": "Նժարավոր կշեռք", "box": [49, 72, 463, 440]},
   "book": {"src": "/physics/img/book.dc025d40.webp", "alt": "Կապույտ գիրք՝ դատարկ պիտակով", "box": [98, 49, 414, 463]},
-  "chapter-1-cover": {"src": "/physics/img/chapter-1-cover.ae9ebaf3.webp", "alt": "Աստղադիտակ եռոտանու վրա", "box": [69, 49, 443, 463]},
+  "chapter-1-cover": {"src": "/physics/img/chapter-1-cover.ec468fbf.webp", "alt": "Աստղադիտակ եռոտանու վրա", "box": [69, 49, 443, 463]},
   "chapter-2-cover": {"src": "/physics/img/chapter-2-cover.d8ecdfae.webp", "alt": "Ջրի կաթիլ մասնիկներով", "box": [106, 49, 405, 463]},
   "chapter-3-cover": {"src": "/physics/img/chapter-3-cover.50769519.webp", "alt": "Արագ ընթացող կարմիր մեքենա", "box": [49, 182, 463, 330]},
   "chapter-4-cover": {"src": "/physics/img/chapter-4-cover.91355643.webp", "alt": "Ձեռքը հրում է տուփը", "box": [49, 105, 463, 407]},

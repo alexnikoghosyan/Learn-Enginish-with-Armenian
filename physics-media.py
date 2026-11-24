@@ -14,6 +14,7 @@ import io
 import json
 import math
 import pathlib
+import re
 import sys
 
 from PIL import Image, ImageDraw
@@ -67,7 +68,7 @@ BLANK_MARKS = {}  # (x0, y0, x1, y1, նմուշի x[, src_y]) 1024 px նկարո
 
 # Նոր (2026-11-24) նկարների լրացուցիչ մշակում. BG_SEEDS՝ փակ «անցքեր» (1024 px նկարի կոորդինատներով), որոնք պետք է թափանցիկ լինեն.
 # DEHALO՝ եզրի բաց (գրեթե սպիտակ) պիքսելները հանվում են (JPEG-ի սպիտակ եզրագիծ չմնա). սպիտակ մասերը (foam-ball խորանարդ) չեն դիպչվում։
-BG_SEEDS = {'key': [(276, 512)]}
+BG_SEEDS = {'key': [(276, 512)], 'chapter-1-cover': [(445, 697), (576, 697)]}  # chapter-1-cover. եռոտանու ոտքերի արանքի սպիտակ եռանկյունները
 DEHALO = {'key', 'book', 'apple', 'stone', 'pencil', 'hook-weight', 'ice-melting', 'table', 'foam-ball', 'cube-wood', 'cube-aluminium', 'cube-steel'}
 
 
@@ -132,15 +133,24 @@ def clean_image(path):
     return out
 
 
-def build_media():
+def read_media_js():
+    text = MEDIA.read_text(encoding='utf-8')
+    frames = json.loads(re.search(r'PHYSICS_MEDIA = (\{.*?\});' + chr(10) + 'const', text, re.S).group(1))
+    images = json.loads(re.search(r'PHYSICS_IMAGES = (\{.*\});', text, re.S).group(1))
+    return frames, images
+
+
+def build_media(only=None):
     alts = json.loads((SRC / 'image-list.json').read_text(encoding='utf-8')) if (SRC / 'image-list.json').exists() else {}
-    frames, images = {}, {}
+    frames, images = read_media_js() if only else ({}, {})
     for folder in sorted(p for p in (SRC / 'renders').iterdir() if p.is_dir()) if (SRC / 'renders').exists() else []:
         data, count, cols, width, height = sheet_for(folder)
         name = write_versioned(FRAMES, folder.name, data)
         frames[folder.name] = {'type': 'frames', 'src': '/physics/frames/' + name, 'frames': count, 'cols': cols, 'w': width, 'h': height}
         print('frames %s -> %s (%d KB, %d frames)' % (folder.name, name, len(data) // 1024, count))
     for path in sorted((SRC / 'images').glob('*.png')) if (SRC / 'images').exists() else []:
+        if only and path.stem != only:
+            continue
         photo = path.stem in PHOTOS
         cleaned = fit_photo(path) if photo else clean_image(path)
         data = encode(cleaned, MAX_PHOTO if photo else MAX_IMAGE, (92, 85, 75, 65, 55, 45, 35), exact=False)
@@ -193,5 +203,7 @@ def build_palette(image_id):
 if __name__ == '__main__':
     if '--palette' in sys.argv:
         build_palette(sys.argv[sys.argv.index('--palette') + 1])
+    elif '--only' in sys.argv:
+        build_media(sys.argv[sys.argv.index('--only') + 1])
     else:
         build_media()
