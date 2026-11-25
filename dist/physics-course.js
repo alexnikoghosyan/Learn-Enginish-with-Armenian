@@ -71,6 +71,7 @@ function physSectionKind(title) {
 
 const PHYSICS_COURSE = {
   grade: 7,
+  g: 10,
   chapters: physChapterData.map(([n, title, page, rows], index) => ({
     id: 'ch' + (index + 1), n, title, page, color: index, cover: 'chapter-' + (index + 1) + '-cover',
     sections: rows.map(([number, name, from]) => ({ id: 's' + number, n: number, title: name, page: from, kind: physSectionKind(name) }))

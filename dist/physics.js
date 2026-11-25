@@ -6,11 +6,24 @@ function physicsStatus(section, next) {
   return section === next && physicsReady(section.id) ? 'current' : 'locked';
 }
 
+// «7 | 8» ընտրիչ. դասարանը փոխելիս նկարվում է այդ դասընթացի ճանապարհը (/physics կամ /physics/8)
+function physGradeTabs() {
+  return '<div class="phys-grades" role="group" aria-label="Դասարան">' + [7, 8].map(grade => '<button type="button" class="secondary" aria-pressed="' + (grade === physGrade) +
+    '" onclick="openPhysicsGrade(' + grade + ')">Ֆիզիկա ' + grade + '</button>').join('') + '</div>';
+}
+
+function openPhysicsGrade(grade) {
+  if (grade === physGrade) return;
+  physSetGrade(grade);
+  physics();
+}
+
 function physics() {
   physicsCloseTool();
   physNodesReset();
   const next = physicsNext();
-  const units = PHYSICS_COURSE.chapters.map((chapter, index) => {
+  const course = physCourse();
+  const units = course.chapters.map((chapter, index) => {
     const n = index + 1;
     const stops = chapter.sections.map((section, offset) => physNodeStopHtml(n, section, physicsStatus(section, next), [0, 1, 2, 2, 1, 0, 0, 1, 2, 1][offset % 10])).join('');
     const done = chapter.sections.filter(section => physicsDone(section.id)).length;
@@ -20,7 +33,7 @@ function physics() {
       courseMilestone(done === chapter.sections.length) + '</section>';
   }).join('');
   const progress = physicsProgress();
-  app.innerHTML = courseLayout('<div class="learning-path phys-path"><h1>Ֆիզիկա 7</h1><div class="path-intro"><p>' +
+  app.innerHTML = courseLayout('<div class="learning-path phys-path"><h1>Ֆիզիկա ' + physGrade + '</h1>' + physGradeTabs() + '<div class="path-intro"><p>' +
     progress.done + ' / ' + progress.total + ' դաս ավարտված</p></div>' + units + '</div>', 'physics');
   const path = app.querySelector('.phys-path');
   physNodeBind(path);

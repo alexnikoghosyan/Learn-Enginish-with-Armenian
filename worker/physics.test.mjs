@@ -105,7 +105,7 @@ test('դասընթացի կառուցվածք. 6 գլուխ, 55 §, էջերն �
 });
 
 // ---------- Հերթականություն (խիստ §1 → §55) ----------
-const sequenceFiles = ['physics-math.js', 'physics-text.js', 'physics-course.js', 'physics-lessons.js', 'physics-lessons-2.js', 'physics-lessons-3.js', 'physics-lesson.js', 'physics.js'];
+const sequenceFiles = ['physics-math.js', 'physics-text.js', 'physics-course.js', 'physics8-course.js', 'physics-lessons.js', 'physics-lessons-2.js', 'physics-lessons-3.js', 'physics-lesson.js', 'physics.js'];
 function sequence(ids) {
   const context = vm.createContext({ state: { physics: { done: Object.fromEntries(ids.map(id => [id, true])), at: {} } } });
   vm.runInContext(read(sequenceFiles) + '\n;globalThis.api = { physicsNext, physicsCanOpen, physicsStatus, physicsProgress, physicsSections };', context);

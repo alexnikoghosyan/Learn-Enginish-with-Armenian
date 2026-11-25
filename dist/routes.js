@@ -7,6 +7,7 @@
 //   /words/unit/2/lesson/4    2-րդ բաժնի 4-րդ բառի դասը
 //   /words/dictionary, /words/cards, /words/pictures
 //   /physics, /physics/lesson/s4   Ֆիզիկա 7՝ ճանապարհ և դաս (§ 4)
+//   /physics/8, /physics/8/lesson/s4   Ֆիզիկա 8՝ ճանապարհ և դաս
 //   /review, /practice, /sounds, /sounds/practice, /leaderboard, /journal, /profile, /signup, /signin, /welcome
 const routeUsesHash = location.protocol === 'file:';
 let routeApplying = false;
@@ -32,7 +33,8 @@ function routeTitle(path) {
     grammar: kind === 'lesson' ? (extra === 'practice' ? 'Վարժություն ' + number : 'Դաս ' + number) + ' — Քերականություն' : 'Քերականություն',
     words: kind === 'unit' ? (WORDS[currentWordIndex]?.en || 'Դաս') + ' — Բառեր' :
       ({ dictionary: 'Բառարան', cards: 'Բառաքարտեր', pictures: 'Նկարներ' })[kind] || 'Բառեր',
-    physics: kind === 'lesson' && /^s\d+$/.test(number) ? '§' + number.slice(1) + ' — Ֆիզիկա' : 'Ֆիզիկա',
+    physics: kind === 'lesson' && /^s\d+$/.test(number) ? '§' + number.slice(1) + ' — Ֆիզիկա' :
+      kind === '8' ? (number === 'lesson' && /^s\d+$/.test(extra) ? '§' + extra.slice(1) + ' — Ֆիզիկա 8' : 'Ֆիզիկա 8') : 'Ֆիզիկա',
     review: 'Կրկնություն', practice: 'Կրկնություն', leaderboard: 'Վարկանիշ', sounds: kind === 'practice' ? 'Վարժություն — Հնչյուններ' : 'Հնչյուններ',
     journal: 'Իմ գրառումները', profile: kind === 'avatar' ? 'Փոխել ավատարը' : 'Պրոֆիլ', signup: 'Գրանցում', signin: 'Մուտք'
   };
@@ -78,8 +80,8 @@ routeHook('lesson', index => '/grammar/lesson/' + (index + 1));
 routeHook('openGrammarPractice', index => '/grammar/lesson/' + (index + 1) + '/practice');
 routeHook('drawLearningPath', () => '/words');
 routeHook('drawWordLesson', () => wordLessonPath());
-routeHook('physics', () => '/physics');
-routeHook('openPhysicsLesson', id => '/physics/lesson/' + id);
+routeHook('physics', () => physPath());
+routeHook('openPhysicsLesson', id => physPath(id));
 routeHook('startCumulativeReview', () => '/review');
 routeHook('words', () => '/words/dictionary');
 routeHook('cards', () => '/words/cards');
@@ -152,9 +154,12 @@ function applyRoute({ parts, query }) {
     return;
   }
   if (section === 'physics') {
-    if (kind === 'lesson' && physicsReady(number) && !extra) {
+    const grade = kind === '8' ? 8 : 7;
+    const [lessonKind, id, tail] = grade === 8 ? [number, extra, more] : [kind, number, extra];
+    physSetGrade(grade);
+    if (lessonKind === 'lesson' && physicsReady(id) && !tail) {
       const mark = routeCounter;
-      openPhysicsLesson(number);
+      openPhysicsLesson(id, grade);
       if (routeCounter !== mark) return;
     }
     return go('physics');

@@ -68,6 +68,7 @@ function useAccountProgress(importGuest = false) {
   state.soundProgress ??= {};
   state.soundXp ??= 0;
   state.physics ??= { done: {}, at: {} };
+  state.physics8 ??= { done: {}, at: {} };
   state.physicsXp ??= 0;
   save();
 }

@@ -34,16 +34,16 @@ function studyHome() {
 }
 
 function physicsCard() {
-  const { done, total } = physicsProgress();
-  const next = physicsNext();
-  const ready = next && physicsReady(next.id);
+  const { done, total } = physicsProgress(7);
+  const next = physicsNext(7);
+  const ready = next && physicsReady(next.id, 7);
   const picture = physImageReady('home-card') ? physImageTag('home-card', 'phys-card-img') : '';
   return `<section class="panel study-card">
           ${picture}<h2>Ֆիզիկա 7</h2>
           <p>${done} / ${total} դաս ավարտված</p>
           <progress max="${total}" value="${done}" aria-label="Ֆիզիկայի առաջընթաց"></progress>
           <p class="study-next">${next ? '§' + next.n + '. ' + esc(next.title) : 'Բոլոր դասերն ավարտված են։'}${next && !ready ? ' <small class="phys-soon">Շուտով</small>' : ''}</p>
-          <button class="primary" onclick="${ready ? "openPhysicsLesson('" + next.id + "')" : "go('physics')"}">${ready ? 'Շարունակել →' : 'Բացել ճանապարհը'}</button>
+          <button class="primary" onclick="${ready ? "openPhysicsLesson('" + next.id + "', 7)" : "go('physics')"}">${ready ? 'Շարունակել →' : 'Բացել ճանապարհը'}</button>
           <button class="secondary" onclick="go('physics')">Ուսուցման ճանապարհ</button>
         </section>`;
 }

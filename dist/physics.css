@@ -155,3 +155,8 @@
 .phys-card.is-locked .cta { background: #e5e5e5; color: #8a8a8a; box-shadow: none; }
 .phys-track { position: absolute; left: 0; top: 0; z-index: 0; pointer-events: none; overflow: visible; }
 @media (prefers-reduced-motion: reduce) { .phys-start, .phys-card { animation: none; } }
+
+/* «7 | 8» ընտրիչ ճանապարհի վերևում */
+.phys-grades { display: flex; gap: 8px; margin: 0 0 12px; }
+.phys-grades button { flex: 1; max-width: 160px; font-weight: 800; }
+.phys-grades button[aria-pressed="true"] { color: #fff; background: #1cb0f6; border-color: #1899d6; box-shadow: 0 4px #1899d6; }

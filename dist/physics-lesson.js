@@ -1,23 +1,33 @@
 // Ֆիզիկայի դասի շարժիչ. քայլերի տեսակները՝ physics-steps.js-ում։ Դասերը բացվում են ԽԻՍՏ հերթականությամբ (§1 → §55)։
 state.physics ??= { done: {}, at: {} };
+state.physics8 ??= { done: {}, at: {} };
 state.physicsXp ??= 0;
 let physLesson = null;
 
-const physicsReady = id => Boolean(PHYSICS_LESSONS[id]);
-const physicsDone = id => Boolean(state.physics.done[id]);
-const physicsSections = () => PHYSICS_COURSE.chapters.flatMap(chapter => chapter.sections);
+// Դասընթացը՝ ըստ դասարանի (7 կամ 8). physGrade-ը ընթացիկն է, ուղիները՝ /physics (7) և /physics/8։
+// Ամեն դասընթաց ունի իր քարտեզը, դասերը և առաջընթացը (state.physics / state.physics8), XP-ն ընդհանուր է։ 8-րդը բաց է սկզբից։
+let physGrade = 7;
+const physCourse = (grade = physGrade) => PHYSICS_COURSES[grade];
+const physState = (grade = physGrade) => (grade === 8 ? state.physics8 : state.physics);
+const physLessonsOf = (grade = physGrade) => (grade === 8 ? PHYSICS8_LESSONS : PHYSICS_LESSONS);
+const physSetGrade = grade => { physGrade = grade; };
+const physPath = id => (physGrade === 8 ? '/physics/8' : '/physics') + (id ? '/lesson/' + id : '');
+
+const physicsReady = (id, grade) => Boolean(physLessonsOf(grade)[id]);
+const physicsDone = (id, grade) => Boolean(physState(grade).done[id]);
+const physicsSections = grade => physCourse(grade).chapters.flatMap(chapter => chapter.sections);
 
 // Դասընթացի հերթականությամբ առաջին չավարտված §-ը (պատրաստ լինի, թե ոչ)
-const physicsNext = () => physicsSections().find(section => !physicsDone(section.id));
+const physicsNext = grade => physicsSections(grade).find(section => !physicsDone(section.id, grade));
 
 // Բացվում է միայն պատրաստ դասը, որը կամ ավարտված է (կրկնել), կամ հերթական (current) է
-function physicsCanOpen(section) {
-  return Boolean(section) && physicsReady(section.id) && (physicsDone(section.id) || section === physicsNext());
+function physicsCanOpen(section, grade) {
+  return Boolean(section) && physicsReady(section.id, grade) && (physicsDone(section.id, grade) || section === physicsNext(grade));
 }
 
-function physicsProgress() {
-  const sections = physicsSections();
-  return { total: sections.length, done: sections.filter(section => physicsDone(section.id)).length };
+function physicsProgress(grade) {
+  const sections = physicsSections(grade);
+  return { total: sections.length, done: sections.filter(section => physicsDone(section.id, grade)).length };
 }
 
 // Blender կադրաշերտի քայլը ցուցադրվում է միայն եթե մեդիան կա և էջը սերվերից է (file:-ում՝ բաց է թողնվում)
@@ -27,12 +37,13 @@ function physicsCloseTool() {
   if (physLesson && physLesson.tool) { physLesson.tool.destroy(); physLesson.tool = null; }
 }
 
-function openPhysicsLesson(id) {
+function openPhysicsLesson(id, grade = physGrade) {
+  physSetGrade(grade);
   if (!physicsCanOpen(physicsSections().find(section => section.id === id))) { go('physics'); return; }
   view = 'physics';
   renderNavigation();
-  const steps = PHYSICS_LESSONS[id].filter(step => step.k !== 'scrub' || physMediaReady(step.media));
-  physLesson = { id, steps, i: Math.min(state.physics.at[id] || 0, steps.length - 1), tries: 0, tool: null, picked: null };
+  const steps = physLessonsOf()[id].filter(step => step.k !== 'scrub' || physMediaReady(step.media));
+  physLesson = { id, steps, i: Math.min(physState().at[id] || 0, steps.length - 1), tries: 0, tool: null, picked: null };
   beginLessonCounters('phys:' + id);
   drawPhysicsStep();
   window.scrollTo(0, 0);
@@ -86,7 +97,7 @@ function nextPhysicsStep() {
   physLesson.busy = true;
   physLesson.i++;
   physLesson.tries = 0;
-  state.physics.at[physLesson.id] = physLesson.i;
+  physState().at[physLesson.id] = physLesson.i;
   save();
   transitionLesson(drawPhysicsStep);
 }
@@ -97,8 +108,8 @@ function finishPhysicsLesson() {
   const { id } = physLesson;
   const fresh = !physicsDone(id);
   physicsCloseTool();
-  if (fresh) { state.physics.done[id] = true; state.physicsXp += 10; logXp(10); }
-  delete state.physics.at[id];
+  if (fresh) { physState().done[id] = true; state.physicsXp += 10; logXp(10); }
+  delete physState().at[id];
   recordStudyDay();
   save();
   const results = finishLessonCounters();
