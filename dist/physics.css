@@ -160,3 +160,11 @@
 .phys-grades { display: flex; gap: 8px; margin: 0 0 12px; }
 .phys-grades button { flex: 1; max-width: 160px; font-weight: 800; }
 .phys-grades button[aria-pressed="true"] { color: #fff; background: #1cb0f6; border-color: #1899d6; box-shadow: 0 4px #1899d6; }
+
+/* build քայլ (բանաձև բլոկներից) և motion գործիք */
+.phys-built { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 8px; min-height: 76px; margin: 12px 0; padding: 10px; border: 2px dashed #d0d0d0; border-radius: 14px; }
+.phys-built.is-done { border-style: solid; border-color: #b8e986; background: #f3ffe8; }
+.phys-bank { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; }
+.phys-block { display: inline-flex; align-items: center; justify-content: center; min-width: 52px; min-height: 52px; padding: 0 12px; font-size: 20px; text-align: center; }
+.phys-bank .phys-block:disabled { visibility: hidden; }
+.phys-run { min-height: 48px; }

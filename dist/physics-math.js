@@ -59,7 +59,9 @@ function physConvert(value, from, to) {
 }
 
 // Դասի քայլերում թվային պատասխանը գրվում է calc: { fn, args }-ով, որպեսզի թեստը ստուգի այն այստեղի բանաձևերով
-const PHYS_CALC = { physDensity, physMass, physVolume, physElastic, physStiffness, physWeight, physHydro, physConvert };
+const physSpeed = (distance, time) => distance / time;
+const physDistance = (speed, time) => speed * time;
+const PHYS_CALC = { physSpeed, physDistance, physDensity, physMass, physVolume, physElastic, physStiffness, physWeight, physHydro, physConvert };
 const physCalc = ({ fn, args }) => PHYS_CALC[fn](...args);
 
 // Դասի sim քայլի նպատակը. conditions = [{ key, value, tol? }], tol չկա՝ խիստ հավասարություն

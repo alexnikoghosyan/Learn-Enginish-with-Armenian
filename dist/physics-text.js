@@ -14,6 +14,7 @@ function physFormula(text) {
   return physRich(text)
     .replace(/ \/ /g, ' : ') // բաժանումը՝ «:», որ թեք l-ի հետ չշփոթվի
     .replace(/(?<![A-Za-z])[A-Za-z](?![A-Za-z])|[ρΔ]/g, symbol => '<i>' + (symbol === 'l' ? 'ℓ' : symbol) + '</i>')
+    .replace(/_(միջ)/g, '<sub>$1</sub>')
     .replace(/[₀-₉]+/g, digits => '<sub>' + [...digits].map(char => PHYS_SUB[char]).join('') + '</sub>');
 }
 
