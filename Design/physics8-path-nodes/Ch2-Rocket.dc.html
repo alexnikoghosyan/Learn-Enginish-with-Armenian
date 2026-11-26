@@ -1,0 +1,293 @@
+<!doctype html>
+<html lang="hy">
+<head>
+<meta charset="utf-8">
+<title>Ֆիզիկա 8 · Գլուխ II — Հրթիռ</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Armenian:wght@600;700;800&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#C81E1E}a:hover{color:#9E1515}
+.node{display:block;background:none;border:0;padding:0;margin:0;cursor:pointer}
+.node.locked{cursor:not-allowed}
+.node:focus-visible{outline:3px solid #FF4B4B;outline-offset:2px;border-radius:50%}
+.fx{transform-box:fill-box;transform-origin:center}
+.lbl{position:absolute;width:190px;text-align:center;font-size:14px;line-height:1.3;font-weight:700;pointer-events:none;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+@keyframes bob{50%{transform:translateY(-5px)}}
+.bob{animation:bob 1.6s ease-in-out infinite}
+@keyframes pop{0%{opacity:0;transform:translateY(-6px) scale(.9)}100%{opacity:1;transform:translateY(0px) scale(1)}}
+.card{animation:pop .22s cubic-bezier(.3,1.4,.6,1);transform-origin:50% 0%}
+.cta{display:block;width:100%;box-sizing:border-box;border:0;border-radius:14px;padding:12px 0px;font-family:inherit;font-size:15px;font-weight:800;letter-spacing:.8px;cursor:pointer;transition:transform .06s,box-shadow .06s}
+.cta:active{transform:translateY(4px)}
+.cta:focus-visible{outline:3px solid #FFFFFF;outline-offset:2px}
+.cta:disabled{cursor:not-allowed}
+.cta:disabled:active{transform:none}
+@keyframes shake-ta{0%,100%{transform:translateX(0px)}20%{transform:translateX(-7px)}40%{transform:translateX(6px)}60%{transform:translateX(-4px)}80%{transform:translateX(3px)}}
+@keyframes shake-tb{0%,100%{transform:translateX(0px)}20%{transform:translateX(-7px)}40%{transform:translateX(6px)}60%{transform:translateX(-4px)}80%{transform:translateX(3px)}}
+.locked.tapA .shk{animation:shake-ta .45s ease-in-out}
+.locked.tapB .shk{animation:shake-tb .45s ease-in-out}
+@keyframes lessonIn{0%{opacity:0}100%{opacity:1}}
+@keyframes lessonBody{0%{opacity:0;transform:translateY(16px)}100%{opacity:1;transform:translateY(0px)}}
+@keyframes barIn{0%{width:0%}}
+.lesson{animation:lessonIn .12s linear}
+.lesson > div{animation:lessonBody .3s cubic-bezier(.2,.8,.3,1) .08s backwards}
+.bar{animation:barIn .6s ease-out .25s backwards}
+.xbtn:focus-visible{outline:3px solid #FF4B4B;outline-offset:2px;border-radius:12px}
+.ch2 .c-r,.ch2 .p-r,.ch2 .h-r{transform-origin:70px 70px}
+.ch2 .c-fl,.ch2 .h-fl,.ch2 .idle-fl{transform-origin:70px 107px}
+@keyframes flick{0%{transform:scaleY(1)}100%{transform:scaleY(.72)}}
+.idle-fl{animation:flick .22s ease-in-out infinite alternate}
+@keyframes rumble{0%,100%{transform:translate(0px,-8px)}25%{transform:translate(-1.2px,-7px)}50%{transform:translate(1.2px,-9px)}75%{transform:translate(-.6px,-8px)}}
+@keyframes flare{0%{transform:scale(1.1,1.35)}100%{transform:scale(.95,1.7)}}
+@keyframes speed{0%{opacity:0;transform:translateY(-12px)}30%{opacity:.9}100%{opacity:0;transform:translateY(26px)}}
+@keyframes driftL{0%{opacity:.9;transform:translate(10px,-6px) scale(.4)}100%{opacity:0;transform:translate(-8px,4px) scale(1.3)}}
+@keyframes driftR{0%{opacity:.9;transform:translate(-10px,-6px) scale(.4)}100%{opacity:0;transform:translate(8px,4px) scale(1.3)}}
+.ch2 .node.hov:not(.locked) .h-r{animation:rumble .2s linear infinite}
+.ch2 .node.hov:not(.locked) .h-fl{animation:flare .18s ease-in-out infinite alternate}
+.ch2 .node.hov:not(.locked) .sp0{animation:speed .5s linear infinite}
+.ch2 .node.hov:not(.locked) .sp1{animation:speed .5s linear .17s infinite}
+.ch2 .node.hov:not(.locked) .sp2{animation:speed .5s linear .33s infinite}
+.ch2 .node.hov:not(.locked) .sp3{animation:speed .5s linear .08s infinite}
+.ch2 .node.hov:not(.locked) .s0{animation:driftL .7s ease-out infinite}
+.ch2 .node.hov:not(.locked) .s1{animation:driftR .7s ease-out .35s infinite}
+@keyframes hopr-a{0%{transform:translateY(0px)}30%{transform:translateY(-12px)}60%{transform:translateY(2px)}100%{transform:translateY(0px)}}
+.ch2 .done.tapA .p-r,.ch2 .current.tapA .p-r{animation:hopr-a .5s ease-out}
+@keyframes hopr-b{0%{transform:translateY(0px)}30%{transform:translateY(-12px)}60%{transform:translateY(2px)}100%{transform:translateY(0px)}}
+.ch2 .done.tapB .p-r,.ch2 .current.tapB .p-r{animation:hopr-b .5s ease-out}
+@keyframes launch-a{0%{transform:translate(0px,0px)}6%{transform:translate(-1.5px,1px)}12%{transform:translate(1.5px,2px)}18%{transform:translate(-1px,1px)}24%{transform:translate(0px,-4px);animation-timing-function:cubic-bezier(.5,0,.9,.6)}52%{transform:translate(0px,-230px);opacity:1}53%{transform:translate(0px,0px) scale(.5);opacity:0}62%{transform:translate(0px,0px) scale(.5);opacity:0}76%{transform:translate(0px,0px) scale(1.08);opacity:1}88%{transform:translate(0px,0px) scale(.97)}100%{transform:translate(0px,0px) scale(1);opacity:1}}
+@keyframes burn-a{0%,10%{transform:scale(1,1)}24%{transform:scale(1.3,2.2)}52%{transform:scale(1.2,2.8)}60%,100%{transform:scale(1,1)}}
+@keyframes bilL-a{0%,14%{opacity:0;transform:translate(0px,0px) scale(.3)}30%{opacity:1;transform:translate(-6px,0px) scale(1.4)}70%{opacity:.9;transform:translate(-24px,-4px) scale(2.2)}100%{opacity:0;transform:translate(-32px,-6px) scale(2.6)}}
+@keyframes bilR-a{0%,14%{opacity:0;transform:translate(0px,0px) scale(.3)}30%{opacity:1;transform:translate(6px,0px) scale(1.4)}70%{opacity:.9;transform:translate(24px,-4px) scale(2.2)}100%{opacity:0;transform:translate(32px,-6px) scale(2.6)}}
+@keyframes bilC-a{0%,18%{opacity:0;transform:translate(0px,0px) scale(.3)}34%{opacity:1;transform:translate(0px,2px) scale(1.5)}70%{opacity:.9;transform:translate(0px,-2px) scale(2.4)}100%{opacity:0;transform:translate(0px,-8px) scale(2.8)}}
+@keyframes spd-a{0%{opacity:0;transform:translateY(-12px)}30%{opacity:1}100%{opacity:0;transform:translateY(30px)}}
+.ch2 .done.clickA .c-r,.ch2 .current.clickA .c-r{animation:launch-a 1.6s}
+.ch2 .done.clickA .c-fl,.ch2 .current.clickA .c-fl{animation:burn-a 1.6s ease-out}
+.ch2 .done.clickA .s0,.ch2 .current.clickA .s0{animation:bilL-a 1.6s ease-out}
+.ch2 .done.clickA .s1,.ch2 .current.clickA .s1{animation:bilR-a 1.6s ease-out}
+.ch2 .done.clickA .s2,.ch2 .current.clickA .s2{animation:bilC-a 1.6s ease-out}
+.ch2 .done.clickA .sp0,.ch2 .current.clickA .sp0{animation:spd-a .28s linear .38s 3}
+.ch2 .done.clickA .sp1,.ch2 .current.clickA .sp1{animation:spd-a .28s linear .45s 3}
+.ch2 .done.clickA .sp2,.ch2 .current.clickA .sp2{animation:spd-a .28s linear .52s 3}
+.ch2 .done.clickA .sp3,.ch2 .current.clickA .sp3{animation:spd-a .28s linear .42s 3}
+@keyframes launch-b{0%{transform:translate(0px,0px)}6%{transform:translate(-1.5px,1px)}12%{transform:translate(1.5px,2px)}18%{transform:translate(-1px,1px)}24%{transform:translate(0px,-4px);animation-timing-function:cubic-bezier(.5,0,.9,.6)}52%{transform:translate(0px,-230px);opacity:1}53%{transform:translate(0px,0px) scale(.5);opacity:0}62%{transform:translate(0px,0px) scale(.5);opacity:0}76%{transform:translate(0px,0px) scale(1.08);opacity:1}88%{transform:translate(0px,0px) scale(.97)}100%{transform:translate(0px,0px) scale(1);opacity:1}}
+@keyframes burn-b{0%,10%{transform:scale(1,1)}24%{transform:scale(1.3,2.2)}52%{transform:scale(1.2,2.8)}60%,100%{transform:scale(1,1)}}
+@keyframes bilL-b{0%,14%{opacity:0;transform:translate(0px,0px) scale(.3)}30%{opacity:1;transform:translate(-6px,0px) scale(1.4)}70%{opacity:.9;transform:translate(-24px,-4px) scale(2.2)}100%{opacity:0;transform:translate(-32px,-6px) scale(2.6)}}
+@keyframes bilR-b{0%,14%{opacity:0;transform:translate(0px,0px) scale(.3)}30%{opacity:1;transform:translate(6px,0px) scale(1.4)}70%{opacity:.9;transform:translate(24px,-4px) scale(2.2)}100%{opacity:0;transform:translate(32px,-6px) scale(2.6)}}
+@keyframes bilC-b{0%,18%{opacity:0;transform:translate(0px,0px) scale(.3)}34%{opacity:1;transform:translate(0px,2px) scale(1.5)}70%{opacity:.9;transform:translate(0px,-2px) scale(2.4)}100%{opacity:0;transform:translate(0px,-8px) scale(2.8)}}
+@keyframes spd-b{0%{opacity:0;transform:translateY(-12px)}30%{opacity:1}100%{opacity:0;transform:translateY(30px)}}
+.ch2 .done.clickB .c-r,.ch2 .current.clickB .c-r{animation:launch-b 1.6s}
+.ch2 .done.clickB .c-fl,.ch2 .current.clickB .c-fl{animation:burn-b 1.6s ease-out}
+.ch2 .done.clickB .s0,.ch2 .current.clickB .s0{animation:bilL-b 1.6s ease-out}
+.ch2 .done.clickB .s1,.ch2 .current.clickB .s1{animation:bilR-b 1.6s ease-out}
+.ch2 .done.clickB .s2,.ch2 .current.clickB .s2{animation:bilC-b 1.6s ease-out}
+.ch2 .done.clickB .sp0,.ch2 .current.clickB .sp0{animation:spd-b .28s linear .38s 3}
+.ch2 .done.clickB .sp1,.ch2 .current.clickB .sp1{animation:spd-b .28s linear .45s 3}
+.ch2 .done.clickB .sp2,.ch2 .current.clickB .sp2{animation:spd-b .28s linear .52s 3}
+.ch2 .done.clickB .sp3,.ch2 .current.clickB .sp3{animation:spd-b .28s linear .42s 3}
+@media (prefers-reduced-motion: reduce){.ch2 *,.ch2 *::before,.ch2 *::after{animation:none !important;transition:none !important}}
+</style>
+</helmet>
+<div class="ch2" style="position: relative; width: 360px; height: 1100px; background: #FFFFFF; overflow: hidden; font-family: 'Noto Sans Armenian', system-ui, sans-serif">
+<svg aria-hidden="true" width="360" height="1030" viewBox="0 0 360 1030" style="position: absolute; left: 0px; top: 0px"><path d="M170 250 C170 350.0 116 350.0 116 450 C116 570.0 236 570.0 236 690 C236 795.0 180 795.0 180 900" fill="none" stroke="#FFB2B2" stroke-width="5" stroke-linecap="round" stroke-dasharray="1 14"></path></svg>
+<div style="position: absolute; left: 16px; top: 20px; width: 328px; box-sizing: border-box; padding: 16px 20px; background: #C81E1E; border-radius: 16px; box-shadow: 0px 5px 0px #9E1515; color: #FFFFFF"><div style="font-size: 13px; font-weight: 800; letter-spacing: 1px">ԳԼՈՒԽ II</div><div style="margin-top: 4px; font-size: 18px; line-height: 1.3; font-weight: 800">Դինամիկայի հիմնական օրենքները</div></div>
+<button class="node done {{c0}}" type="button" aria-label="§11. Նյուտոնի առաջին օրենքը — ավարտված" aria-expanded="{{e0}}" aria-controls="card0" onClick="{{k0}}" data-node="0" onMouseEnter="{{m0}}" onMouseLeave="{{l0}}" style="position: absolute; left: 100px; top: 184px; width: 140px; height: 140px"><svg aria-hidden="true" width="140" height="140" viewBox="0 0 140 140" style="overflow: visible"><g class="shk"><circle class="smk s0 fx" cx="44" cy="120" r="9" fill="#E5E5E5" opacity="0"></circle>
+<circle class="smk s1 fx" cx="96" cy="120" r="9" fill="#E5E5E5" opacity="0"></circle>
+<circle class="smk s2 fx" cx="70" cy="128" r="11" fill="#E5E5E5" opacity="0"></circle>
+<line class="spd sp0" x1="18" y1="30" x2="18" y2="50" stroke="#FF9B9B" stroke-width="4" stroke-linecap="round" opacity="0"></line>
+<line class="spd sp1" x1="122" y1="44" x2="122" y2="64" stroke="#FF9B9B" stroke-width="4" stroke-linecap="round" opacity="0"></line>
+<line class="spd sp2" x1="30" y1="8" x2="30" y2="22" stroke="#FF9B9B" stroke-width="3" stroke-linecap="round" opacity="0"></line>
+<line class="spd sp3" x1="110" y1="14" x2="110" y2="28" stroke="#FF9B9B" stroke-width="3" stroke-linecap="round" opacity="0"></line>
+<g class="c-r"><g class="p-r"><g class="h-r">
+<g class="c-fl"><g class="h-fl"><g><path d="M58 107 Q70 140 82 107 Z" fill="#FFC800"></path><path d="M63 107 Q70 127 77 107 Z" fill="#FF9600"></path></g></g></g>
+<g transform="translate(0 6)"><path d="M48 68 L30 90 Q26 102 36 101 L48 100 Z" fill="#EA2B2B"></path><path d="M92 68 L110 90 Q114 102 104 101 L92 100 Z" fill="#EA2B2B"></path><path d="M70 10 C88 24 92 44 92 64 L92 98 Q92 104 86 104 L54 104 Q48 104 48 98 L48 64 C48 44 52 24 70 10 Z" fill="#EA2B2B"></path></g>
+<path d="M48 68 L30 90 Q26 102 36 101 L48 100 Z" fill="#EA2B2B"></path><path d="M92 68 L110 90 Q114 102 104 101 L92 100 Z" fill="#EA2B2B"></path>
+<rect x="58" y="102" width="24" height="8" rx="3" fill="#EA2B2B"></rect>
+<path d="M70 10 C88 24 92 44 92 64 L92 98 Q92 104 86 104 L54 104 Q48 104 48 98 L48 64 C48 44 52 24 70 10 Z" fill="#FF4B4B"></path>
+<path d="M70 10 C80 18 86 27 89 38 L51 38 C54 27 60 18 70 10 Z" fill="#FFFFFF"></path>
+<path d="M54 50 L54 92" stroke="#FF9B9B" stroke-width="5" stroke-linecap="round" opacity="0.8"></path>
+<circle cx="70" cy="58" r="17" fill="#EA2B2B"></circle>
+<circle cx="70" cy="58" r="13" fill="#FFFFFF"></circle>
+<path d="M60.1 58.6 L66.9 65.4 L80.5 51.2" fill="none" stroke="#FF4B4B" stroke-width="5.6" stroke-linecap="round" stroke-linejoin="round"></path>
+<rect x="67" y="84" width="6" height="22" rx="3" fill="#EA2B2B"></rect>
+</g></g></g></g></svg></button>
+<div class="lbl" style="left: 75px; top: 326px; color: #3C3C3C">§11. Նյուտոնի առաջին օրենքը</div>
+<button class="node done {{c1}}" type="button" aria-label="§12. Նյուտոնի երկրորդ օրենքը — ավարտված" aria-expanded="{{e1}}" aria-controls="card1" onClick="{{k1}}" data-node="1" onMouseEnter="{{m1}}" onMouseLeave="{{l1}}" style="position: absolute; left: 46px; top: 384px; width: 140px; height: 140px"><svg aria-hidden="true" width="140" height="140" viewBox="0 0 140 140" style="overflow: visible"><g class="shk"><circle class="smk s0 fx" cx="44" cy="120" r="9" fill="#E5E5E5" opacity="0"></circle>
+<circle class="smk s1 fx" cx="96" cy="120" r="9" fill="#E5E5E5" opacity="0"></circle>
+<circle class="smk s2 fx" cx="70" cy="128" r="11" fill="#E5E5E5" opacity="0"></circle>
+<line class="spd sp0" x1="18" y1="30" x2="18" y2="50" stroke="#FF9B9B" stroke-width="4" stroke-linecap="round" opacity="0"></line>
+<line class="spd sp1" x1="122" y1="44" x2="122" y2="64" stroke="#FF9B9B" stroke-width="4" stroke-linecap="round" opacity="0"></line>
+<line class="spd sp2" x1="30" y1="8" x2="30" y2="22" stroke="#FF9B9B" stroke-width="3" stroke-linecap="round" opacity="0"></line>
+<line class="spd sp3" x1="110" y1="14" x2="110" y2="28" stroke="#FF9B9B" stroke-width="3" stroke-linecap="round" opacity="0"></line>
+<g class="c-r"><g class="p-r"><g class="h-r">
+<g class="c-fl"><g class="h-fl"><g><path d="M58 107 Q70 140 82 107 Z" fill="#FFC800"></path><path d="M63 107 Q70 127 77 107 Z" fill="#FF9600"></path></g></g></g>
+<g transform="translate(0 6)"><path d="M48 68 L30 90 Q26 102 36 101 L48 100 Z" fill="#EA2B2B"></path><path d="M92 68 L110 90 Q114 102 104 101 L92 100 Z" fill="#EA2B2B"></path><path d="M70 10 C88 24 92 44 92 64 L92 98 Q92 104 86 104 L54 104 Q48 104 48 98 L48 64 C48 44 52 24 70 10 Z" fill="#EA2B2B"></path></g>
+<path d="M48 68 L30 90 Q26 102 36 101 L48 100 Z" fill="#EA2B2B"></path><path d="M92 68 L110 90 Q114 102 104 101 L92 100 Z" fill="#EA2B2B"></path>
+<rect x="58" y="102" width="24" height="8" rx="3" fill="#EA2B2B"></rect>
+<path d="M70 10 C88 24 92 44 92 64 L92 98 Q92 104 86 104 L54 104 Q48 104 48 98 L48 64 C48 44 52 24 70 10 Z" fill="#FF4B4B"></path>
+<path d="M70 10 C80 18 86 27 89 38 L51 38 C54 27 60 18 70 10 Z" fill="#FFFFFF"></path>
+<path d="M54 50 L54 92" stroke="#FF9B9B" stroke-width="5" stroke-linecap="round" opacity="0.8"></path>
+<circle cx="70" cy="58" r="17" fill="#EA2B2B"></circle>
+<circle cx="70" cy="58" r="13" fill="#FFFFFF"></circle>
+<path d="M60.1 58.6 L66.9 65.4 L80.5 51.2" fill="none" stroke="#FF4B4B" stroke-width="5.6" stroke-linecap="round" stroke-linejoin="round"></path>
+<rect x="67" y="84" width="6" height="22" rx="3" fill="#EA2B2B"></rect>
+</g></g></g></g></svg></button>
+<div class="lbl" style="left: 21px; top: 526px; color: #3C3C3C">§12. Նյուտոնի երկրորդ օրենքը</div>
+<button class="node current {{c2}}" type="button" aria-label="§13. ԼԱ 2. Նյուտոնի երկրորդ օրենքի փորձարարական ստուգումը — ընթացիկ դաս" aria-expanded="{{e2}}" aria-controls="card2" onClick="{{k2}}" data-node="2" onMouseEnter="{{m2}}" onMouseLeave="{{l2}}" style="position: absolute; left: 166px; top: 624px; width: 140px; height: 140px"><svg aria-hidden="true" width="140" height="140" viewBox="0 0 140 140" style="overflow: visible"><g class="shk"><circle class="smk s0 fx" cx="44" cy="120" r="9" fill="#E5E5E5" opacity="0"></circle>
+<circle class="smk s1 fx" cx="96" cy="120" r="9" fill="#E5E5E5" opacity="0"></circle>
+<circle class="smk s2 fx" cx="70" cy="128" r="11" fill="#E5E5E5" opacity="0"></circle>
+<line class="spd sp0" x1="18" y1="30" x2="18" y2="50" stroke="#FF9B9B" stroke-width="4" stroke-linecap="round" opacity="0"></line>
+<line class="spd sp1" x1="122" y1="44" x2="122" y2="64" stroke="#FF9B9B" stroke-width="4" stroke-linecap="round" opacity="0"></line>
+<line class="spd sp2" x1="30" y1="8" x2="30" y2="22" stroke="#FF9B9B" stroke-width="3" stroke-linecap="round" opacity="0"></line>
+<line class="spd sp3" x1="110" y1="14" x2="110" y2="28" stroke="#FF9B9B" stroke-width="3" stroke-linecap="round" opacity="0"></line>
+<g class="c-r"><g class="p-r"><g class="h-r">
+<g class="c-fl"><g class="h-fl"><g class="idle-fl"><path d="M58 107 Q70 140 82 107 Z" fill="#FFC800"></path><path d="M63 107 Q70 127 77 107 Z" fill="#FF9600"></path></g></g></g>
+<g transform="translate(0 6)"><path d="M48 68 L30 90 Q26 102 36 101 L48 100 Z" fill="#EA2B2B"></path><path d="M92 68 L110 90 Q114 102 104 101 L92 100 Z" fill="#EA2B2B"></path><path d="M70 10 C88 24 92 44 92 64 L92 98 Q92 104 86 104 L54 104 Q48 104 48 98 L48 64 C48 44 52 24 70 10 Z" fill="#EA2B2B"></path></g>
+<path d="M48 68 L30 90 Q26 102 36 101 L48 100 Z" fill="#EA2B2B"></path><path d="M92 68 L110 90 Q114 102 104 101 L92 100 Z" fill="#EA2B2B"></path>
+<rect x="58" y="102" width="24" height="8" rx="3" fill="#EA2B2B"></rect>
+<path d="M70 10 C88 24 92 44 92 64 L92 98 Q92 104 86 104 L54 104 Q48 104 48 98 L48 64 C48 44 52 24 70 10 Z" fill="#FF4B4B"></path>
+<path d="M70 10 C80 18 86 27 89 38 L51 38 C54 27 60 18 70 10 Z" fill="#FFFFFF"></path>
+<path d="M54 50 L54 92" stroke="#FF9B9B" stroke-width="5" stroke-linecap="round" opacity="0.8"></path>
+<circle cx="70" cy="58" r="17" fill="#EA2B2B"></circle>
+<circle cx="70" cy="58" r="13" fill="#FFFFFF"></circle>
+<polygon points="70.0,48.5 72.7,55.2 80.0,55.7 74.4,60.4 76.2,67.5 70.0,63.6 63.8,67.5 65.6,60.4 60.0,55.7 67.3,55.2" fill="#FF4B4B" stroke="#FF4B4B" stroke-width="1.9" stroke-linejoin="round"></polygon>
+<rect x="67" y="84" width="6" height="22" rx="3" fill="#EA2B2B"></rect>
+</g></g></g></g></svg></button>
+<div class="lbl" style="left: 141px; top: 766px; color: #3C3C3C">§13. ԼԱ 2. Նյուտոնի երկրորդ օրենքի փորձարարական ստուգումը</div>
+<div class="bob" style="position: absolute; left: 184px; top: 568px; width: 104px; pointer-events: none"><div style="position: relative; box-sizing: border-box; width: 104px; padding: 8px 0px; background: #FFFFFF; border: 2px solid #E5E5E5; border-radius: 12px; text-align: center; font-size: 15px; font-weight: 800; letter-spacing: 0.5px; color: #C81E1E">ՍԿՍԵԼ<div style="position: absolute; left: 45px; bottom: -7px; width: 12px; height: 12px; background: #FFFFFF; border-right: 2px solid #E5E5E5; border-bottom: 2px solid #E5E5E5; transform: rotate(45deg)"></div></div></div>
+<button class="node locked {{c3}}" type="button" aria-label="§14. Նյուտոնի երրորդ օրենքը — փակ" aria-expanded="{{e3}}" aria-controls="card3" onClick="{{k3}}" data-node="3" onMouseEnter="{{m3}}" onMouseLeave="{{l3}}" style="position: absolute; left: 110px; top: 834px; width: 140px; height: 140px"><svg aria-hidden="true" width="140" height="140" viewBox="0 0 140 140" style="overflow: visible"><g class="shk"><circle class="smk s0 fx" cx="44" cy="120" r="9" fill="#E5E5E5" opacity="0"></circle>
+<circle class="smk s1 fx" cx="96" cy="120" r="9" fill="#E5E5E5" opacity="0"></circle>
+<circle class="smk s2 fx" cx="70" cy="128" r="11" fill="#E5E5E5" opacity="0"></circle>
+<line class="spd sp0" x1="18" y1="30" x2="18" y2="50" stroke="#F2F2F2" stroke-width="4" stroke-linecap="round" opacity="0"></line>
+<line class="spd sp1" x1="122" y1="44" x2="122" y2="64" stroke="#F2F2F2" stroke-width="4" stroke-linecap="round" opacity="0"></line>
+<line class="spd sp2" x1="30" y1="8" x2="30" y2="22" stroke="#F2F2F2" stroke-width="3" stroke-linecap="round" opacity="0"></line>
+<line class="spd sp3" x1="110" y1="14" x2="110" y2="28" stroke="#F2F2F2" stroke-width="3" stroke-linecap="round" opacity="0"></line>
+<g class="c-r"><g class="p-r"><g class="h-r">
+
+<g transform="translate(0 6)"><path d="M48 68 L30 90 Q26 102 36 101 L48 100 Z" fill="#C9C9C9"></path><path d="M92 68 L110 90 Q114 102 104 101 L92 100 Z" fill="#C9C9C9"></path><path d="M70 10 C88 24 92 44 92 64 L92 98 Q92 104 86 104 L54 104 Q48 104 48 98 L48 64 C48 44 52 24 70 10 Z" fill="#C9C9C9"></path></g>
+<path d="M48 68 L30 90 Q26 102 36 101 L48 100 Z" fill="#C9C9C9"></path><path d="M92 68 L110 90 Q114 102 104 101 L92 100 Z" fill="#C9C9C9"></path>
+<rect x="58" y="102" width="24" height="8" rx="3" fill="#C9C9C9"></rect>
+<path d="M70 10 C88 24 92 44 92 64 L92 98 Q92 104 86 104 L54 104 Q48 104 48 98 L48 64 C48 44 52 24 70 10 Z" fill="#E5E5E5"></path>
+<path d="M70 10 C80 18 86 27 89 38 L51 38 C54 27 60 18 70 10 Z" fill="#F7F7F7"></path>
+<path d="M54 50 L54 92" stroke="#F2F2F2" stroke-width="5" stroke-linecap="round" opacity="0.8"></path>
+<circle cx="70" cy="58" r="17" fill="#C9C9C9"></circle>
+<circle cx="70" cy="58" r="13" fill="#F7F7F7"></circle>
+<path d="M65.0 57.4 v-3.7 a5.0 5.0 0 0 1 9.9 0 v3.7" fill="none" stroke="#AFAFAF" stroke-width="3.1" stroke-linecap="round"></path><rect x="61.9" y="56.8" width="16.1" height="13.0" rx="3.1" fill="#AFAFAF"></rect>
+<rect x="67" y="84" width="6" height="22" rx="3" fill="#C9C9C9"></rect>
+</g></g></g></g></svg></button>
+<div class="lbl" style="left: 85px; top: 976px; color: #AFAFAF">§14. Նյուտոնի երրորդ օրենքը</div>
+<sc-if value="{{o0}}" hint-placeholder-val="{{ false }}"><div class="card" id="card0" style="position: absolute; left: 44px; top: 316px; width: 252px; box-sizing: border-box; padding: 16px; border-radius: 16px; z-index: 5; background: #C81E1E; color: #FFFFFF; box-shadow: 0px 5px 0px #9E1515"><div style="position: absolute; left: 118px; top: -9px; width: 16px; height: 16px; transform: rotate(45deg); border-radius: 3px; background: #C81E1E"></div><div style="position: relative"><div style="font-size: 16px; font-weight: 800; line-height: 1.3">§11. Նյուտոնի առաջին օրենքը</div><div style="margin-top: 6px; font-size: 14px; line-height: 1.4; font-weight: 600">Ավարտված է։ Կարող ես կրկնել։</div><button class="cta" type="button" onClick="{{g0}}" style="margin-top: 14px; background: #FFFFFF; color: #C81E1E; box-shadow: 0px 4px 0px #9E1515">ԿՐԿՆԵԼ</button></div></div></sc-if>
+<sc-if value="{{o1}}" hint-placeholder-val="{{ false }}"><div class="card" id="card1" style="position: absolute; left: 12px; top: 516px; width: 252px; box-sizing: border-box; padding: 16px; border-radius: 16px; z-index: 5; background: #C81E1E; color: #FFFFFF; box-shadow: 0px 5px 0px #9E1515"><div style="position: absolute; left: 96px; top: -9px; width: 16px; height: 16px; transform: rotate(45deg); border-radius: 3px; background: #C81E1E"></div><div style="position: relative"><div style="font-size: 16px; font-weight: 800; line-height: 1.3">§12. Նյուտոնի երկրորդ օրենքը</div><div style="margin-top: 6px; font-size: 14px; line-height: 1.4; font-weight: 600">Ավարտված է։ Կարող ես կրկնել։</div><button class="cta" type="button" onClick="{{g1}}" style="margin-top: 14px; background: #FFFFFF; color: #C81E1E; box-shadow: 0px 4px 0px #9E1515">ԿՐԿՆԵԼ</button></div></div></sc-if>
+<sc-if value="{{o2}}" hint-placeholder-val="{{ false }}"><div class="card" id="card2" style="position: absolute; left: 96px; top: 756px; width: 252px; box-sizing: border-box; padding: 16px; border-radius: 16px; z-index: 5; background: #C81E1E; color: #FFFFFF; box-shadow: 0px 5px 0px #9E1515"><div style="position: absolute; left: 132px; top: -9px; width: 16px; height: 16px; transform: rotate(45deg); border-radius: 3px; background: #C81E1E"></div><div style="position: relative"><div style="font-size: 16px; font-weight: 800; line-height: 1.3">§13. ԼԱ 2. Նյուտոնի երկրորդ օրենքի փորձարարական ստուգումը</div><div style="margin-top: 6px; font-size: 14px; line-height: 1.4; font-weight: 600">Հաջորդ դասը քեզ է սպասում։</div><button class="cta" type="button" onClick="{{g2}}" style="margin-top: 14px; background: #FFFFFF; color: #C81E1E; box-shadow: 0px 4px 0px #9E1515">ՍԿՍԵԼ</button></div></div></sc-if>
+<sc-if value="{{o3}}" hint-placeholder-val="{{ false }}"><div class="card" id="card3" style="position: absolute; left: 54px; top: 966px; width: 252px; box-sizing: border-box; padding: 16px; border-radius: 16px; z-index: 5; background: #F7F7F7; border: 2px solid #E5E5E5; color: #4B4B4B"><div style="position: absolute; left: 116px; top: -9px; width: 16px; height: 16px; transform: rotate(45deg); border-radius: 3px; background: #F7F7F7; border-left: 2px solid #E5E5E5; border-top: 2px solid #E5E5E5"></div><div style="position: relative"><div style="font-size: 16px; font-weight: 800; line-height: 1.3; color: #4B4B4B">§14. Նյուտոնի երրորդ օրենքը</div><div style="margin-top: 6px; font-size: 14px; line-height: 1.4; font-weight: 600; color: #6F6F6F">Ավարտիր նախորդ դասերը, որ այս դասը բացվի։</div><button class="cta" type="button" disabled="" style="margin-top: 14px; background: #E5E5E5; color: #6F6F6F">ՓԱԿ Է</button></div></div></sc-if>
+<sc-if value="{{lessonOpen}}" hint-placeholder-val="{{ false }}"><div class="lesson" style="position: absolute; left: 0px; top: 0px; width: 360px; height: 1100px; box-sizing: border-box; padding: 20px; background: #FFFFFF; z-index: 10; display: flex; flex-direction: column; gap: 28px"><div style="display: flex; align-items: center; gap: 12px"><button class="xbtn" type="button" aria-label="Փակել դասը" onClick="{{closeLesson}}" style="width: 44px; height: 44px; border: 0px; background: none; padding: 0px; cursor: pointer; display: flex; align-items: center; justify-content: center"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 22 22"><path d="M4 4 L18 18 M18 4 L4 18" stroke="#AFAFAF" stroke-width="3.5" stroke-linecap="round"></path></svg></button><div style="flex: 1; height: 16px; border-radius: 8px; background: #E5E5E5; overflow: hidden"><div class="bar" style="width: 12%; height: 16px; border-radius: 8px; background: #FF4B4B"></div></div></div><div style="display: flex; flex-direction: column; gap: 8px"><div style="font-size: 13px; font-weight: 800; letter-spacing: 1px; color: #C81E1E">ԳԼՈՒԽ II · Դինամիկայի հիմնական օրենքները</div><div style="font-size: 24px; line-height: 1.3; font-weight: 800; color: #3C3C3C">{{lessonTitle}}</div><div style="font-size: 15px; line-height: 1.5; font-weight: 600; color: #6F6F6F">Այստեղ կբացվի դասի առաջին քայլը։</div></div></div></sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":360,"height":1100}}'>
+class Component extends DCLogic {
+keep() {
+return true;
+}
+renderVals() {
+const st = this.state || {};
+const open = st.open === undefined ? -1 : st.open;
+const t = st.t || [0, 0, 0, 0];
+const g = st.g || [0, 0, 0, 0];
+const h = st.h || [false, false, false, false];
+const out = {};
+for (let i = 0; i < 4; i++) {
+const tap = t[i] === 0 ? '' : (t[i] % 2 ? 'tapA' : 'tapB');
+const go = g[i] === 0 ? '' : (g[i] % 2 ? 'clickA' : 'clickB');
+const hov = h[i] || (this.keep() && open === i);
+out['c' + i] = tap + ' ' + go + (hov ? ' hov' : '');
+out['o' + i] = open === i;
+out['e' + i] = open === i ? 'true' : 'false';
+out['k' + i] = () => this.toggle(i);
+out['g' + i] = () => this.start(i);
+out['m' + i] = () => this.setHov(i, true);
+out['l' + i] = (e) => this.leave(i, e);
+}
+const L = ["§11. Նյուտոնի առաջին օրենքը", "§12. Նյուտոնի երկրորդ օրենքը", "§13. ԼԱ 2. Նյուտոնի երկրորդ օրենքի փորձարարական ստուգումը", "§14. Նյուտոնի երրորդ օրենքը"];
+const lesson = st.lesson === undefined ? -1 : st.lesson;
+out.lessonOpen = lesson !== -1;
+out.lessonTitle = lesson === -1 ? '' : L[lesson];
+out.closeLesson = () => this.closeLesson();
+return out;
+}
+settle(root) {
+try {
+const calm = typeof matchMedia === 'function' && matchMedia('(prefers-reduced-motion: reduce)').matches;
+if (!root || !root.getAnimations || calm) { if (root) root.classList.remove('hov'); return; }
+const snap = [];
+root.querySelectorAll('*').forEach((el) => {
+const an = el.getAnimations().filter((a) => a.animationName);
+if (an.length) {
+const cs = getComputedStyle(el);
+snap.push({ el: el, names: an.map((a) => a.animationName).join(','), t: cs.transform, o: cs.opacity });
+}
+});
+root.classList.remove('hov');
+snap.forEach((s) => {
+const names = s.el.getAnimations().filter((a) => a.animationName).map((a) => a.animationName).join(',');
+if (names === s.names) return;
+const cs = getComputedStyle(s.el);
+if (cs.transform === s.t && cs.opacity === s.o) return;
+s.el.animate([{ transform: s.t, opacity: s.o }, { transform: cs.transform, opacity: cs.opacity }], { duration: 400, easing: 'cubic-bezier(.2,.7,.3,1)' });
+});
+} catch (err) {}
+}
+nodeEl(i) {
+return typeof document !== 'undefined' ? document.querySelector('[data-node="' + i + '"]') : null;
+}
+setHov(i, v) {
+const h = ((this.state && this.state.h) || [false, false, false, false]).slice();
+h[i] = v;
+this.setState({ h: h });
+}
+leave(i, e) {
+const st = this.state || {};
+const t = e && e.currentTarget;
+if (!(this.keep() && st.open === i)) this.settle(t);
+this.setHov(i, false);
+}
+toggle(i) {
+const s = this.state || {};
+if (s.busy) return;
+const h = s.h || [false, false, false, false];
+const prev = s.open === undefined ? -1 : s.open;
+const next = prev === i ? -1 : i;
+if (this.keep() && prev !== -1 && prev !== next && !h[prev]) this.settle(this.nodeEl(prev));
+const tt = (s.t || [0, 0, 0, 0]).slice();
+tt[i] += 1;
+this.setState({ t: tt, open: next });
+}
+start(i) {
+const s = this.state || {};
+if (s.busy) return;
+const h = s.h || [false, false, false, false];
+if (this.keep() && !h[i]) this.settle(this.nodeEl(i));
+const gg = (s.g || [0, 0, 0, 0]).slice();
+gg[i] += 1;
+this.setState({ g: gg, open: -1, busy: true });
+let finished = false;
+const done = () => {
+if (finished) return;
+finished = true;
+this.setState({ busy: false, lesson: i });
+};
+const calm = typeof matchMedia === 'function' && matchMedia('(prefers-reduced-motion: reduce)').matches;
+setTimeout(done, calm ? 0 : this.cut());
+}
+closeLesson() {
+this.setState({ lesson: -1 });
+}
+cut() {
+return 840;
+}
+}
+</script>
+</body>
+</html>

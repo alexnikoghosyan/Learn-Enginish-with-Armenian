@@ -1,0 +1,230 @@
+<!doctype html>
+<html lang="hy">
+<head>
+<meta charset="utf-8">
+<title>Ֆիզիկա 8 · Գլուխ V — Նյութի ագրեգատային վիճակների փոփոխությունը</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Armenian:wght@600;700;800&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#1899D6}a:hover{color:#1453A3}
+.node{display:block;background:none;border:0;padding:0;margin:0;cursor:pointer}
+.node.locked{cursor:not-allowed}
+.node:focus-visible{outline:3px solid #1CB0F6;outline-offset:2px;border-radius:50%}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes bob{50%{transform:translateY(-5px)}}
+.bob{animation:bob 1.6s ease-in-out infinite}
+.spin-slow{animation:spin 14s linear infinite}
+.shk{transform-origin:70px 66px}
+@keyframes pop{0%{opacity:0;transform:translateY(-6px) scale(.9)}100%{opacity:1;transform:translateY(0px) scale(1)}}
+.card{animation:pop .22s cubic-bezier(.3,1.4,.6,1);transform-origin:50% 0%}
+.cta{display:block;width:100%;box-sizing:border-box;border:0;border-radius:14px;padding:12px 0px;font-family:inherit;font-size:15px;font-weight:800;letter-spacing:.8px;cursor:pointer;transition:transform .06s,box-shadow .06s}
+.cta:active{transform:translateY(4px)}
+.cta:focus-visible{outline:3px solid #FFFFFF;outline-offset:2px}
+.cta:disabled{cursor:not-allowed}
+.cta:disabled:active{transform:none}
+@keyframes shake-ta{0%,100%{transform:translateX(0px)}20%{transform:translateX(-7px)}40%{transform:translateX(6px)}60%{transform:translateX(-4px)}80%{transform:translateX(3px)}}
+@keyframes shake-tb{0%,100%{transform:translateX(0px)}20%{transform:translateX(-7px)}40%{transform:translateX(6px)}60%{transform:translateX(-4px)}80%{transform:translateX(3px)}}
+.locked.tapA .shk{animation:shake-ta .45s ease-in-out}
+.locked.tapB .shk{animation:shake-tb .45s ease-in-out}
+@keyframes lessonIn{0%{opacity:0}100%{opacity:1}}
+@keyframes lessonBody{0%{opacity:0;transform:translateY(16px)}100%{opacity:1;transform:translateY(0px)}}
+@keyframes barIn{0%{width:0%}}
+.lesson{animation:lessonIn .12s linear}
+.lesson > div{animation:lessonBody .3s cubic-bezier(.2,.8,.3,1) .08s backwards}
+.bar{animation:barIn .6s ease-out .25s backwards}
+.xbtn:focus-visible{outline:3px solid #1CB0F6;outline-offset:2px;border-radius:12px}
+.ch6 .c-ice,.ch6 .p-ice,.ch6 .h-ice{transform-origin:66px 88px}
+.ch6 .c-pd,.ch6 .p-pd,.ch6 .h-pd{transform-origin:70px 91px}
+.ch6 .rip{transform-box:fill-box;transform-origin:center}
+.ch6 .vp{transform-box:fill-box;transform-origin:center bottom}
+.ch6 .idr,.ch6 .hd{transform-box:fill-box;transform-origin:center top}
+@keyframes idr{0%{opacity:0;transform:translateY(0px) scale(.4)}12%{opacity:1;transform:translateY(0px) scale(1)}72%{opacity:1;transform:translateY(20px) scale(1)}80%,100%{opacity:0;transform:translateY(24px) scale(.6)}}
+.idr{animation:idr 2.8s ease-in infinite}
+@keyframes rip{0%,74%{opacity:0;transform:scale(.4)}80%{opacity:.9}100%{opacity:0;transform:scale(2.4)}}
+.ch6 .current .rip{animation:rip 2.8s ease-out infinite}
+.ch6 .h-ice,.ch6 .h-pd{transition:transform .25s cubic-bezier(.2,.7,.3,1)}
+.ch6 .node.hov:not(.locked) .h-ice{transform:scale(1.02,.93)}
+.ch6 .node.hov:not(.locked) .h-pd{transform:scale(1.08,1.25)}
+@keyframes drip{0%{opacity:0;transform:translateY(0px) scale(.4)}20%{opacity:1;transform:translateY(0px) scale(1)}80%{opacity:1;transform:translateY(22px) scale(1)}100%{opacity:0;transform:translateY(25px) scale(.6)}}
+.ch6 .node.hov:not(.locked) .hd{animation:drip .9s ease-in infinite}
+.ch6 .node.hov:not(.locked) .hd1{animation-delay:.45s}
+@keyframes crack-ta{0%{opacity:0;stroke-dashoffset:40}8%{opacity:1}40%{opacity:1;stroke-dashoffset:0}80%{opacity:1;stroke-dashoffset:0}100%{opacity:0;stroke-dashoffset:0}}
+@keyframes tic-ta{0%,100%{transform:translateX(0px)}12%{transform:translateX(-1.4px)}24%{transform:translateX(1.2px)}36%{transform:translateX(-.6px)}48%{transform:translateX(0px)}}
+@keyframes crack-tb{0%{opacity:0;stroke-dashoffset:40}8%{opacity:1}40%{opacity:1;stroke-dashoffset:0}80%{opacity:1;stroke-dashoffset:0}100%{opacity:0;stroke-dashoffset:0}}
+@keyframes tic-tb{0%,100%{transform:translateX(0px)}12%{transform:translateX(-1.4px)}24%{transform:translateX(1.2px)}36%{transform:translateX(-.6px)}48%{transform:translateX(0px)}}
+.ch6 .done.tapA .crk,.ch6 .current.tapA .crk{animation:crack-ta .8s ease-out}
+.ch6 .done.tapA .p-ice,.ch6 .current.tapA .p-ice{animation:tic-ta .8s linear}
+.ch6 .done.tapB .crk,.ch6 .current.tapB .crk{animation:crack-tb .8s ease-out}
+.ch6 .done.tapB .p-ice,.ch6 .current.tapB .p-ice{animation:tic-tb .8s linear}
+@keyframes melt-a{0%{transform:scale(1,1);opacity:1}10%{transform:scale(1.02,.97);opacity:1}30%{transform:scale(.92,.8);opacity:1}48%{transform:scale(.74,.5);opacity:1}58%{transform:scale(.6,.22);opacity:.5}63%,100%{transform:scale(.55,.15);opacity:0}}
+@keyframes cdrip-a{0%{opacity:0;transform:translateY(0px) scale(.4)}20%{opacity:1;transform:translateY(0px) scale(1)}80%{opacity:1;transform:translateY(22px) scale(1)}100%{opacity:0;transform:translateY(25px) scale(.6)}}
+@keyframes pgrow-a{0%{transform:scale(1,1)}58%,68%{transform:scale(1.12,1.9)}100%{transform:scale(1.04,1.4)}}
+@keyframes vap-a{0%,62%{opacity:0;transform:translateY(0px) scaleY(.6)}72%{opacity:1}100%{opacity:.5;transform:translateY(-40px) scaleY(1.3)}}
+@keyframes melt-b{0%{transform:scale(1,1);opacity:1}10%{transform:scale(1.02,.97);opacity:1}30%{transform:scale(.92,.8);opacity:1}48%{transform:scale(.74,.5);opacity:1}58%{transform:scale(.6,.22);opacity:.5}63%,100%{transform:scale(.55,.15);opacity:0}}
+@keyframes cdrip-b{0%{opacity:0;transform:translateY(0px) scale(.4)}20%{opacity:1;transform:translateY(0px) scale(1)}80%{opacity:1;transform:translateY(22px) scale(1)}100%{opacity:0;transform:translateY(25px) scale(.6)}}
+@keyframes pgrow-b{0%{transform:scale(1,1)}58%,68%{transform:scale(1.12,1.9)}100%{transform:scale(1.04,1.4)}}
+@keyframes vap-b{0%,62%{opacity:0;transform:translateY(0px) scaleY(.6)}72%{opacity:1}100%{opacity:.5;transform:translateY(-40px) scaleY(1.3)}}
+.ch6 .done.clickA .c-ice,.ch6 .current.clickA .c-ice{animation:melt-a 1.2s ease-in-out}
+.ch6 .done.clickA .c-pd,.ch6 .current.clickA .c-pd{animation:pgrow-a 1.2s ease-out}
+.ch6 .done.clickA .hd0,.ch6 .current.clickA .hd0{animation:cdrip-a .5s ease-in 0s 2}
+.ch6 .done.clickA .hd1,.ch6 .current.clickA .hd1{animation:cdrip-a .5s ease-in .25s 2 backwards}
+.ch6 .done.clickA .vp0,.ch6 .current.clickA .vp0{animation:vap-a 1.2s ease-out}
+.ch6 .done.clickA .vp1,.ch6 .current.clickA .vp1{animation:vap-a 1.2s ease-out .06s backwards}
+.ch6 .done.clickA .vp2,.ch6 .current.clickA .vp2{animation:vap-a 1.2s ease-out .12s backwards}
+.ch6 .done.clickB .c-ice,.ch6 .current.clickB .c-ice{animation:melt-b 1.2s ease-in-out}
+.ch6 .done.clickB .c-pd,.ch6 .current.clickB .c-pd{animation:pgrow-b 1.2s ease-out}
+.ch6 .done.clickB .hd0,.ch6 .current.clickB .hd0{animation:cdrip-b .5s ease-in 0s 2}
+.ch6 .done.clickB .hd1,.ch6 .current.clickB .hd1{animation:cdrip-b .5s ease-in .25s 2 backwards}
+.ch6 .done.clickB .vp0,.ch6 .current.clickB .vp0{animation:vap-b 1.2s ease-out}
+.ch6 .done.clickB .vp1,.ch6 .current.clickB .vp1{animation:vap-b 1.2s ease-out .06s backwards}
+.ch6 .done.clickB .vp2,.ch6 .current.clickB .vp2{animation:vap-b 1.2s ease-out .12s backwards}
+@media (prefers-reduced-motion: reduce){.ch6 *{animation:none !important;transition:none !important}}
+</style>
+</helmet>
+<div class="ch6" style="position: relative; width: 360px; height: 1160px; background: #FFFFFF; overflow: hidden; font-family: 'Noto Sans Armenian', system-ui, sans-serif">
+<div style="position: absolute; left: 16px; top: 20px; width: 328px; box-sizing: border-box; padding: 16px 20px; background: #137BAC; border-radius: 16px; box-shadow: 0px 5px 0px #0F5F84; color: #FFFFFF"><div style="font-size: 13px; font-weight: 800; letter-spacing: 1px">ԳԼՈՒԽ V</div><div style="margin-top: 4px; font-size: 18px; line-height: 1.3; font-weight: 800">Նյութի ագրեգատային վիճակների փոփոխությունը</div></div>
+<button class="node done {{c0}}" type="button" aria-label="§48. Նյութի ագրեգատային վիճակները — ավարտված" aria-expanded="{{e0}}" aria-controls="card0" onClick="{{k0}}" data-node="0" onMouseEnter="{{m0}}" onMouseLeave="{{l0}}" style="position: absolute; left: 100px; top: 144px; width: 140px; height: 140px"><svg aria-hidden="true" width="140" height="140" viewBox="0 0 140 140" style="overflow: visible"><circle cx="70" cy="73" r="36" fill="#1899D6"></circle><circle cx="70" cy="66" r="36" fill="#1CB0F6"></circle><g class="c-pd"><g class="p-pd"><g class="h-pd"><ellipse cx="70" cy="91" rx="20" ry="4.5" fill="#84D8FF"></ellipse></g></g></g><ellipse class="rip" cx="80" cy="91" rx="4" ry="1.3" fill="none" stroke="#FFFFFF" stroke-width="2" vector-effect="non-scaling-stroke" opacity="0"></ellipse><g class="c-ice"><g class="p-ice"><g class="h-ice"><path d="M53 56 L57.5 48.5 Q59 46.5 61.5 46.5 H87 Q90 46.5 90 50.5 V77 Q90 79.5 88.5 81 L83 87 Q82 88 78 88 H53 Q48 88 48 83 V61 Q48 56 53 56 Z" fill="#1899D6" transform="translate(2 3)"></path><path d="M51 56 L57.5 48.5 Q59 46.5 61.5 46.5 H87 Q90.5 46.5 88.5 49.5 L83 56 Z" fill="#DDF4FF"></path><path d="M83 56 L88.5 49.5 Q90 48 90 50.5 V77 Q90 79.5 88.5 81 L83 87 Z" fill="#B6E6FF"></path><rect x="48" y="56" width="35" height="32" rx="5" fill="#FFFFFF"></rect><line x1="54" y1="65" x2="58.5" y2="60.5" stroke="#DDF4FF" stroke-width="3" stroke-linecap="round"></line><line x1="73" y1="82" x2="77" y2="78" stroke="#DDF4FF" stroke-width="3" stroke-linecap="round"></line><circle cx="62" cy="75" r="2" fill="#DDF4FF"></circle><circle cx="67" cy="70" r="1.4" fill="#DDF4FF"></circle><polyline class="crk" points="58,57 63,66 59,72 66,80 64,87" fill="none" stroke="#84D8FF" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="40" stroke-dashoffset="40" opacity="0"></polyline><path class="hd hd0" d="M51.5 58.75 C52.15 60.7 54.1 62.33 54.1 63.3 A2.6 2.6 0 0 1 48.9 63.3 C48.9 62.33 50.85 60.7 51.5 58.75Z" fill="#84D8FF" opacity="0"></path><path class="hd hd1" d="M80 58.75 C80.65 60.7 82.6 62.33 82.6 63.3 A2.6 2.6 0 0 1 77.4 63.3 C77.4 62.33 79.35 60.7 80 58.75Z" fill="#84D8FF" opacity="0"></path></g></g></g><path class="vp vp0" d="M56 82 q4 -5 0 -10 q-4 -5 0 -10" fill="none" stroke="#FFFFFF" stroke-width="3.5" stroke-linecap="round" opacity="0"></path><path class="vp vp1" d="M67 82 q4 -5 0 -10 q-4 -5 0 -10" fill="none" stroke="#FFFFFF" stroke-width="3.5" stroke-linecap="round" opacity="0"></path><path class="vp vp2" d="M78 82 q4 -5 0 -10 q-4 -5 0 -10" fill="none" stroke="#FFFFFF" stroke-width="3.5" stroke-linecap="round" opacity="0"></path><circle cx="102" cy="98" r="14" fill="#58CC02" stroke="#FFFFFF" stroke-width="4"></circle><path d="M95.3 98.4 L99.9 103.0 L109.1 93.4" fill="none" stroke="#FFFFFF" stroke-width="3.8" stroke-linecap="round" stroke-linejoin="round"></path></svg></button>
+<div style="position: absolute; left: 75px; top: 286px; width: 190px; text-align: center; font-size: 14px; line-height: 1.3; font-weight: 700; color: #3C3C3C; pointer-events: none">§48. Նյութի ագրեգատային վիճակները</div>
+<button class="node done {{c1}}" type="button" aria-label="§49. Բյուրեղային մարմինների հալումն ու պնդացումը — ավարտված" aria-expanded="{{e1}}" aria-controls="card1" onClick="{{k1}}" data-node="1" onMouseEnter="{{m1}}" onMouseLeave="{{l1}}" style="position: absolute; left: 46px; top: 344px; width: 140px; height: 140px"><svg aria-hidden="true" width="140" height="140" viewBox="0 0 140 140" style="overflow: visible"><circle cx="70" cy="73" r="36" fill="#1899D6"></circle><circle cx="70" cy="66" r="36" fill="#1CB0F6"></circle><g class="c-pd"><g class="p-pd"><g class="h-pd"><ellipse cx="70" cy="91" rx="20" ry="4.5" fill="#84D8FF"></ellipse></g></g></g><ellipse class="rip" cx="80" cy="91" rx="4" ry="1.3" fill="none" stroke="#FFFFFF" stroke-width="2" vector-effect="non-scaling-stroke" opacity="0"></ellipse><g class="c-ice"><g class="p-ice"><g class="h-ice"><path d="M53 56 L57.5 48.5 Q59 46.5 61.5 46.5 H87 Q90 46.5 90 50.5 V77 Q90 79.5 88.5 81 L83 87 Q82 88 78 88 H53 Q48 88 48 83 V61 Q48 56 53 56 Z" fill="#1899D6" transform="translate(2 3)"></path><path d="M51 56 L57.5 48.5 Q59 46.5 61.5 46.5 H87 Q90.5 46.5 88.5 49.5 L83 56 Z" fill="#DDF4FF"></path><path d="M83 56 L88.5 49.5 Q90 48 90 50.5 V77 Q90 79.5 88.5 81 L83 87 Z" fill="#B6E6FF"></path><rect x="48" y="56" width="35" height="32" rx="5" fill="#FFFFFF"></rect><line x1="54" y1="65" x2="58.5" y2="60.5" stroke="#DDF4FF" stroke-width="3" stroke-linecap="round"></line><line x1="73" y1="82" x2="77" y2="78" stroke="#DDF4FF" stroke-width="3" stroke-linecap="round"></line><circle cx="62" cy="75" r="2" fill="#DDF4FF"></circle><circle cx="67" cy="70" r="1.4" fill="#DDF4FF"></circle><polyline class="crk" points="58,57 63,66 59,72 66,80 64,87" fill="none" stroke="#84D8FF" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="40" stroke-dashoffset="40" opacity="0"></polyline><path class="hd hd0" d="M51.5 58.75 C52.15 60.7 54.1 62.33 54.1 63.3 A2.6 2.6 0 0 1 48.9 63.3 C48.9 62.33 50.85 60.7 51.5 58.75Z" fill="#84D8FF" opacity="0"></path><path class="hd hd1" d="M80 58.75 C80.65 60.7 82.6 62.33 82.6 63.3 A2.6 2.6 0 0 1 77.4 63.3 C77.4 62.33 79.35 60.7 80 58.75Z" fill="#84D8FF" opacity="0"></path></g></g></g><path class="vp vp0" d="M56 82 q4 -5 0 -10 q-4 -5 0 -10" fill="none" stroke="#FFFFFF" stroke-width="3.5" stroke-linecap="round" opacity="0"></path><path class="vp vp1" d="M67 82 q4 -5 0 -10 q-4 -5 0 -10" fill="none" stroke="#FFFFFF" stroke-width="3.5" stroke-linecap="round" opacity="0"></path><path class="vp vp2" d="M78 82 q4 -5 0 -10 q-4 -5 0 -10" fill="none" stroke="#FFFFFF" stroke-width="3.5" stroke-linecap="round" opacity="0"></path><circle cx="102" cy="98" r="14" fill="#58CC02" stroke="#FFFFFF" stroke-width="4"></circle><path d="M95.3 98.4 L99.9 103.0 L109.1 93.4" fill="none" stroke="#FFFFFF" stroke-width="3.8" stroke-linecap="round" stroke-linejoin="round"></path></svg></button>
+<div style="position: absolute; left: 21px; top: 486px; width: 190px; text-align: center; font-size: 14px; line-height: 1.3; font-weight: 700; color: #3C3C3C; pointer-events: none">§49. Բյուրեղային մարմինների հալումն ու պնդացումը</div>
+<button class="node current {{c2}}" type="button" aria-label="§50. Գոլորշիացում և խտացում — ընթացիկ դաս" aria-expanded="{{e2}}" aria-controls="card2" onClick="{{k2}}" data-node="2" onMouseEnter="{{m2}}" onMouseLeave="{{l2}}" style="position: absolute; left: 166px; top: 584px; width: 140px; height: 140px"><svg aria-hidden="true" width="140" height="140" viewBox="0 0 140 140" style="overflow: visible"><circle cx="70" cy="73" r="36" fill="#1899D6"></circle><circle cx="70" cy="66" r="36" fill="#1CB0F6"></circle><g class="c-pd"><g class="p-pd"><g class="h-pd"><ellipse cx="70" cy="91" rx="20" ry="4.5" fill="#84D8FF"></ellipse></g></g></g><ellipse class="rip" cx="80" cy="91" rx="4" ry="1.3" fill="none" stroke="#FFFFFF" stroke-width="2" vector-effect="non-scaling-stroke" opacity="0"></ellipse><g class="c-ice"><g class="p-ice"><g class="h-ice"><path d="M53 56 L57.5 48.5 Q59 46.5 61.5 46.5 H87 Q90 46.5 90 50.5 V77 Q90 79.5 88.5 81 L83 87 Q82 88 78 88 H53 Q48 88 48 83 V61 Q48 56 53 56 Z" fill="#1899D6" transform="translate(2 3)"></path><path d="M51 56 L57.5 48.5 Q59 46.5 61.5 46.5 H87 Q90.5 46.5 88.5 49.5 L83 56 Z" fill="#DDF4FF"></path><path d="M83 56 L88.5 49.5 Q90 48 90 50.5 V77 Q90 79.5 88.5 81 L83 87 Z" fill="#B6E6FF"></path><rect x="48" y="56" width="35" height="32" rx="5" fill="#FFFFFF"></rect><line x1="54" y1="65" x2="58.5" y2="60.5" stroke="#DDF4FF" stroke-width="3" stroke-linecap="round"></line><line x1="73" y1="82" x2="77" y2="78" stroke="#DDF4FF" stroke-width="3" stroke-linecap="round"></line><circle cx="62" cy="75" r="2" fill="#DDF4FF"></circle><circle cx="67" cy="70" r="1.4" fill="#DDF4FF"></circle><polyline class="crk" points="58,57 63,66 59,72 66,80 64,87" fill="none" stroke="#84D8FF" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="40" stroke-dashoffset="40" opacity="0"></polyline><path class="idr" d="M80 60.75 C80.65 62.7 82.6 64.33 82.6 65.3 A2.6 2.6 0 0 1 77.4 65.3 C77.4 64.33 79.35 62.7 80 60.75Z" fill="#84D8FF"></path><path class="hd hd0" d="M51.5 58.75 C52.15 60.7 54.1 62.33 54.1 63.3 A2.6 2.6 0 0 1 48.9 63.3 C48.9 62.33 50.85 60.7 51.5 58.75Z" fill="#84D8FF" opacity="0"></path><path class="hd hd1" d="M80 58.75 C80.65 60.7 82.6 62.33 82.6 63.3 A2.6 2.6 0 0 1 77.4 63.3 C77.4 62.33 79.35 60.7 80 58.75Z" fill="#84D8FF" opacity="0"></path></g></g></g><path class="vp vp0" d="M56 82 q4 -5 0 -10 q-4 -5 0 -10" fill="none" stroke="#FFFFFF" stroke-width="3.5" stroke-linecap="round" opacity="0"></path><path class="vp vp1" d="M67 82 q4 -5 0 -10 q-4 -5 0 -10" fill="none" stroke="#FFFFFF" stroke-width="3.5" stroke-linecap="round" opacity="0"></path><path class="vp vp2" d="M78 82 q4 -5 0 -10 q-4 -5 0 -10" fill="none" stroke="#FFFFFF" stroke-width="3.5" stroke-linecap="round" opacity="0"></path></svg></button>
+<div style="position: absolute; left: 141px; top: 726px; width: 190px; text-align: center; font-size: 14px; line-height: 1.3; font-weight: 700; color: #3C3C3C; pointer-events: none">§50. Գոլորշիացում և խտացում</div>
+<div class="bob" style="position: absolute; left: 184px; top: 528px; width: 104px; pointer-events: none"><div style="position: relative; box-sizing: border-box; width: 104px; padding: 8px 0px; background: #FFFFFF; border: 2px solid #E5E5E5; border-radius: 12px; text-align: center; font-size: 15px; font-weight: 800; letter-spacing: 0.5px; color: #137BAC">ՍԿՍԵԼ<div style="position: absolute; left: 45px; bottom: -7px; width: 12px; height: 12px; background: #FFFFFF; border-right: 2px solid #E5E5E5; border-bottom: 2px solid #E5E5E5; transform: rotate(45deg)"></div></div></div>
+<button class="node locked {{c3}}" type="button" aria-label="§51. Եռում: Եռման ջերմաստիճան — փակ" aria-expanded="{{e3}}" aria-controls="card3" onClick="{{k3}}" data-node="3" onMouseEnter="{{m3}}" onMouseLeave="{{l3}}" style="position: absolute; left: 110px; top: 794px; width: 140px; height: 140px"><svg aria-hidden="true" width="140" height="140" viewBox="0 0 140 140" style="overflow: visible"><g class="shk"><circle cx="70" cy="73" r="36" fill="#C9C9C9"></circle><circle cx="70" cy="66" r="36" fill="#E5E5E5"></circle><ellipse cx="70" cy="91" rx="20" ry="4.5" fill="#D6D6D6"></ellipse><path d="M53 56 L57.5 48.5 Q59 46.5 61.5 46.5 H87 Q90 46.5 90 50.5 V77 Q90 79.5 88.5 81 L83 87 Q82 88 78 88 H53 Q48 88 48 83 V61 Q48 56 53 56 Z" fill="#C9C9C9" transform="translate(2 3)"></path><path d="M51 56 L57.5 48.5 Q59 46.5 61.5 46.5 H87 Q90.5 46.5 88.5 49.5 L83 56 Z" fill="#EFEFEF"></path><path d="M83 56 L88.5 49.5 Q90 48 90 50.5 V77 Q90 79.5 88.5 81 L83 87 Z" fill="#D6D6D6"></path><rect x="48" y="56" width="35" height="32" rx="5" fill="#F7F7F7"></rect><line x1="54" y1="65" x2="58.5" y2="60.5" stroke="#EFEFEF" stroke-width="3" stroke-linecap="round"></line><line x1="73" y1="82" x2="77" y2="78" stroke="#EFEFEF" stroke-width="3" stroke-linecap="round"></line><circle cx="62" cy="75" r="2" fill="#EFEFEF"></circle><circle cx="67" cy="70" r="1.4" fill="#EFEFEF"></circle><path d="M62 68 v-6 a8 8 0 0 1 16 0 v6" fill="none" stroke="#AFAFAF" stroke-width="5" stroke-linecap="round"></path><rect x="57" y="67" width="26" height="21" rx="5" fill="#AFAFAF"></rect></g></svg></button>
+<div style="position: absolute; left: 85px; top: 936px; width: 190px; text-align: center; font-size: 14px; line-height: 1.3; font-weight: 700; color: #767676; pointer-events: none">§51. Եռում: Եռման ջերմաստիճան</div>
+<sc-if value="{{o0}}" hint-placeholder-val="{{ false }}"><div class="card" id="card0" style="position: absolute; left: 44px; top: 282px; width: 252px; box-sizing: border-box; padding: 16px; border-radius: 16px; z-index: 5; background: #137BAC; color: #FFFFFF; box-shadow: 0px 5px 0px #0F5F84"><div style="position: absolute; left: 117px; top: -9px; width: 16px; height: 16px; transform: rotate(45deg); border-radius: 3px; background: #137BAC"></div><div style="position: relative"><div style="font-size: 16px; font-weight: 800; line-height: 1.3">§48. Նյութի ագրեգատային վիճակները</div><div style="margin-top: 6px; font-size: 14px; line-height: 1.4; font-weight: 600">Ավարտված է։ Կարող ես կրկնել։</div><button class="cta" type="button" onClick="{{g0}}" style="margin-top: 14px; background: #FFFFFF; color: #137BAC; box-shadow: 0px 4px 0px #0F5F84">ԿՐԿՆԵԼ</button></div></div></sc-if>
+<sc-if value="{{o1}}" hint-placeholder-val="{{ false }}"><div class="card" id="card1" style="position: absolute; left: 12px; top: 482px; width: 252px; box-sizing: border-box; padding: 16px; border-radius: 16px; z-index: 5; background: #137BAC; color: #FFFFFF; box-shadow: 0px 5px 0px #0F5F84"><div style="position: absolute; left: 95px; top: -9px; width: 16px; height: 16px; transform: rotate(45deg); border-radius: 3px; background: #137BAC"></div><div style="position: relative"><div style="font-size: 16px; font-weight: 800; line-height: 1.3">§49. Բյուրեղային մարմինների հալումն ու պնդացումը</div><div style="margin-top: 6px; font-size: 14px; line-height: 1.4; font-weight: 600">Ավարտված է։ Կարող ես կրկնել։</div><button class="cta" type="button" onClick="{{g1}}" style="margin-top: 14px; background: #FFFFFF; color: #137BAC; box-shadow: 0px 4px 0px #0F5F84">ԿՐԿՆԵԼ</button></div></div></sc-if>
+<sc-if value="{{o2}}" hint-placeholder-val="{{ false }}"><div class="card" id="card2" style="position: absolute; left: 96px; top: 722px; width: 252px; box-sizing: border-box; padding: 16px; border-radius: 16px; z-index: 5; background: #137BAC; color: #FFFFFF; box-shadow: 0px 5px 0px #0F5F84"><div style="position: absolute; left: 131px; top: -9px; width: 16px; height: 16px; transform: rotate(45deg); border-radius: 3px; background: #137BAC"></div><div style="position: relative"><div style="font-size: 16px; font-weight: 800; line-height: 1.3">§50. Գոլորշիացում և խտացում</div><div style="margin-top: 6px; font-size: 14px; line-height: 1.4; font-weight: 600">Հաջորդ դասը քեզ է սպասում։</div><button class="cta" type="button" onClick="{{g2}}" style="margin-top: 14px; background: #FFFFFF; color: #137BAC; box-shadow: 0px 4px 0px #0F5F84">ՍԿՍԵԼ</button></div></div></sc-if>
+<sc-if value="{{o3}}" hint-placeholder-val="{{ false }}"><div class="card" id="card3" style="position: absolute; left: 54px; top: 932px; width: 252px; box-sizing: border-box; padding: 16px; border-radius: 16px; z-index: 5; background: #F7F7F7; border: 2px solid #E5E5E5; color: #4B4B4B"><div style="position: absolute; left: 117px; top: -9px; width: 16px; height: 16px; transform: rotate(45deg); border-radius: 3px; background: #F7F7F7; border-left: 2px solid #E5E5E5; border-top: 2px solid #E5E5E5"></div><div style="position: relative"><div style="font-size: 16px; font-weight: 800; line-height: 1.3; color: #4B4B4B">§51. Եռում: Եռման ջերմաստիճան</div><div style="margin-top: 6px; font-size: 14px; line-height: 1.4; font-weight: 600; color: #6F6F6F">Ավարտիր նախորդ դասերը, որ այս դասը բացվի։</div><button class="cta" type="button" disabled style="margin-top: 14px; background: #E5E5E5; color: #8A8A8A">ՓԱԿ Է</button></div></div></sc-if>
+<sc-if value="{{lessonOpen}}" hint-placeholder-val="{{ false }}"><div class="lesson" style="position: absolute; left: 0px; top: 0px; width: 360px; height: 1160px; box-sizing: border-box; padding: 20px; background: #FFFFFF; z-index: 10; display: flex; flex-direction: column; gap: 28px"><div style="display: flex; align-items: center; gap: 12px"><button class="xbtn" type="button" aria-label="Փակել դասը" onClick="{{closeLesson}}" style="width: 44px; height: 44px; border: 0px; background: none; padding: 0px; cursor: pointer; display: flex; align-items: center; justify-content: center"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 22 22"><path d="M4 4 L18 18 M18 4 L4 18" stroke="#AFAFAF" stroke-width="3.5" stroke-linecap="round"></path></svg></button><div style="flex: 1; height: 16px; border-radius: 8px; background: #E5E5E5; overflow: hidden"><div class="bar" style="width: 12%; height: 16px; border-radius: 8px; background: #1CB0F6"></div></div></div><div style="display: flex; flex-direction: column; gap: 8px"><div style="font-size: 13px; font-weight: 800; letter-spacing: 1px; color: #137BAC">ԳԼՈՒԽ V</div><div style="font-size: 24px; line-height: 1.3; font-weight: 800; color: #3C3C3C">{{lessonTitle}}</div><div style="font-size: 15px; line-height: 1.5; font-weight: 600; color: #6F6F6F">Այստեղ կբացվի դասի առաջին քայլը։</div></div></div></sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":360,"height":1160}}'>
+class Component extends DCLogic {
+keep() {
+return true;
+}
+renderVals() {
+const st = this.state || {};
+const open = st.open === undefined ? -1 : st.open;
+const t = st.t || [0, 0, 0, 0];
+const g = st.g || [0, 0, 0, 0];
+const h = st.h || [false, false, false, false];
+const out = {};
+for (let i = 0; i < 4; i++) {
+const tap = t[i] === 0 ? '' : (t[i] % 2 ? 'tapA' : 'tapB');
+const go = g[i] === 0 ? '' : (g[i] % 2 ? 'clickA' : 'clickB');
+const hov = h[i] || (this.keep() && open === i);
+out['c' + i] = tap + ' ' + go + (hov ? ' hov' : '');
+out['o' + i] = open === i;
+out['e' + i] = open === i ? 'true' : 'false';
+out['k' + i] = () => this.toggle(i);
+out['g' + i] = () => this.start(i);
+out['m' + i] = () => this.setHov(i, true);
+out['l' + i] = (e) => this.leave(i, e);
+}
+const L = ["§48. Նյութի ագրեգատային վիճակները", "§49. Բյուրեղային մարմինների հալումն ու պնդացումը", "§50. Գոլորշիացում և խտացում", "§51. Եռում: Եռման ջերմաստիճան"];
+const lesson = st.lesson === undefined ? -1 : st.lesson;
+out.lessonOpen = lesson !== -1;
+out.lessonTitle = lesson === -1 ? '' : L[lesson];
+out.closeLesson = () => this.closeLesson();
+return out;
+}
+settle(root) {
+try {
+const calm = typeof matchMedia === 'function' && matchMedia('(prefers-reduced-motion: reduce)').matches;
+if (!root || !root.getAnimations || calm) { if (root) root.classList.remove('hov'); return; }
+const SP = '.h-orb,.h-sp,.h-gb,.h-cv';
+const spinners = [];
+root.querySelectorAll(SP).forEach((el) => {
+const an = el.getAnimations().filter((a) => a.animationName);
+const o = el.parentNode;
+if (!an.length || !o || !o.classList || !o.classList.contains('o-rot')) return;
+const m = new DOMMatrix(getComputedStyle(el).transform);
+spinners.push({ o: o, ang: Math.atan2(m.b, m.a) * 180 / Math.PI, v: 360 / (Number(an[0].effect.getTiming().duration) || 1000) });
+});
+const snap = [];
+root.querySelectorAll('*').forEach((el) => {
+if (el.matches && el.matches(SP)) return;
+const an = el.getAnimations().filter((a) => a.animationName);
+if (an.length) {
+const cs = getComputedStyle(el);
+snap.push({ el: el, names: an.map((a) => a.animationName).join(','), t: cs.transform, o: cs.opacity });
+}
+});
+root.classList.remove('hov');
+const T = 750;
+spinners.forEach((sp) => {
+const base = parseFloat(sp.o.getAttribute('data-rot') || '0') + sp.ang;
+const end = base + sp.v * T / 3;
+sp.o.style.transform = 'rotate(' + end + 'deg)';
+sp.o.setAttribute('data-rot', String(end % 360));
+sp.o.animate([{ transform: 'rotate(' + base + 'deg)' }, { transform: 'rotate(' + end + 'deg)' }], { duration: T, easing: 'cubic-bezier(.2,.6,.4,1)' });
+});
+snap.forEach((s) => {
+const names = s.el.getAnimations().filter((a) => a.animationName).map((a) => a.animationName).join(',');
+if (names === s.names) return;
+const cs = getComputedStyle(s.el);
+if (cs.transform === s.t && cs.opacity === s.o) return;
+s.el.animate([{ transform: s.t, opacity: s.o }, { transform: cs.transform, opacity: cs.opacity }], { duration: 380, easing: 'cubic-bezier(.2,.7,.3,1)' });
+});
+} catch (err) {}
+}
+nodeEl(i) {
+return typeof document !== 'undefined' ? document.querySelector('[data-node="' + i + '"]') : null;
+}
+setHov(i, v) {
+const h = ((this.state && this.state.h) || [false, false, false, false]).slice();
+h[i] = v;
+this.setState({ h: h });
+}
+leave(i, e) {
+const st = this.state || {};
+const t = e && e.currentTarget;
+const root = t ? ((t.closest && t.closest('.grp')) || t) : null;
+if (!(this.keep() && st.open === i)) this.settle(root);
+this.setHov(i, false);
+}
+toggle(i) {
+const s = this.state || {};
+if (s.busy) return;
+const h = s.h || [false, false, false, false];
+const prev = s.open === undefined ? -1 : s.open;
+const next = prev === i ? -1 : i;
+if (this.keep() && prev !== -1 && prev !== next && !h[prev]) this.settle(this.nodeEl(prev));
+const tt = (s.t || [0, 0, 0, 0]).slice();
+tt[i] += 1;
+this.setState({ t: tt, open: next });
+}
+start(i) {
+const s = this.state || {};
+if (s.busy) return;
+const h = s.h || [false, false, false, false];
+if (this.keep() && !h[i]) this.settle(this.nodeEl(i));
+const gg = (s.g || [0, 0, 0, 0]).slice();
+gg[i] += 1;
+this.setState({ g: gg, open: -1, busy: true });
+let finished = false;
+const done = () => {
+if (finished) return;
+finished = true;
+this.setState({ busy: false, lesson: i });
+};
+const calm = typeof matchMedia === 'function' && matchMedia('(prefers-reduced-motion: reduce)').matches;
+setTimeout(done, calm ? 0 : this.cut());
+}
+closeLesson() {
+this.setState({ lesson: -1 });
+}
+cut() {
+return 1000;
+}
+}
+</script>
+</body>
+</html>

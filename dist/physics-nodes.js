@@ -9,19 +9,23 @@ let physNodeUid = 0;
 const physNodeCalm = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
 const physNodeStateOf = id => app.querySelector('.phys-state[data-id="' + id + '"]');
 const physNodeHovered = state => state.dataset.hover === '1';
+// Դասարանի կլորակների հավաքածուն. 8-րդում՝ physics8-nodes-art.js (PHYS8_*), գլխի դասը՝ g8cN (7-րդի chN կանոնները չեն կիրառվում), 7-րդում՝ PHYS_*, chN
+const physNodeKit = () => typeof physGrade !== 'undefined' && physGrade === 8 && typeof PHYS8_NODE_ART !== 'undefined' ?
+  { art: PHYS8_NODE_ART, meta: PHYS8_NODE_META, cls: 'g8c' } : { art: PHYS_NODE_ART, meta: PHYS_NODE_META, cls: 'ch' };
 
 // Մեկ կլորակ (li). n՝ գլխի համարը (1–6), section՝ §, status՝ done|current|locked, bend՝ դիրքը ուղու վրա
 function physNodeStopHtml(n, section, status, bend) {
-  const art = PHYS_NODE_ART[n][status];
-  const meta = PHYS_NODE_META[n];
+  const kit = physNodeKit();
+  const art = kit.art[n][status];
+  const meta = kit.meta[n];
   const uid = ++physNodeUid;
   const title = '§' + section.n + '. ' + section.title;
-  const grouped = n === 4;
+  const grouped = kit.cls === 'ch' && n === 4;
   const button = '<button type="button" class="phys-btn" aria-label="' + esc(title + ' — ' + PHYS_NODE_WORDS[status]) + '" aria-expanded="false" aria-controls="phys-card-' + section.id + '"' +
     (status === 'locked' ? ' aria-disabled="true"' : '') + (status === 'current' ? ' aria-current="step"' : '') + '>' + art.svg.replace(/\{u\}/g, uid) + '</button>';
   const shell = grouped ? art.spring + '<div class="c-bn"><div class="p-bn"><div class="h-bn">' + button + '</div></div></div>' : button;
   const bubble = status === 'current' ? '<div class="phys-start" aria-hidden="true"><div>ՍԿՍԵԼ<i></i></div></div>' : '';
-  return '<li class="path-stop phys-stop ch' + n + ' is-' + status + '" style="--bend:' + bend + ';--pc:' + meta.color + ';--ps:' + meta.shadow + '" data-id="' + section.id + '">' +
+  return '<li class="path-stop phys-stop ' + kit.cls + n + ' is-' + status + '" style="--bend:' + bend + ';--pc:' + meta.color + ';--ps:' + meta.shadow + (meta.gap ? ';--card-gap:' + meta.gap + 'px' : '') + '" data-id="' + section.id + '" data-cut="' + meta.cut + '">' +
     '<div class="phys-state ' + (grouped ? 'grp' : 'node') + ' ' + status + '" data-id="' + section.id + '" data-status="' + status + '">' + shell + bubble + '</div>' +
     '<span class="phys-title"><strong>' + esc(title) + '</strong></span></li>';
 }
@@ -147,7 +151,7 @@ async function physNodeOpenLesson(id) {
   app.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 120 });
 }
 
-// «ՍԿՍԵԼ» / «ԿՐԿՆԵԼ». մեծ անիմացիա, դասը բացվում է գագաթնակետին (PHYS_NODE_META[n].cut մվ)
+// «ՍԿՍԵԼ» / «ԿՐԿՆԵԼ». մեծ անիմացիա, դասը բացվում է գագաթնակետին (li-ի data-cut՝ PHYS_NODE_META[n].cut կամ PHYS8_NODE_META[n].cut մվ)
 function physNodeStart(id) {
   if (physNodes.busy) return;
   const state = physNodeStateOf(id);
@@ -156,7 +160,7 @@ function physNodeStart(id) {
   physNodeCloseCard();
   physNodeFlip(state, physNodes.clicks, 'click');
   physNodes.busy = true;
-  const cut = PHYS_NODE_META[Number(stop.className.match(/ch(\d)/)[1])].cut;
+  const cut = Number(stop.dataset.cut) || 0;
   physNodes.timer = setTimeout(() => physNodeOpenLesson(id), physNodeCalm() ? 0 : Math.max(0, cut - 120)); // 120 մվ մարումը վերջանում է հենց cut պահին
 }
 

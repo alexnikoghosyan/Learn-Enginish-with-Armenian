@@ -2,7 +2,7 @@
 
 Read `CLAUDE.md` and this file at the start of every session; update it after each piece of work.
 
-_Վերջին թարմացում՝ 2026-11-23_
+_Վերջին թարմացում՝ 2026-11-26_
 
 ## Done (Արված քայլեր)
 
@@ -78,6 +78,12 @@ _Վերջին թարմացում՝ 2026-11-23_
   - Նոր ֆայլեր. `physics8-lessons-ch1-part1.js`, `physics8-anims-ch1.js` (`p8-bus`, `drip-track`), `physics-motion.js` (`motion` գործիք), `physics-build.js` (`build` քայլ)։ Փոփոխված. `physics-math.js` (`physSpeed`, `physDistance`), `physics-text.js` (`_միջ` → ստորին ինդեքս), `physics.css`, `index.html`, `physics-course.test.mjs`։
   - Սպեցիֆիկացիայից տարբերությունները. քայլերի դաշտերը շարժիչինն են (`k`, ոչ թե `type`). `build`-ը՝ `{ options, answer }`. «Գիտե՞ս» փաստ չկա (OCR տեքստում §1-ի «Հետաքրքիր է իմանալ» չի գտնվել). `predict`-ի `reveal` անիմացիա չկա. `sim`-ը ստուգվում է «Ստուգել»-ով, ինչպես 7-ում. `graph` քայլը դեռ չկա։ Սպեցիֆիկացիան ավելացված է `PLAN.md`-ի «Դասի կառուցվածք» բաժնում։
   - Playwright. 375 px՝ դասն անցնում է մինչև վերջ (7/7, +10 XP, 7-ի առաջընթացը չի փոխվում), `build`-ի սխալ պատասխանի ճյուղը ստուգված է. 1280 px՝ ստուգված են 1-ին և 3-րդ քայլերը։ Գտնված և ուղղված. `motion`-ը չէր բացվում առանց `params`-ի, `_միջ`-ը չէր ձևավորվում տողային hint/why-ում և `build`-ի բլոկում։ `npm test`՝ 47/47։
+
+- **Ֆիզիկա 8. ուղու կլորակները (2026-11-26).** `/physics/8`-ում 7-րդի կլորակների փոխարեն՝ 8-րդի 5 գլխի կլորակները Claude Design կտավից (https://claude.ai/artifact/CaXGDoDWJVKvRJqdet8Y6i). թեք հարթություն, հրթիռ, ճոճանակ, թեյնիկ, սառույց։
+  - Աղբյուր՝ `Design/physics8-path-nodes/*.dc.html` → `python physics8-nodes-build.py` → `dist/physics8-nodes-art.js` (`PHYS8_NODE_ART`, `PHYS8_NODE_META`՝ գույն, ստվեր, `cut`, պատուհանի `gap`) և `dist/physics8-nodes.css`։
+  - Մեկուսացում 7-րդից. գլխի դասը `g8c1…g8c5` (ոչ `chN`), CSS-ը՝ `.phys-path .g8cN …`, keyframes-ը՝ `g8cN-` նախածանցով։ `physNodeKit()`-ը (`physics-nodes.js`) ընտրում է հավաքածուն ըստ `physGrade`-ի. 7-րդը չի փոխվել։ `cut`-ը հիմա li-ի `data-cut`-ից է։
+  - Թեստեր՝ `worker/physics8-nodes.test.mjs` (5)։ Playwright 1280 և 375. 5 գլուխ × 3 վիճակ, hover/tap/պատուհան (gap 72/66), START → §1 դասը բացվում է ≈560 մվ-ում, 7-րդի ուղին նույնն է (ch1–ch6, հետագիծ, զսպանակ)։
+  - Նոր դասարանների կլորակների կանոնները՝ `docs/physics-nodes/` (CLAUDE.md, կանոն 11)։
 
 ### Հետազոտություն
 - Duolingo/Brilliant մեխանիզմների զեկույցը (չաթում)։ Բարձրացման թվերը ոչ պաշտոնական են (Duolingo-ն չի հրապարակում)։
